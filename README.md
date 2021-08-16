@@ -3,7 +3,6 @@
 
 ## Integrantes ✒️
 
-_Menciona a todos aquellos que ayudaron a levantar el proyecto desde sus inicios_
 
 * **David Veron** -  - [DavidVer98](https://github.com/villanuevand)
 * **Elias Recalde** -  - [recaldelias](https://github.com/recaldelias)
