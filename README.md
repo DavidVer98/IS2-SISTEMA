@@ -49,7 +49,7 @@ Ahora necesitas revisar que tu website se está ejecutando. Abre tu navegador (F
 ```
  http://127.0.0.1:8000/
 ```
-Con este ulr ya se podra ejecutar el sistema localmente
+Con este url ya se podra ejecutar el sistema localmente
 
 
 ---
