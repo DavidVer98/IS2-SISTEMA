@@ -35,11 +35,8 @@ _Instale las dependencias del proyecto:_
 _Luego simplemete aplique las migraciones:_
 ```
 (env) $ python manage.py migrate
-```
-_Ahora puede ejecutar el servidor de desarrollo:_
-```
-(env) $ python manage.py migrate
-```
+
+
 ---
 
 ## Iniciar el servidor
