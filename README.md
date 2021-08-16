@@ -52,7 +52,7 @@ Ahora necesitas revisar que tu website se está ejecutando. Abre tu navegador (F
 Con este ulripo paso ya podras ejecutar el sistema localmente
 
 
-
+---
 ## El archivo `` test_views.py ''
 
 
