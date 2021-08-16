@@ -6,7 +6,7 @@
 
 * **David Veron** -  - [DavidVer98](https://github.com/villanuevand)
 * **Elias Recalde** -  - [recaldelias](https://github.com/recaldelias)
-* **Alexis Cubilla** -  - [AlexisCubilla](https://github.com/AlexisCubilla)
+* **Walter Cubilla** -  - [AlexisCubilla](https://github.com/AlexisCubilla)
 * **Nicholas Jara** -  - [AdmsAlf](https://github.com/AdmsAlf)
 
 
