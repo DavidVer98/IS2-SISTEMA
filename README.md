@@ -35,7 +35,7 @@ _Instale las dependencias del proyecto:_
 _Luego simplemete aplique las migraciones:_
 ```
 (env) $ python manage.py migrate
-
+```
 
 ---
 
