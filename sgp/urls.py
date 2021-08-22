@@ -17,7 +17,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
 
-from oauth_app.views import login_views, home, logout_view
+from home.views import home, listarUsuarios, eliminar, editar
+from oauth_app.views import login_views, logout_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,5 +26,8 @@ urlpatterns = [
     path('login/', login_views, name="login"),
     path('logout/', logout_view, name="logout"),
     path('home/', home, name="home"),
-    path('',TemplateView.as_view(template_name= "user/login.html"))
+    path('home/usuarios', listarUsuarios, name="listaUsuarios"),
+    path('',TemplateView.as_view(template_name= "user/login.html")),
+    path("eliminar/<int:user_id>/", eliminar, name="eliminar"),
+    path("editar/<int:user_id>/", editar, name="editar"),
 ]
