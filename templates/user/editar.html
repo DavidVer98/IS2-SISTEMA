@@ -1,8 +1,56 @@
+{% extends "baseHome.html" %}
+
+{% block head_content %}
+    <title>Home</title>
+{% endblock %}
+{% block container %}
 
 
 
-    <form method="POST">
-        {% csrf_token %}
-        {{ form }}
-        <button>Editar</button>
-    </form>
+    <div class="content-container">
+        <div class="container-fluid">
+            <div class="jumbotron">
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form }}
+                    <button>Editar</button>
+                </form>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                </div>
+
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                    Editar Usuario
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                     tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">Editar Usuario</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    {{ form }}
+                                    <button class="btn btn-primary">Editar</button>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                {#        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>#}
+                                {#        <button type="button" class="btn btn-primary">Understood</button>#}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

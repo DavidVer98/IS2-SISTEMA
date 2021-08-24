@@ -5,16 +5,25 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
     {% block head_content %} {% endblock %}
     {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" crossorigin="anonymous"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/sidebars.css' %}">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
 </head>
 <body>
 <!-- NavBar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">Navbar</a>
+    <a class="navbar-brand" href="#"><img src="{% static 'img/logo1.png' %}" width="30" height="30"> </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02"
             aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -33,7 +42,7 @@
             </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
-            <button type="button" class="btn btn-danger" onclick="location.href= '{% url 'logout' %}'">Cerrar Session
+            <button type="button" class="btn btn-danger" onclick="location.href= '{% url 'logout' %}'"> Cerrar Session
             </button>
             {#            <input class="form-control mr-sm-2" type="search" placeholder="Search">#}
             {#            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>#}
@@ -73,12 +82,12 @@
         {% if request.user.rolSistema == "Administrador" %}
             <li>
             <a href='{% url 'listaUsuarios' %}'>
-                <i class="fa fa-user" aria-hidden="true"></i> Usuarios
+                <i class="fa fa-users" aria-hidden="true"></i> Usuarios
             </a>
         {% endif %}
         <li>
             <a href="#">
-                <i class="fa fa-info-circle" aria-hidden="true"></i> Perfil
+                <i class="fa fa-user" aria-hidden="true"></i>Perfil
             </a>
         </li>
     </ul>
@@ -87,7 +96,10 @@
 {% block container %}
 
 {% endblock %}
-
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
+        crossorigin="anonymous"></script>
 
 </body>
 </html>
