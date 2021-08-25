@@ -142,9 +142,13 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+<<<<<<< HEAD:sgp/settings_pruebas.py
 
 # STATIC_ROOT =  os.path.join(BASE_DIR, 'static')
 
+=======
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+>>>>>>> se actualizo settings modo desarrollo:sgp/settings.py
 
 # STATIC_ROOT =  os.path.join(BASE_DIR, 'static')
 
