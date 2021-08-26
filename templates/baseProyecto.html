@@ -72,25 +72,20 @@
         <li class="header">Another Menu</li>
         <li>
             <a a href='{% url 'listarProyectos' %}'>
-                <i class="fa fa-users" aria-hidden="true"></i> Proyectos
+                <i class="fa fa-users" aria-hidden="true"></i> Roles
             </a>
         </li>
         <li>
             <a href="#">
-                <i class="fa fa-cog" aria-hidden="true"></i> Configuraciones
+                <i class="fa fa-cog" aria-hidden="true"></i> Miembros
             </a>
         </li>
-        {% if request.user.rolSistema == "Administrador" %}
+
             <li>
             <a href='{% url 'listaUsuarios' %}'>
-                <i class="fa fa-users" aria-hidden="true"></i> Usuarios
+                <i class="fa fa-users" aria-hidden="true"></i> Configurar
             </a>
-        {% endif %}
-        <li>
-            <a href="#">
-                <i class="fa fa-user" aria-hidden="true"></i>Perfil
-            </a>
-        </li>
+            </li>
     </ul>
 </div>
 
