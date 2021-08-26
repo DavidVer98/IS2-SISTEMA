@@ -1,3 +1,5 @@
 /.idea/
 /venv/
 __pycache__
+static/admin
+produccion.sh
