@@ -1,0 +1,21 @@
+{% extends "baseProyecto.html" %}
+
+{% block head_content %}
+    <title>Home</title>
+{% endblock %}
+{% block container %}
+
+    <div class="content-container">
+        <div class="container-fluid">
+            <div class="jumbotron">
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form }}
+                    <button class="btn btn-primary" style="margin-left: 10px">Editar</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

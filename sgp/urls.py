@@ -19,6 +19,7 @@ from django.views.generic import TemplateView
 
 from home.views import home, listarUsuarios, eliminar, editar
 from oauth_app.views import login_views, logout_view
+from proyecto.views import listarProyectos, editarProyecto, crearProyecto
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,7 +28,10 @@ urlpatterns = [
     path('logout/', logout_view, name="logout"),
     path('home/', home, name="home"),
     path('home/usuarios', listarUsuarios, name="listaUsuarios"),
-    path('',TemplateView.as_view(template_name= "user/login.html")),
+    path('', TemplateView.as_view(template_name="user/login.html")),
     path("eliminar/<int:user_id>/", eliminar, name="eliminar"),
     path("editar/<int:user_id>/", editar, name="editar"),
+    path("home/proyectos/", listarProyectos, name="listarProyectos"),
+    path("home/proyectos/editar/<int:proyecto_id>/", editarProyecto, name="editarProyecto"),
+    path("home/proyectos/crear", crearProyecto, name="crearProyecto"),
 ]
