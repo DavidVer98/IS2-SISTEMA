@@ -20,6 +20,7 @@ from django.views.generic import TemplateView
 from home.views import home, listarUsuarios, eliminar, editar
 from oauth_app.views import login_views, logout_view
 from proyecto.views import listarProyectos, editarProyecto, crearProyecto
+from user.views import activar
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,4 +35,5 @@ urlpatterns = [
     path("home/proyectos/", listarProyectos, name="listarProyectos"),
     path("home/proyectos/editar/<int:proyecto_id>/", editarProyecto, name="editarProyecto"),
     path("home/proyectos/crear", crearProyecto, name="crearProyecto"),
+    path("user/activar/",activar,name="activar")
 ]

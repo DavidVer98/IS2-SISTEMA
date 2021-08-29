@@ -1,0 +1,27 @@
+{% extends "baseHome.html" %}
+{% block head_content %}
+    <title>Usuarios</title>
+{% endblock %}
+
+{% block container %}
+    <div class="content-container">
+
+        <div class="container-fluid">
+            <div class="jumbotron" style="background-color:transparent; margin-top: 50px" >
+                {% load static %}
+                <div class="row">
+                    <div class="col">
+                         <h1 style="text-align: center"> Lo sentimos, tu usuario no esta activado <i class="fa fa-frown-o" aria-hidden="true"></i></h1>
+                        <hr style="width:50%; margin-left:25% !important; margin-right:1% !important;" />
+                    </div>
+                </div>
+                <img src="{% static 'img/activar1.png' %}" style="width: 55%;  display: block;
+  margin-left: auto;
+  margin-right: auto;" alt="">
+
+            </div>
+        </div>
+
+    </div>
+    </div>
+{% endblock %}
