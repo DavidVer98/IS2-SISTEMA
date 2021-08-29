@@ -7,7 +7,7 @@ class ProyectoForm(ModelForm):
     #tarea = models.CharField(max_length=100)
     class Meta:
         model = Proyecto #asosiciar un modelo a Proyecto
-        fields = ['nombre_proyecto', 'miembros','estado', 'fecha_inicio']
+        fields = ['nombre_proyecto','scrum_master','estado', 'fecha_inicio']
         # widgets = {
         #     'first_name': TextInput(
         #         attrs={
@@ -17,4 +17,4 @@ class ProyectoForm(ModelForm):
 class ProyectoCrearForms(ModelForm):
     class Meta:
         model = Proyecto
-        fields =  ['nombre_proyecto','estado', 'fecha_inicio']
+        fields =  ['nombre_proyecto','scrum_master','estado', 'fecha_inicio']
