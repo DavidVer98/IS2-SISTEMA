@@ -35,5 +35,6 @@ urlpatterns = [
     path("home/proyectos/", listarProyectos, name="listarProyectos"),
     path("home/proyectos/editar/<int:proyecto_id>/", editarProyecto, name="editarProyecto"),
     path("home/proyectos/crear", crearProyecto, name="crearProyecto"),
-    path("user/activar/",activar,name="activar")
+    path("user/activar/",activar,name="activar"),
+    path("rol/",include("rol.urls"))
 ]
