@@ -3,14 +3,14 @@ from django.shortcuts import render, redirect
 
 # Create your views here.
 from proyecto.forms import ProyectoForm, ProyectoCrearForms
-from proyecto.models import Proyecto
+from proyecto.models import Proyecto, Miembro
 
 
 @login_required(login_url='/login')
 def listarProyectos(request):
     proyecto = Proyecto.objects.all()
-    print("proyecto ->",proyecto)
-    context = {'proyectos': proyecto}
+    miembro= Miembro.objects.all()
+    context = {'proyectos': proyecto,'miembros': miembro}
     return render(request, "home/listarProyectos.html" , context)
 
 @login_required(login_url='/login')
@@ -39,3 +39,4 @@ def crearProyecto(request):
         form = ProyectoCrearForms()
     context = {'form' : form}
     return render (request,"proyecto/crearProyecto.html",context)
+
