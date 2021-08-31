@@ -1,15 +1,19 @@
 from django.contrib.auth.models import Group, Permission
 from django.shortcuts import render
-
+from .models import Rol
 # Create your views here.
 from .forms import CrearGrupo
-def crear(request):
+def crearGrupo(request):
     if request.method == "POST":
         form=CrearGrupo(request.POST or None)
         if form.is_valid():
-            picked = form.cleaned_data.get('picked')
-            print(picked)
             form.save()
+            name = form.cleaned_data['name']
+            grupos = Group.objects.all()
+            for i in grupos:
+                if (i.name == name):
+                    Rol.objects.create_rol(name,i)
+
     else:
         form = CrearGrupo()
     #grupos=Group.objects.all()
@@ -17,6 +21,7 @@ def crear(request):
     context={ 'Permisos':permisos,'form':form}
     return render(request, "rol/crear.html", context)
 
+#def crearRol(request):
 
 
     # if request.method == "POST":
