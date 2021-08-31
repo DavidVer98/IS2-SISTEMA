@@ -1,8 +1,8 @@
 from django.urls import path
-from .views  import crear
+from .views  import crearGrupo
 
 urlpatterns = [
 
-    path('crear/',crear ),
+    path('crear/',crearGrupo ),
 
 ]
