@@ -1,20 +1,57 @@
-
-
+{% extends "baseProyecto.html" %}
 {% block head_content %}
     <title>Home</title>
 {% endblock %}
 {% block container %}
+    <div class="sidebar-container">
+        {#    <div class="sidebar-logo">#}
+        <div class="container-fluid" style="margin: auto">
+            <img src="/static/img/default-profile.png" class="rounded-circle" height="50" style="width: 50px;"/>
+            {{ request.user.username }}
+        </div>
+        {#    </div>#}
+        <ul class="sidebar-navigation">
+            <li class="header">Navigation</li>
+            <li>
+                <a href="/home">
+                    <i class="fa fa-home" aria-hidden="true"></i> Home
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
+                </a>
+            </li>
+            <li class="header">Another Menu</li>
+            <li>
+               <a a href='{% url 'roles_proyecto' 1 %}'>
+                    <i class="fa fa-users" aria-hidden="true"></i> Roles
+                </a>
+            </li>
+            <li>
+                <a href='{% url 'miembros_proyecto' proyecto_id=proyecto_id %}'>
+                    <i class="fa fa-cog" aria-hidden="true"></i> Miembros {{ proyecto.id }}
+                </a>
+            </li>
 
-<div class="jumbotron"  >
+            <li>
+                <a href='{% url 'listaUsuarios' %}'>
+                    <i class="fa fa-users" aria-hidden="true"></i> Configurar
+                </a>
+            </li>
+        </ul>
+    </div>
 
-<form method="POST"> {% csrf_token %}
-    {{form.as_p}}
-    <input type="submit" value="Crear">
-</form>
+    <div class="content-container">
+        <div class="container-fluid">
+            <div class="jumbotron" style="margin-top: 45px">
+                <form method="POST"> {% csrf_token %}
 
-
-
-
-</div>
-
+                    <p1> {{ proyecto_id }}</p1>
+                    {{ form.as_p }}
+                    <input type="submit" value="Crear">
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}
