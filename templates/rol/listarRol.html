@@ -9,7 +9,7 @@
         <div class="container-fluid" style="margin-top: 45px">
             <div class="jumbotron">
 
-                        <h1><i class="fa fa-thumb-tack" aria-hidden="true"></i> Lista de Roles</h1>
+                        <h1><i class="fa fa-thumb-tack" aria-hidden="true"></i> Lista de Roles  </h1>
                          <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;" />
 
                 <table class="overflow-auto table table-striped table-dark container">
@@ -23,7 +23,7 @@
                     {% for i in rol %}
                         <tbody style="text-align: left; ">
                         <tr>
-                            <th scope="row">{{ i.group.pk }}</th>
+                            <th scope="row">{{ i.pk }}</th>
                             <td>@{{ i.nombre }}</td>
 
 
@@ -31,10 +31,10 @@
                             </td>
                             <td>
                                 <button type="button" class="btn btn-secondary"
-                                        onclick="editarRol({{ i.group.pk }})">Editar
+                                        onclick="editarRol({{ i.pk }},{{ proyecto_id }})">Editar
                                 </button>
                                 <button type="button" class="btn btn-danger"
-                                        onclick="eliminarRol({{ i.group.pk }})">Borrar
+                                        onclick="eliminarRol({{ i.pk }},{{ proyecto_id }})">Borrar
                                 </button>
                             </td>
                         </tr>
@@ -45,7 +45,7 @@
         </div>
     </div>
         <script type="text/javascript">
-            function editarRol(id) {
+            function editarRol(id, proyecto_id) {
             console.log(id)
             Swal.fire({
                 'title': '¿Estas seguro?',
@@ -55,12 +55,12 @@
             })
                 .then(function (result) {
                     if (result.isConfirmed) {
-                        window.location.href = "/rol/" + id + "/editar";
+                        window.location.href =  id + "/editar";
                     }
                 })
         }
 
-        function eliminarRol(id) {
+        function eliminarRol(id, proyecto_id) {
             console.log(id)
             Swal.fire({
                 'title': '¿Estas seguro?',
@@ -70,7 +70,7 @@
             })
                 .then(function (result) {
                     if (result.isConfirmed) {
-                        window.location.href = "/rol/" + id + "/eliminar";
+                        window.location.href = id + "/eliminar";
                     }
                 })
         }
