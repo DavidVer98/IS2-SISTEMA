@@ -85,7 +85,8 @@
                                             onclick="({{ miembro.id }})">Editar
                                     </button>
                                     <button type="button" class="btn btn-danger"
-                                            onclick="({{ miembro.id }})">Borrar
+{#                                            onclick="eliminarmiembro({{ miembro.id }})">Borrar#}
+                                            onclick="location.href='{% url 'eliminarmiembro_proyecto' proyecto_id miembro.id  %}'">Borrar
                                     </button>
                                 </td>
                             </tr>
