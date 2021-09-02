@@ -101,13 +101,12 @@ def setMiembros(request, proyecto_id):
             #usuario.groups.add(grupo.group)
             #print(usuario.has_perm('proyecto.VISUALIZAR_PROYECTOS', proyecto))
 
-            # form.save()
-            # return redirect("miembros_proyecto")
+            form.save()
+            #return redirect("miembros_proyecto")
     else:
         form = setMiembroForms()
     context = {'form': form}
     return render(request, "proyecto/setMiembro.html", context)
-
 
 def crearGrupo(request, proyecto_id):
     if request.method == "POST":
@@ -175,3 +174,8 @@ def eliminarRol(request,rol_id):
 
     return redirect("/proyecto/rol/listar")
 
+
+def eliminarmiembro(request, proyecto_id, miembro_id):
+    miembro = Miembro.objects.get(pk=miembro_id)
+    miembro.delete()
+    return getMiembros(request, proyecto_id)
