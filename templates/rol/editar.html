@@ -9,12 +9,14 @@
         <div class="container-fluid">
             <div class="jumbotron" style="margin-top: 45px">
                 <form method="POST"> {% csrf_token %}
-
-
                     {{ form.as_p }}
+                    <input type="hidden" name="rol_id" value="{{rol_id}}">
+
                     <input type="submit" value="Editar">
+
                 </form>
             </div>
+            <div>{{ proyecto_id }}</div>
         </div>
     </div>
 {% endblock %}

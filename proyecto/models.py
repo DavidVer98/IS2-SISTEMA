@@ -9,11 +9,12 @@ class RolManager(models.Manager):
         rol=self.create(nombre=name, group=grupo)
         return rol
 
-
 class Rol(models.Model):
-    nombre=models.TextField(max_length=50)
-    group=models.OneToOneField(Group,on_delete=models.CASCADE,primary_key=True)
-    objects= RolManager()
+    nombre = models.TextField(max_length=50)
+    group = models.OneToOneField(Group, on_delete=models.CASCADE)
+    objects = RolManager()
+    def __str__(self):
+        return self.nombre
 
 class Proyecto(models.Model):
     nombre_proyecto = models.CharField(max_length=50)

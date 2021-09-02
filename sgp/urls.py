@@ -37,6 +37,5 @@ urlpatterns = [
     path("home/proyectos/crear", crearProyecto, name="crearProyecto"),
     path("user/activar/",activar,name="activar"),
     path("proyecto/",include("proyecto.urls")),
-    path('rol/<int:rol_id>/editar',editarRol, name='editarRol'),
-    path('rol/<int:rol_id>/eliminar',eliminarRol, name='eliminarRol'),
+
 ]
