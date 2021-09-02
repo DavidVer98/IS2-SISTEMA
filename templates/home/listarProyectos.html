@@ -45,10 +45,12 @@
                             <td>
 
                                 <button type="button" class="btn btn-secondary" onclick="location.href='{% url 'editarProyecto' proyecto.id %}'"
-                                >Editar
+                                >Editar {{ proyecto.id }}
                                 </button>
                                 <button type="button" class="btn btn-danger"
                                 >Borrar
+                                </button>
+                                <button type="button" class="btn btn-info" onclick="location.href='{% url 'proyecto' proyecto.id %}'">Ingresar
                                 </button>
                             </td>
                         </tr>

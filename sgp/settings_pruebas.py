@@ -47,8 +47,9 @@ INSTALLED_APPS = [
     'user',
     'home',
     'proyecto',
-    'rol',
 
+    # django-guardian
+    'guardian',
 ]
 
 MIDDLEWARE = [
@@ -141,7 +142,6 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # STATIC_ROOT =  os.path.join(BASE_DIR, 'static')
 
@@ -166,6 +166,11 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', # this is default
+    'guardian.backends.ObjectPermissionBackend',
+)
+
 SITE_ID = 1
 
 LOGIN_REDIRECT_URL = 'home'

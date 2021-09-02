@@ -1,7 +1,10 @@
 from django.contrib import admin
-
-# Register your models here.
-from proyecto.models import Proyecto, Miembro
+from proyecto.models import Proyecto, Miembro, Rol
 
 admin.site.register(Proyecto)
-admin.site.register(Miembro)
+
+@admin.register(Miembro)
+class MiembroAdmin(admin.ModelAdmin):
+
+    list_display = ('pk','miembro', 'proyectos','rol')
+    list_display_links =('miembro','pk')
