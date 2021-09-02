@@ -1,0 +1,78 @@
+{% extends "baseHome.html" %}
+{% block head_content %}
+    <title>Lista de Roles</title>
+{% endblock %}
+
+{% block container %}
+    <div class="content-container">
+
+        <div class="container-fluid" style="margin-top: 45px">
+            <div class="jumbotron">
+
+                        <h1><i class="fa fa-thumb-tack" aria-hidden="true"></i> Lista de Roles</h1>
+                         <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;" />
+
+                <table class="overflow-auto table table-striped table-dark container">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nombre</th>
+
+                    </tr>
+                    </thead>
+                    {% for i in rol %}
+                        <tbody style="text-align: left; ">
+                        <tr>
+                            <th scope="row">{{ i.group.pk }}</th>
+                            <td>@{{ i.nombre }}</td>
+
+
+
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-secondary"
+                                        onclick="editarRol({{ i.group.pk }})">Editar
+                                </button>
+                                <button type="button" class="btn btn-danger"
+                                        onclick="eliminarRol({{ i.group.pk }})">Borrar
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+        <script type="text/javascript">
+            function editarRol(id) {
+            console.log(id)
+            Swal.fire({
+                'title': '¿Estas seguro?',
+                {#'text': 'esta acción no se pude deshacer',#}
+                'icon': 'question',
+                'showCancelButton': true
+            })
+                .then(function (result) {
+                    if (result.isConfirmed) {
+                        window.location.href = "/rol/" + id + "/editar";
+                    }
+                })
+        }
+
+        function eliminarRol(id) {
+            console.log(id)
+            Swal.fire({
+                'title': '¿Estas seguro?',
+                'text': 'esta acción no se pude deshacer',
+                'icon': 'warning',
+                'showCancelButton': true
+            })
+                .then(function (result) {
+                    if (result.isConfirmed) {
+                        window.location.href = "/rol/" + id + "/eliminar";
+                    }
+                })
+        }
+    </script>
+{% endblock %}

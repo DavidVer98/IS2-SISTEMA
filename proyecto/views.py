@@ -10,7 +10,7 @@ from django.contrib.auth.models import Group, Permission
 
 from user.models import User
 from .models import Rol
-from proyecto.forms import ProyectoForm, ProyectoCrearForms, setMiembroForms, CrearGrupo
+from proyecto.forms import ProyectoForm, ProyectoCrearForms, setMiembroForms, CrearGrupo, EditarGrupo
 from proyecto.models import Proyecto, Miembro
 
 
@@ -101,12 +101,13 @@ def setMiembros(request, proyecto_id):
             #usuario.groups.add(grupo.group)
             #print(usuario.has_perm('proyecto.VISUALIZAR_PROYECTOS', proyecto))
 
-            form.save()
-            #return redirect("miembros_proyecto")
+            # form.save()
+            # return redirect("miembros_proyecto")
     else:
         form = setMiembroForms()
     context = {'form': form}
     return render(request, "proyecto/setMiembro.html", context)
+
 
 def crearGrupo(request, proyecto_id):
     if request.method == "POST":
@@ -145,7 +146,32 @@ def asignarPermisos(request, miembro_id):
     miembro = Miembro.objects.get(pk=miembro_id)
     print("Miembro -->", miembro)
 
-def eliminarmiembro(request, proyecto_id, miembro_id):
-    miembro = Miembro.objects.get(pk=miembro_id)
-    miembro.delete()
-    return getMiembros(request, proyecto_id)
+
+def listarRol(request):
+
+    roles = Rol.objects.all()
+    context = {'rol': roles}
+    return render(request, "rol/listarRol.html", context)
+
+def editarRol(request,rol_id):
+    print("hola")
+    objetogrupo = Group.objects.get(pk=rol_id)
+    instance = Group.objects.get(id=rol_id)
+    form2 = EditarGrupo(request.POST or None, instance=instance)
+    context = {"id": rol_id,"form":form2}
+    if form2.is_valid():
+        form2.save()
+        nombre=form2.cleaned_data['name']
+        instancerol=Rol.objects.get(pk=rol_id)
+        instancerol.nombre=nombre
+        instancerol.save()
+    return render(request, "rol/editar.html",context)
+
+
+def eliminarRol(request,rol_id):
+    print(rol_id)
+    rol=Group.objects.get(id=rol_id)
+    rol.delete()
+
+    return redirect("/proyecto/rol/listar")
+
