@@ -47,8 +47,9 @@
                                 <button type="button" class="btn btn-secondary" onclick="location.href='{% url 'editarProyecto' proyecto.id %}'"
                                 >Editar {{ proyecto.id }}
                                 </button>
+
                                 <button type="button" class="btn btn-danger"
-                                >Borrar
+                                        onclick="eliminarProyecto({{ proyecto.id }})">Borrar
                                 </button>
                                 <button type="button" class="btn btn-info" onclick="location.href='{% url 'proyecto' proyecto.id %}'">Ingresar
                                 </button>
@@ -62,4 +63,21 @@
             </div>
         </div>
     </div>
+
+        <script type="text/javascript">
+        function eliminarProyecto(id) {
+            console.log(id)
+            Swal.fire({
+                'title': '¿Estas seguro?',
+                'text': 'esta acción no se pude deshacer',
+                'icon': 'warning',
+                'showCancelButton': true
+            })
+                .then(function (result) {
+                    if (result.isConfirmed) {
+                        window.location.href = "/proyecto/" + id + "/eliminar";
+                    }
+                })
+        }
+    </script>
 {% endblock %}

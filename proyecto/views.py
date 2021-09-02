@@ -218,3 +218,11 @@ def eliminarmiembro(request, proyecto_id, miembro_id):
     miembro = Miembro.objects.get(pk=miembro_id)
     miembro.delete()
     return getMiembros(request, proyecto_id)
+
+
+def eliminarProyecto(request,proyecto_id):
+    print(proyecto_id)
+    proyecto=Proyecto.objects.get(id=proyecto_id)
+    proyecto.delete()
+
+    return redirect("/home/proyectos/")
