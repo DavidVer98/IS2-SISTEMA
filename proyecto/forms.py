@@ -43,3 +43,9 @@ class CrearGrupo(forms.Form):
 
     nombre = forms.CharField(max_length=50, required=True)
     permisos_proyecto = forms.MultipleChoiceField(choices=permissions, required=False)
+
+
+class EditarGrupo(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = ['name','permissions']
