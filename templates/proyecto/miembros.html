@@ -1,0 +1,102 @@
+{% extends "baseProyecto.html" %}
+
+{% block head_content %}
+    <title>Home</title>
+{% endblock %}
+{% block container %}
+    <div class="sidebar-container">
+        {#    <div class="sidebar-logo">#}
+        <div class="container-fluid" style="margin: auto">
+            <img src="/static/img/default-profile.png" class="rounded-circle" height="50" style="width: 50px;"/>
+            {{ request.user.username }}
+        </div>
+        {#    </div>#}
+        <ul class="sidebar-navigation">
+            <li class="header">Navigation</li>
+            <li>
+                <a href="/home">
+                    <i class="fa fa-home" aria-hidden="true"></i> Home
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
+                </a>
+            </li>
+            <li class="header">Another Menu</li>
+            <li>
+              <a  href='{% url 'roles_proyecto' proyecto_id=proyecto_id %}'>
+                    <i class="fa fa-users" aria-hidden="true"></i> Roles
+                </a>
+            </li>
+            <li>
+                <a href='{% url 'miembros_proyecto' proyecto_id=proyecto_id %}'>
+                    <i class="fa fa-cog" aria-hidden="true"></i> Miembros
+                </a>
+            </li>
+
+            <li>
+                <a href='{% url 'listaUsuarios' %}'>
+                    <i class="fa fa-users" aria-hidden="true"></i> Configurar
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="content-container">
+        <div class="container-fluid">
+            <div class="jumbotron" style="margin-top: 45px">
+                <div class="row">
+                    <div class="col-10 .col-md-10">
+                        <h1><i class="fa fa-thumb-tack" aria-hidden="true"></i>Miembros del proyecto </h1>
+                    </div>
+                    <div class="col-2 .col-md-2">
+                        <button type="button" class="btn btn-secondary"
+                                onclick="location.href='{% url 'setMiembros_proyectos' proyecto_id  %}'"
+                        >Añador Miembro <i class="fa fa-folder-open-o" aria-hidden="true"></i>
+                        </button>
+
+                    </div>
+                    <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
+
+                    <table class="overflow-auto table table-striped table-dark container">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col"><i class="fa fa-user" aria-hidden="true"></i> Users</th>
+                            <th scope="col">Proyecto</th>
+                            <th scope="col">Rol</th>
+                            <th scope="col">Detalles</th>
+                        </tr>
+                        </thead>
+                        {% for miembro in miembros_proyecto %}
+                            <tbody style="text-align: left; ">
+                            <tr>
+                                <th scope="row">{{ miembro.pk }}</th>
+                                <td>@{{ miembro.miembro }}</td>
+                                <td>
+                                    {{ miembro.proyectos }}
+                                </td>
+                                <td>
+                                    {{ miembro.rol }}
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-secondary"
+                                            onclick="({{ miembro.id }})">Editar
+                                    </button>
+                                    <button type="button" class="btn btn-danger"
+                                            onclick="({{ miembro.id }})">Borrar
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

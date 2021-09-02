@@ -84,7 +84,6 @@ def setMiembros(request, proyecto_id):
     if request.method == "POST":
         form = setMiembroForms(request.POST)
         if form.is_valid():
-            # print()
             data = form.cleaned_data
             proyecto = data['proyectos']
             user = data['miembro']
@@ -92,14 +91,17 @@ def setMiembros(request, proyecto_id):
             # print("Proyecto ->",proyecto, "Miembro",user, "Rol",rol)
             usuario = User.objects.get(username=user)
             proyecto = Proyecto.objects.get(nombre_proyecto=proyecto)
-            grupo = Rol.objects.get(group=rol)
-            rol = Group.objects.get(name="grupoprueba25")
-            print(usuario.email, "Proyecto ->", proyecto.pk, "Grupo", grupo.group)
-            assign_perm('proyecto.VISUALIZAR_PROYECTOS', grupo.group, proyecto)
-            usuario.groups.add(grupo.group)
-            print(usuario.has_perm('proyecto.VISUALIZAR_PROYECTOS', proyecto))
+            rol = Rol.objects.get(group=rol)
+            print("EL MACHO ->",usuario)
+            print("EL grupo es ->",type(rol.group))
+            # assign_perm('grupo', grupo.group, proyecto)
+            #rol = Group.objects.get(name="grupoprueba25")
+            #print(usuario.email, "Proyecto ->", proyecto.pk, "Grupo", grupo.group)
+            #assign_perm('proyecto.VISUALIZAR_PROYECTOS', grupo.group, proyecto)
+            #usuario.groups.add(grupo.group)
+            #print(usuario.has_perm('proyecto.VISUALIZAR_PROYECTOS', proyecto))
 
-            form.save()
+            # form.save()
             # return redirect("miembros_proyecto")
     else:
         form = setMiembroForms()
