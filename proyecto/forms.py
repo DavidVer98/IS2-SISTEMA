@@ -38,7 +38,7 @@ class setMiembroForms(ModelForm):
         model = Miembro
         fields =  ['miembro','proyectos','rol']
         # exclude = ['pk']
-
+        exclude = ['proyectos']
 class CrearGrupo(forms.Form):
 
     nombre = forms.CharField(max_length=50, required=True)

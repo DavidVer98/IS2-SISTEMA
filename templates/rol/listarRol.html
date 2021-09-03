@@ -50,8 +50,12 @@
 
         <div class="container-fluid" style="margin-top: 45px">
             <div class="jumbotron">
-
-                        <h1><i class="fa fa-thumb-tack" aria-hidden="true"></i> Lista de Roles  </h1>
+                         {% if error %}
+                            <div class="alert alert-danger" role="alert">
+                                Existe un usuario asignado a este Rol !
+                            </div>
+                         {% endif %}
+                        <h1><i class="fa fa-thumb-tack" aria-hidden="true"></i> Lista de Roles {{ error }} </h1>
                          <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;" />
 
                 <table class="overflow-auto table table-striped table-dark container">
