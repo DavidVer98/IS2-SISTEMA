@@ -3,6 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from guardian.shortcuts import assign_perm
+import requests
 
 from proyecto.models import Proyecto
 
@@ -11,8 +12,8 @@ from django.contrib.auth.models import Group, Permission
 
 from user.models import User
 from .models import Rol
-from proyecto.forms import ProyectoForm, ProyectoCrearForms, setMiembroForms, CrearGrupo, EditarGrupo, \
-    editar_rolmiembro_form, permissions
+from proyecto.forms import ProyectoForm, ProyectoCrearForms, setMiembroForms, CrearGrupo, EditarGrupo, permissions, \
+    editar_rolmiembro_form
 from proyecto.models import Proyecto, Miembro
 
 
@@ -46,6 +47,7 @@ def setScrum(request, proyecto, user, rol):
         formMiembro.instance.rol = rol
         formMiembro.instance.save()
         user.groups.add(rol.group)
+        print("sellegohastaca")
     else:
         formMiembro = setMiembroForms()
 
@@ -61,18 +63,32 @@ def scrumRol(proyecto_id):
 
 @login_required(login_url='/login')
 def crearProyecto(request):
-    context = {}
+    proyecto = Proyecto.objects.all()
+    miembro = Miembro.objects.all()
+    # context = {}
     if request.method == "POST":
         form = ProyectoCrearForms(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            nombre = data['nombre_proyecto']
-            user = data['scrum_master']
-            form.save()
-            proyecto=Proyecto.objects.get(nombre_proyecto=nombre)
-            rol= scrumRol(proyecto.pk)
-            setScrum(request, proyecto, user, rol)
-            return redirect("listarProyectos")
+            nombre_proyecto = data['nombre_proyecto']
+            proyecto = Proyecto.objects.filter(nombre_proyecto =nombre_proyecto)
+            if not proyecto.exists():
+                data = form.cleaned_data
+                nombre = data['nombre_proyecto']
+                user = data['scrum_master']
+                form.save()
+                proyecto = Proyecto.objects.get(nombre_proyecto=nombre)
+                rol = scrumRol(proyecto.pk)
+                setScrum(request, proyecto, user, rol)
+                return redirect("listarProyectos")
+
+                context = {'proyectos': proyecto, 'miembros': miembro}
+                return render(request, "listarProyectos", context)
+            else:
+                error = True
+                context = {'error': error, 'form': form}
+                return render(request, "proyecto/crearProyecto.html", context)
+
     else:
         form = ProyectoCrearForms()
     context = {'form': form}
@@ -89,26 +105,18 @@ def proyecto(request, proyecto_id):
 
 
 def getMiembros(request, proyecto_id):
-    # print(proyecto_id)
     proyect = Proyecto.objects.get(pk=proyecto_id)
     miembros_proyecto = Miembro.objects.filter(proyectos__pk=proyecto_id)
-    # for i in miembros_proyecto:
-    #     print(i.proyectos.pk)
     print(miembros_proyecto)
-    # url = request.META['HTTP_REFERER']
-    # for i in url:
-
-    # print("url anterior ->",type(request.META['HTTP_REFERER']))
-    # print("id del proyecto -> ",proyecto_id)
-    # miembros_proyecto = Miembro.objects.get(proyectos = proyecto_id)
-    # print(proyecto.nombre_proyecto,proyecto.pk)
-    context = {'miembros_proyecto': miembros_proyecto, 'proyecto_id': proyecto_id}
+    context = {'miembros_proyecto': miembros_proyecto, 'proyecto_id': proyecto_id, 'proyecto':proyect}
 
     return render(request, "proyecto/miembros.html", context)
 
 
 def setMiembros(request, proyecto_id):
-    context = {}
+    context = {'proyecto_id': proyecto_id}
+    context['proyecto_id'] = proyecto_id
+    proyecto = Proyecto.objects.get(pk=proyecto_id)
     if request.method == "POST":
         form = setMiembroForms(request.POST)
         form.fields["rol"].queryset = Proyecto.objects.get(pk=proyecto_id).roles
@@ -126,7 +134,7 @@ def setMiembros(request, proyecto_id):
     else:
         form = setMiembroForms()
         form.fields["rol"].queryset=Proyecto.objects.get(pk=proyecto_id).roles
-    context = {'form': form}
+    context = {'form': form , 'proyecto_id':proyecto.pk, 'proyecto':proyecto}
     return render(request, "proyecto/setMiembro.html", context)
 
 
@@ -159,8 +167,9 @@ def crearGrupo(request, proyecto_id):
     else:
         form = CrearGrupo()
     # grupos=Group.objects.all()
+    proyecto = Proyecto.objects.get(pk = proyecto_id)
     permisos = Permission.objects.all()
-    context = {'Permisos': permisos, 'form': form, 'proyecto_id': proyecto_id}
+    context = {'Permisos': permisos, 'form': form, 'proyecto_id': proyecto_id , 'proyecto': proyecto}
     return render(request, "rol/crear.html", context)
 
 
@@ -170,13 +179,13 @@ def asignarPermisos(request, miembro_id):
 
 
 def listarRol(request, proyecto_id):
-    roles = Proyecto.objects.get(pk=proyecto_id).roles.all()
-    context = {'rol': roles, 'proyecto_id':proyecto_id}
+    proyecto = Proyecto.objects.get(pk=proyecto_id)
+    roles = proyecto.roles.all()
+    context = {'rol': roles, 'proyecto_id':proyecto_id, 'proyecto':proyecto}
     return render(request, "rol/listarRol.html", context)
 
 
 def editarRol(request, rol_id, proyecto_id):
-    print('ProyectoIDpa',proyecto_id)
     # se deben reasignar los usuarios que tengan el rol, al nuevo grupo donde estaran los nuevos permisos
     if request.method == "POST":
         form = EditarGrupo(request.POST or None)
@@ -186,7 +195,7 @@ def editarRol(request, rol_id, proyecto_id):
             nombre = data['nombre']
             permisos_elegidos = data['permisos_proyecto']
 
-            # No es posible editar un rol que esta asignado a algun miembro
+
             rol_actual = Rol.objects.get(pk=rol_id)
 
 
@@ -198,7 +207,7 @@ def editarRol(request, rol_id, proyecto_id):
 
             # Se estrae el grupo del rol y se elimina
             grupo_anterior = rol_actual.group
-
+            grupo_anterior.delete()
 
             # se crea nuevo grupo
             rol_actual.group = Group.objects.create(name=nombre)
@@ -214,7 +223,6 @@ def editarRol(request, rol_id, proyecto_id):
                      miembro.miembro.groups.add(rol_actual.group)
 
 
-            grupo_anterior.delete()
             rol_actual.group.save()
             rol_actual.save()
             proyecto_actual.roles.add(rol_actual)

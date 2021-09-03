@@ -12,7 +12,7 @@
         </div>
         {#    </div>#}
         <ul class="sidebar-navigation">
-            <li class="header">Navigation</li>
+            <li class="header">{{ proyecto.nombre_proyecto }}   <i class="fa fa-briefcase" aria-hidden="true"> </i>
             <li>
                 <a href="/home">
                     <i class="fa fa-home" aria-hidden="true"></i> Home
@@ -36,10 +36,15 @@
             </li>
 
             <li>
-                <a href='{% url 'listaUsuarios' %}'>
-                    <i class="fa fa-users" aria-hidden="true"></i> Configurar
-                </a>
+            <a href="{% url 'listaRol' proyecto_id=proyecto_id %}">
+                <i class="fa fa-user" aria-hidden="true"></i>Listar Roles
+            </a>
             </li>
+{#            <li>#}
+{#                <a href='{% url 'listaUsuarios' %}'>#}
+{#                    <i class="fa fa-users" aria-hidden="true"></i> Configurar#}
+{#                </a>#}
+{#            </li>#}
         </ul>
     </div>
 
@@ -53,7 +58,7 @@
                     <div class="col-2 .col-md-2">
                         <button type="button" class="btn btn-secondary"
                                 onclick="location.href='{% url 'setMiembros_proyectos' proyecto_id  %}'"
-                        >Añador Miembro <i class="fa fa-folder-open-o" aria-hidden="true"></i>
+                        >Añadir Miembro <i class="fa fa-folder-open-o" aria-hidden="true"></i>
                         </button>
 
                     </div>
@@ -82,8 +87,7 @@
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-secondary"
-{#                                            onclick="({{ miembro.id }})">Editar#}
-                                            onclick="location.href='{% url "editarmiembro-proyecto" proyecto_id miembro.id  %}'">Editar
+                                            onclick="({{ miembro.id }})">Editar
                                     </button>
                                     <button type="button" class="btn btn-danger"
 {#                                            onclick="eliminarmiembro({{ miembro.id }})">Borrar#}
