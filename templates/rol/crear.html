@@ -11,7 +11,7 @@
         </div>
         {#    </div>#}
         <ul class="sidebar-navigation">
-            <li class="header">Navigation</li>
+            <li class="header">{{ proyecto.nombre_proyecto }} <i class="fa fa-briefcase" aria-hidden="true"> </i>
             <li>
                 <a href="/home">
                     <i class="fa fa-home" aria-hidden="true"></i> Home
@@ -24,19 +24,19 @@
             </li>
             <li class="header">Another Menu</li>
             <li>
-               <a a href='{% url 'roles_proyecto' 1 %}'>
+                <a a href='{% url 'roles_proyecto' proyecto_id %}'>
                     <i class="fa fa-users" aria-hidden="true"></i> Roles
                 </a>
             </li>
             <li>
                 <a href='{% url 'miembros_proyecto' proyecto_id=proyecto_id %}'>
-                    <i class="fa fa-cog" aria-hidden="true"></i> Miembros {{ proyecto.id }}
+                    <i class="fa fa-cog" aria-hidden="true"></i> Miembros
                 </a>
             </li>
 
             <li>
-                <a href='{% url 'listaUsuarios' %}'>
-                    <i class="fa fa-users" aria-hidden="true"></i> Configurar
+                <a href="{% url 'listaRol' proyecto_id=proyecto_id%}">
+                    <i class="fa fa-user" aria-hidden="true"></i>Listar Roles
                 </a>
             </li>
         </ul>
@@ -46,8 +46,8 @@
         <div class="container-fluid">
             <div class="jumbotron" style="margin-top: 45px">
                 <form method="POST"> {% csrf_token %}
-
-                    <p1> {{ proyecto_id }}</p1>
+                <h1><i class="fa fa-file-text" aria-hidden="true"></i> Crear Rol</h1>
+                <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
                     {{ form.as_p }}
                     <input type="submit" value="Crear">
                 </form>

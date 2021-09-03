@@ -1,7 +1,6 @@
 from django.urls import path
 
-from proyecto.views import proyecto, getMiembros, setMiembros, crearGrupo, eliminarmiembro, editarRol, eliminarRol, \
-    editar_rolmiembro
+from proyecto.views import editar_rolmiembro
 from proyecto.views import proyecto, getMiembros, setMiembros, crearGrupo, eliminarmiembro, editarRol, eliminarRol
 from proyecto.views import proyecto, getMiembros, setMiembros, crearGrupo, eliminarmiembro,eliminarProyecto
 from .views import proyecto, getMiembros, setMiembros, crearGrupo, listarRol

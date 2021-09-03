@@ -32,15 +32,15 @@
 
     <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-            </li>
+{#            <li class="nav-item active">#}
+{#                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>#}
+{#            </li>#}
+{#            <li class="nav-item">#}
+{#                <a class="nav-link" href="#">Link</a>#}
+{#            </li>#}
+{#            <li class="nav-item">#}
+{#                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>#}
+{#            </li>#}
         </ul>
         <form class="form-inline my-2 my-lg-0">
             <button type="button" class="btn btn-danger" onclick="location.href= '{% url 'logout' %}'"><i
@@ -64,7 +64,7 @@
             {{ request.user.username }}
         </div>
 
-        <li class="header" style="margin-top: 10px">Navigation</li>
+        <li class="header" style="margin-top: 10px">Navegacion</li>
         <li>
             <a href="/home">
                 <i class="fa fa-home" aria-hidden="true"></i> Home
@@ -75,28 +75,28 @@
                 <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
             </a>
         </li>
-        <li class="header">Another Menu</li>
+        <li class="header">Opciones</li>
         <li>
             <a a href='{% url 'listarProyectos' %}'>
                 <i class="fa fa-users" aria-hidden="true"></i> Proyectos
             </a>
         </li>
-        <li>
-            <a href="#">
-                <i class="fa fa-cog" aria-hidden="true"></i> Configuraciones
-            </a>
-        </li>
+{#        <li>#}
+{#            <a href="#">#}
+{#                <i class="fa fa-cog" aria-hidden="true"></i> Configuraciones#}
+{#            </a>#}
+{#        </li>#}
         {% if request.user.rolSistema == "Administrador" %}
             <li>
             <a href='{% url 'listaUsuarios' %}'>
                 <i class="fa fa-users" aria-hidden="true"></i> Usuarios
             </a>
         {% endif %}
-        <li>
-            <a href="#">
-                <i class="fa fa-user" aria-hidden="true"></i>Perfil
-            </a>
-        </li>
+{#        <li>#}
+{#            <a href="#">#}
+{#                <i class="fa fa-user" aria-hidden="true"></i>Perfil#}
+{#            </a>#}
+{#        </li>#}
     </ul>
 </div>
 
