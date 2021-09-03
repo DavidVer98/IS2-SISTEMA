@@ -9,7 +9,7 @@ urlpatterns = [
 
     path('<int:proyecto_id>/', proyecto, name="proyecto"),
     path('<int:proyecto_id>/miembros', getMiembros, name="miembros_proyecto"),
-    path('<int:proyecto_id>/miembros/añadir', setMiembros, name="setMiembros_proyectos"),
+    path('<int:proyecto_id>/miembros/anadir', setMiembros, name="setMiembros_proyectos"),
     path('<int:proyecto_id>/roles/', crearGrupo, name="roles_proyecto"),
     path('<int:proyecto_id>/roles/listar', listarRol, name="listaRol"),
 

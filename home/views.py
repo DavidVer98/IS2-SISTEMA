@@ -8,10 +8,18 @@ from user.models import User
 
 @login_required(login_url='/login')
 def home(request):
+    """
+    Vista utilizada para para retornar a los usuarios activados, el menu inicial del sistema.
+    03/09/21
+     """
     return render(request, 'home/index.html')
 
 @login_required(login_url='/login')
 def listarUsuarios(request):
+    """
+    Vista utilizada para retornar la lista de los usuarios existentes en el sistema
+    03/09/21
+    """
     user = User.objects.all()
     context = {'user': user}
     print(request.user.has_perm('user.view_user'))
@@ -32,13 +40,21 @@ def listarUsuarios(request):
 
 @login_required(login_url='/login')
 def eliminar(request, user_id):
-    user= User.objects.get(id=user_id)
+    """
+    Vista que permite la eliminacion de los usuarios existentes en la base de datos
+    03/09/21
+    """
+    user = User.objects.get(id=user_id)
     user.delete()
     return redirect("home")
 
 
 @login_required(login_url='/login')
 def editar(request, user_id):
+    """
+    Vista utilizada para retornar, validar y guardar un formulario de edicion de usuario a nivel de sistema
+    03/09/21
+     """
     user= User.objects.get(id=user_id)
     if request.method == "POST":
         form = UserFormRol(request.POST, instance=user)
