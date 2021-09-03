@@ -97,17 +97,21 @@ def crearProyecto(request):
 
 def proyecto(request, proyecto_id):
     proyecto = Proyecto.objects.get(pk=proyecto_id)
-    miembro= Miembro.objects.get(proyectos=proyecto_id, miembro=request.user)
-    scrum = 'Scrum' + str(proyecto_id)
-    es_scrum=False
-    if miembro.rol.nombre == scrum:
-        es_scrum=True
+    try:
+        miembro= Miembro.objects.get(proyectos=proyecto_id, miembro=request.user)
+        scrum = 'Scrum' + str(proyecto_id)
+        es_scrum=False
+        if miembro.rol.nombre == scrum:
+            es_scrum=True
 
-    # print(proyecto.nombre_proyecto,proyecto.pk)
-    context = {'proyecto_id': proyecto_id,
-               'proyecto': proyecto,'es_scrum':es_scrum}
+        # print(proyecto.nombre_proyecto,proyecto.pk)
+        context = {'proyecto_id': proyecto_id,
+                   'proyecto': proyecto,'es_scrum':es_scrum}
 
-    return render(request, "proyecto/proyecto.html", context)
+        return render(request, "proyecto/proyecto.html", context)
+
+    except Exception as e:
+        return redirect("listarProyectos")
 
 
 def getMiembros(request, proyecto_id):
