@@ -275,3 +275,11 @@ def editar_rolmiembro(request, proyecto_id, miembro_id):
     return render(request, "proyecto/miembroEditar.html", context)
 
 
+
+
+def eliminarProyecto(request,proyecto_id):
+    print(proyecto_id)
+    proyecto=Proyecto.objects.get(id=proyecto_id)
+    proyecto.delete()
+
+    return redirect("/home/proyectos/")
