@@ -19,6 +19,12 @@ from proyecto.models import Proyecto, Miembro
 
 @login_required(login_url='/login')
 def listarProyectos(request):
+    """
+       **Listar Proyecto:**
+        03/09/2021
+        Vista utilizada para crear listar los proyectos
+        creados en el sistema.
+    """
     proyecto = Proyecto.objects.all()
     miembro = Miembro.objects.all()
     context = {'proyectos': proyecto, 'miembros': miembro}
@@ -27,6 +33,14 @@ def listarProyectos(request):
 
 @login_required(login_url='/login')
 def editarProyecto(request, proyecto_id):
+    """
+       **Editar Proyecto:**
+        03/09/2021
+        Vista utilizada para edtiar el proyecto .
+        Solicita el id del proyecto a editar
+        Requiere que el usuario este logeado
+
+    """
     proyecto = Proyecto.objects.get(pk=proyecto_id)
     if request.method == "POST":
         form = ProyectoForm(request.POST, instance=proyecto)
@@ -40,6 +54,13 @@ def editarProyecto(request, proyecto_id):
     return render(request, "proyecto/editar.html", context)
 
 def setScrum(request, proyecto, user, rol):
+    """
+       **Añadir Srum Master:**
+        03/09/2021
+        Funcion utilizada para añadir el scrum Master al proyecto .
+        Solicita el proyecto, user y el rol para añadir al proyecto
+
+    """
     if (request.method == 'POST'):
         formMiembro = setMiembroForms(request.POST)
         formMiembro.instance.proyectos = proyecto
@@ -47,11 +68,17 @@ def setScrum(request, proyecto, user, rol):
         formMiembro.instance.rol = rol
         formMiembro.instance.save()
         user.groups.add(rol.group)
-        print("sellegohastaca")
     else:
         formMiembro = setMiembroForms()
 
 def scrumRol(proyecto_id):
+    """
+       **Añadir el rol al Scrum Master:**
+        03/09/2021
+        Funcion utilizada para añadir el rol al Scrum Master .
+        Solicita el id del proyecto, para luego crear el rol mediante
+        el concatenacion del id del proyecto y luego añadirle al mismo
+    """
     grupo = Group.objects.create(name='Scrum' + str(proyecto_id))
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     rol = Rol.objects.create_rol('Scrum' + str(proyecto_id), grupo)
@@ -63,6 +90,13 @@ def scrumRol(proyecto_id):
 
 @login_required(login_url='/login')
 def crearProyecto(request):
+    """
+       **Crear Proyecto:**
+        03/09/2021
+        Vista utilizada para crear el proyecto .
+        Requiere que el usuario este logeado
+
+    """
     proyecto = Proyecto.objects.all()
     miembro = Miembro.objects.all()
     # context = {}
@@ -96,6 +130,13 @@ def crearProyecto(request):
 
 
 def proyecto(request, proyecto_id):
+    """
+       **Vista Proyecto:**
+        03/09/2021
+        Vista utilizada recibir a los usuarios en un proyecto.
+        Solicita el id del proyecto
+    """
+
     proyecto = Proyecto.objects.get(pk=proyecto_id)
     try:
         miembro= Miembro.objects.get(proyectos=proyecto_id, miembro=request.user)
@@ -115,6 +156,13 @@ def proyecto(request, proyecto_id):
 
 
 def getMiembros(request, proyecto_id):
+    """
+       **Listar Miembros :**
+        03/09/2021
+        Vista utilizada para listar los miembros del proyecto .
+        Solicita el id del proyecto
+
+    """
     proyect = Proyecto.objects.get(pk=proyecto_id)
     miembros_proyecto = Miembro.objects.filter(proyectos__pk=proyecto_id)
     print(miembros_proyecto)
@@ -124,6 +172,12 @@ def getMiembros(request, proyecto_id):
 
 
 def setMiembros(request, proyecto_id):
+    """
+       **Añadir miembros:**
+        03/09/2021
+        Vista utilizada para añadir miembros al proyecto .
+        Solicita el id del proyecto
+    """
     context = {'proyecto_id': proyecto_id}
     context['proyecto_id'] = proyecto_id
     proyecto = Proyecto.objects.get(pk=proyecto_id)
@@ -151,6 +205,12 @@ def setMiembros(request, proyecto_id):
 
 
 def crearGrupo(request, proyecto_id):
+    """
+       **Crear Grupo:**
+        03/09/2021
+        Vista utilizada para crear el grupo.
+        Solicita el id del proyecto
+    """
     if request.method == "POST":
         form = CrearGrupo(request.POST or None)
         if form.is_valid():
@@ -186,12 +246,24 @@ def crearGrupo(request, proyecto_id):
 
 
 def asignarPermisos(request, miembro_id):
+    """
+       **Asinga Permiso:**
+        03/09/2021
+        Funcion utilizada para adingar permisos a los miembros del proyecto.
+        Solicita el id del miembro
+    """
     miembro = Miembro.objects.get(pk=miembro_id)
-    print("Miembro -->", miembro)
+    # print("Miembro -->", miembro)
 
 
 def listarRol(request, proyecto_id):
+    """
+       **Listar Roles:**
+        03/09/2021
+        Vista utilizada para listar los roles del sistema .
+        Solicita el id del proyecto
 
+    """
     proyecto = Proyecto.objects.get(pk=proyecto_id)
     roles = proyecto.roles.all()
     context = {'rol': roles, 'proyecto_id':proyecto_id, 'proyecto':proyecto}
@@ -200,6 +272,12 @@ def listarRol(request, proyecto_id):
 
 
 def editarRol(request, rol_id, proyecto_id):
+    """
+       **Editar Rol:**
+        03/09/2021
+        Vista utilizada para edtiar el rol de los miembros de los proyectos .
+        Solicita el id del proyecto
+    """
     # se deben reasignar los usuarios que tengan el rol, al nuevo grupo donde estaran los nuevos permisos
     if request.method == "POST":
         form = EditarGrupo(request.POST or None)
@@ -258,6 +336,12 @@ def editarRol(request, rol_id, proyecto_id):
 
 
 def eliminarRol(request, rol_id, proyecto_id):
+    """
+       **Eliminar Rol:**
+        03/09/2021
+        Vista utilizada para eliminar los roles de un proyecto.
+        Solicita el id del proyecto y la id del rol
+    """
     rol= Rol.objects.get(id=rol_id)
     error=False
     if not(Miembro.objects.filter(rol=rol).exists()): # validar eliminacion de rol
@@ -271,6 +355,12 @@ def eliminarRol(request, rol_id, proyecto_id):
 
 
 def eliminarmiembro(request, proyecto_id, miembro_id):
+    """
+       **Eliminar Miembro:**
+        03/09/2021
+        Vista utilizada para elimianr miembros del proyecto .
+        Solicita el id del proyecto y el id de los miembro
+    """
     miembro = Miembro.objects.get(pk=miembro_id)
     usuario = miembro.miembro
     usuario.groups.remove(miembro.rol.group)
@@ -278,7 +368,11 @@ def eliminarmiembro(request, proyecto_id, miembro_id):
     return getMiembros(request, proyecto_id)
 
 def editar_rolmiembro(request, proyecto_id, miembro_id):
-
+    """
+       **Editar Roles de los mimebros de un proyecto:**
+        03/09/2021
+        Vista utilizada para edtiar los roles de los miembros de un proyecto.
+    """
     miembro = Miembro.objects.get(pk=miembro_id)
 
     if request.method == "POST":
@@ -305,6 +399,12 @@ def editar_rolmiembro(request, proyecto_id, miembro_id):
 
 
 def eliminarProyecto(request,proyecto_id):
+    """
+       **Eliminar Proyecto:**
+        03/09/2021
+        Vista utilizada para elimiar un proyecto.
+        Solicita el id del proyecto
+    """
     print(proyecto_id)
     proyecto=Proyecto.objects.get(id=proyecto_id)
     proyecto.delete()
@@ -312,6 +412,12 @@ def eliminarProyecto(request,proyecto_id):
     return redirect("/home/proyectos/")
 
 def iniciarProyecto(request, proyecto_id):
+    """
+       **Iniciar Proyecto:**
+        03/09/2021
+        Vista utilizada para iniciar el proyecto .
+        Solicita el id del proyecto
+    """
     proyecto=Proyecto.objects.get(pk=proyecto_id)
     miembros=Miembro.objects.filter(proyectos=proyecto)
     proyecto.estado="ACTIVO"
