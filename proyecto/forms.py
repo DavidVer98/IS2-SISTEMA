@@ -30,7 +30,7 @@ class ProyectoForm(ModelForm):
 class ProyectoCrearForms(ModelForm):
     class Meta:
         model = Proyecto
-        fields =  ['nombre_proyecto','scrum_master','estado', 'fecha_inicio']
+        fields =  ['nombre_proyecto','scrum_master', 'fecha_inicio']
 
 class setMiembroForms(ModelForm):
     # pk = forms.IntegerField()
