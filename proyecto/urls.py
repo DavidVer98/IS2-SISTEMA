@@ -3,13 +3,13 @@ from django.urls import path
 from proyecto.views import editar_rolmiembro, iniciarProyecto
 from proyecto.views import proyecto, getMiembros, setMiembros, crearGrupo, eliminarmiembro, editarRol, eliminarRol
 from proyecto.views import proyecto, getMiembros, setMiembros, crearGrupo, eliminarmiembro,eliminarProyecto
-from .views import proyecto, getMiembros, setMiembros, crearGrupo, listarRol
+from proyecto.views import proyecto, getMiembros, setMiembros, crearGrupo, listarRol
 
 urlpatterns = [
 
     path('<int:proyecto_id>/', proyecto, name="proyecto"),
     path('<int:proyecto_id>/miembros', getMiembros, name="miembros_proyecto"),
-    path('<int:proyecto_id>/miembros/añadir', setMiembros, name="setMiembros_proyectos"),
+    path('<int:proyecto_id>/miembros/anadir', setMiembros, name="setMiembros_proyectos"),
     path('<int:proyecto_id>/roles/', crearGrupo, name="roles_proyecto"),
     path('<int:proyecto_id>/roles/listar', listarRol, name="listaRol"),
 
