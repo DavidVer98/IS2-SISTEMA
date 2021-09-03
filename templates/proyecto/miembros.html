@@ -87,7 +87,7 @@
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-secondary"
-                                            onclick="({{ miembro.id }})">Editar
+                                            onclick="location.href='{% url 'editarmiembro-proyecto' proyecto_id miembro.id  %}'">Editar
                                     </button>
                                     <button type="button" class="btn btn-danger"
 {#                                            onclick="eliminarmiembro({{ miembro.id }})">Borrar#}

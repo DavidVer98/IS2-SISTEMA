@@ -10,6 +10,7 @@
         <div class="container-fluid" style="margin: auto">
             <img src="/static/img/default-profile.png" class="rounded-circle" height="50" style="width: 50px;"/>
             {{ request.user.username }}
+
         </div>
         {#    </div>#}
         <ul class="sidebar-navigation">
@@ -56,10 +57,23 @@
     <div class="content-container">
         <div class="container-fluid">
             <div class="jumbotron" style="margin-top: 45px">
-
-                <h1><i class="fa fa-bullhorn" aria-hidden="true"></i> Bienvenido al proyecto!</h1>
+                <div class="row">
+                    <div class="col-10 .col-md-10">
+                          <h1><i class="fa fa-bullhorn" aria-hidden="true"></i> Bienvenido al proyecto!</h1>
                 {#                <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>#}
-                <h2>Nombre del proyecto - {{ proyecto.nombre_proyecto }}</h2>
+
+                    </div>
+                    <div class="col-2 .col-md-2">
+                         {% if es_scrum  %}
+                            <button type="button" class="btn btn-secondary"  onclick="location.href='{% url 'iniciarProyecto' proyecto_id=proyecto_id %}'"
+                            >Iniciar Proyecto  <i class="fa fa-folder-open-o" aria-hidden="true"></i>
+                            </button>
+                         {% endif  %}
+                    </div>
+                    <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;" />
+                    <h2>Nombre del proyecto - {{ proyecto.nombre_proyecto }}</h2>
+                </div>
+
 
             </div>
 

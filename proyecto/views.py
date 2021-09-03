@@ -97,9 +97,15 @@ def crearProyecto(request):
 
 def proyecto(request, proyecto_id):
     proyecto = Proyecto.objects.get(pk=proyecto_id)
+    miembro= Miembro.objects.get(proyectos=proyecto_id, miembro=request.user)
+    scrum = 'Scrum' + str(proyecto_id)
+    es_scrum=False
+    if miembro.rol.nombre == scrum:
+        es_scrum=True
+
     # print(proyecto.nombre_proyecto,proyecto.pk)
     context = {'proyecto_id': proyecto_id,
-               'proyecto': proyecto}
+               'proyecto': proyecto,'es_scrum':es_scrum}
 
     return render(request, "proyecto/proyecto.html", context)
 
@@ -122,18 +128,20 @@ def setMiembros(request, proyecto_id):
         form.fields["rol"].queryset = Proyecto.objects.get(pk=proyecto_id).roles
         if form.is_valid():
             data = form.cleaned_data
-            proyecto = data['proyectos']
+            proyecto = Proyecto.objects.get(pk=proyecto_id)
             user = data['miembro']
             rol = data['rol']
-            print(type(rol))
-            print("Proyecto ->",proyecto, "Miembro",user, "Rol",rol)
-            usuario = User.objects.get(username=user)
-            usuario.groups.add(rol.group)
-            form.save()
-
+            miembro = Miembro.objects.filter(miembro=user, proyectos=proyecto)
+            # print(miembro.exists())
+            if not miembro.exists():
+                user.groups.add(rol.group)
+                form.instance.proyectos = proyecto
+                form.save()
+            return redirect(reverse('proyecto', kwargs={'proyecto_id': proyecto_id}))
     else:
         form = setMiembroForms()
-        form.fields["rol"].queryset=Proyecto.objects.get(pk=proyecto_id).roles
+        scrum= 'Scrum'+ str(proyecto_id)
+        form.fields["rol"].queryset=Proyecto.objects.get(pk=proyecto_id).roles.exclude(nombre=scrum)
     context = {'form': form , 'proyecto_id':proyecto.pk, 'proyecto':proyecto}
     return render(request, "proyecto/setMiembro.html", context)
 
@@ -163,7 +171,7 @@ def crearGrupo(request, proyecto_id):
                     assign_perm(perm, rol.group, proyecto_actual)
 
                 rol.save()
-
+            return redirect(reverse('listaRol', kwargs={'proyecto_id': proyecto_id}))
     else:
         form = CrearGrupo()
     # grupos=Group.objects.all()
@@ -179,10 +187,12 @@ def asignarPermisos(request, miembro_id):
 
 
 def listarRol(request, proyecto_id):
+
     proyecto = Proyecto.objects.get(pk=proyecto_id)
     roles = proyecto.roles.all()
     context = {'rol': roles, 'proyecto_id':proyecto_id, 'proyecto':proyecto}
     return render(request, "rol/listarRol.html", context)
+
 
 
 def editarRol(request, rol_id, proyecto_id):
@@ -245,13 +255,16 @@ def editarRol(request, rol_id, proyecto_id):
 
 def eliminarRol(request, rol_id, proyecto_id):
     rol= Rol.objects.get(id=rol_id)
+    error=False
     if not(Miembro.objects.filter(rol=rol).exists()): # validar eliminacion de rol
         grupo= rol.group
         grupo.delete()
         rol.delete()
-        return listarRol(request, proyecto_id)
     else:
-        return redirect(reverse("listaRol",kwargs={"proyecto_id":proyecto_id}))
+        error = True
+
+    return redirect(reverse("listaRol",kwargs={"proyecto_id":proyecto_id}))
+
 
 def eliminarmiembro(request, proyecto_id, miembro_id):
     miembro = Miembro.objects.get(pk=miembro_id)
@@ -275,6 +288,8 @@ def editar_rolmiembro(request, proyecto_id, miembro_id):
             usuario.groups.remove(rol_anterior)
             usuario.groups.add(rol.group)
             form.instance.save()
+            return redirect(reverse('miembros_proyecto', kwargs={'proyecto_id': proyecto_id}))
+
     else:
         form=editar_rolmiembro_form(instance=miembro)
         form.fields["rol"].queryset = Proyecto.objects.get(pk=proyecto_id).roles
@@ -283,3 +298,18 @@ def editar_rolmiembro(request, proyecto_id, miembro_id):
     return render(request, "proyecto/miembroEditar.html", context)
 
 
+
+
+def eliminarProyecto(request,proyecto_id):
+    print(proyecto_id)
+    proyecto=Proyecto.objects.get(id=proyecto_id)
+    proyecto.delete()
+
+    return redirect("/home/proyectos/")
+
+def iniciarProyecto(request, proyecto_id):
+    proyecto=Proyecto.objects.get(pk=proyecto_id)
+    miembros=Miembro.objects.filter(proyectos=proyecto)
+    proyecto.estado="ACTIVO"
+    context = {"proyecto_id": proyecto_id,"proyecto": proyecto, "miembros": miembros}
+    return render(request,"desarrollo/desarrollo.html", context)
