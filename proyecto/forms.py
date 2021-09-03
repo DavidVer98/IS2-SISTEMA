@@ -50,3 +50,7 @@ class EditarGrupo(forms.Form):
     permisos_proyecto = forms.MultipleChoiceField(choices=permissions, required=False)
     rol_id = forms.CharField(widget=forms.HiddenInput())
 
+class editar_rolmiembro_form(ModelForm):
+    class Meta:
+        model = Miembro
+        fields =  ['rol']

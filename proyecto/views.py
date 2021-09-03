@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from guardian.shortcuts import assign_perm
 
 from proyecto.models import Proyecto
@@ -10,7 +11,8 @@ from django.contrib.auth.models import Group, Permission
 
 from user.models import User
 from .models import Rol
-from proyecto.forms import ProyectoForm, ProyectoCrearForms, setMiembroForms, CrearGrupo, EditarGrupo
+from proyecto.forms import ProyectoForm, ProyectoCrearForms, setMiembroForms, CrearGrupo, EditarGrupo, \
+    editar_rolmiembro_form, permissions
 from proyecto.models import Proyecto, Miembro
 
 
@@ -36,6 +38,26 @@ def editarProyecto(request, proyecto_id):
     # print("editar ->",context)
     return render(request, "proyecto/editar.html", context)
 
+def setScrum(request, proyecto, user, rol):
+    if (request.method == 'POST'):
+        formMiembro = setMiembroForms(request.POST)
+        formMiembro.instance.proyectos = proyecto
+        formMiembro.instance.miembro = user
+        formMiembro.instance.rol = rol
+        formMiembro.instance.save()
+        user.groups.add(rol.group)
+    else:
+        formMiembro = setMiembroForms()
+
+def scrumRol(proyecto_id):
+    grupo = Group.objects.create(name='Scrum' + str(proyecto_id))
+    proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+    rol = Rol.objects.create_rol('Scrum' + str(proyecto_id), grupo)
+    rol.save()
+    for perm in permissions:
+        assign_perm(perm[0], rol.group, proyecto_actual)
+    proyecto_actual.roles.add(rol)
+    return (rol)
 
 @login_required(login_url='/login')
 def crearProyecto(request):
@@ -43,7 +65,13 @@ def crearProyecto(request):
     if request.method == "POST":
         form = ProyectoCrearForms(request.POST)
         if form.is_valid():
+            data = form.cleaned_data
+            nombre = data['nombre_proyecto']
+            user = data['scrum_master']
             form.save()
+            proyecto=Proyecto.objects.get(nombre_proyecto=nombre)
+            rol= scrumRol(proyecto.pk)
+            setScrum(request, proyecto, user, rol)
             return redirect("listarProyectos")
     else:
         form = ProyectoCrearForms()
@@ -83,6 +111,7 @@ def setMiembros(request, proyecto_id):
     context = {}
     if request.method == "POST":
         form = setMiembroForms(request.POST)
+        form.fields["rol"].queryset = Proyecto.objects.get(pk=proyecto_id).roles
         if form.is_valid():
             data = form.cleaned_data
             proyecto = data['proyectos']
@@ -207,14 +236,42 @@ def editarRol(request, rol_id, proyecto_id):
 
 
 def eliminarRol(request, rol_id, proyecto_id):
-    print(rol_id)
     rol= Rol.objects.get(id=rol_id)
-    print(rol)
-
-    return redirect("/proyecto/rol/listar")
-
+    if not(Miembro.objects.filter(rol=rol).exists()): # validar eliminacion de rol
+        grupo= rol.group
+        grupo.delete()
+        rol.delete()
+        return listarRol(request, proyecto_id)
+    else:
+        return redirect(reverse("listaRol",kwargs={"proyecto_id":proyecto_id}))
 
 def eliminarmiembro(request, proyecto_id, miembro_id):
     miembro = Miembro.objects.get(pk=miembro_id)
+    usuario = miembro.miembro
+    usuario.groups.remove(miembro.rol.group)
     miembro.delete()
     return getMiembros(request, proyecto_id)
+
+def editar_rolmiembro(request, proyecto_id, miembro_id):
+
+    miembro = Miembro.objects.get(pk=miembro_id)
+
+    if request.method == "POST":
+        form = editar_rolmiembro_form(request.POST or None, instance=miembro)
+        form.fields["rol"].queryset = Proyecto.objects.get(pk=proyecto_id).roles
+        if form.is_valid():
+            data = form.cleaned_data
+            rol = data['rol']
+            usuario=miembro.miembro
+            rol_anterior=miembro.rol.group
+            usuario.groups.remove(rol_anterior)
+            usuario.groups.add(rol.group)
+            form.instance.save()
+    else:
+        form=editar_rolmiembro_form(instance=miembro)
+        form.fields["rol"].queryset = Proyecto.objects.get(pk=proyecto_id).roles
+
+    context = {"proyecto_id": proyecto_id, "miembro_id": miembro_id, "form": form}
+    return render(request, "proyecto/miembroEditar.html", context)
+
+
