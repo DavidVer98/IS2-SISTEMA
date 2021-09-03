@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sgp.settings_pruebas')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sgp.settings')
 
 application = get_wsgi_application()

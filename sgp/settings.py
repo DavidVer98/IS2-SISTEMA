@@ -96,7 +96,7 @@ WSGI_APPLICATION = 'sgp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'sgp_db_pruebas',
+        'NAME': 'sgp_db',
         'USER': 'postgres',
         'PASSWORD': 'admin',
         'HOST': 'localhost',
@@ -142,13 +142,13 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
-<<<<<<< HEAD:sgp/settings_pruebas.py
-
-# STATIC_ROOT =  os.path.join(BASE_DIR, 'static')
-
-=======
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
->>>>>>> se actualizo settings modo desarrollo:sgp/settings.py
+# <<<<<<< HEAD:sgp/settings.py
+#
+# # STATIC_ROOT =  os.path.join(BASE_DIR, 'static')
+#
+# =======
+# # STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# >>>>>>> se actualizo settings modo desarrollo:sgp/settings.py
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
