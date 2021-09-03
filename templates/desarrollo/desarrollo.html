@@ -72,16 +72,18 @@
 {#                    </div>#}
                     <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;" />
                     <h2>Nombre del proyecto </h2>
-                    <div>{{ proyecto.nombre_proyecto }}</div>
+                    <li>{{ proyecto.nombre_proyecto }}</li>
 
                     <h3>Roles del Proyecto iniciado</h3>
                     {% for rol in proyecto.roles.all %}
-                        <div>{{rol  }}</div>
+                        <li>
+                                {{rol  }}
+                        </li>
                     {% endfor %}
 
                     <h3>Miembros del Proyecto iniciado</h3>
                     {% for miembro in miembros %}
-                        <div>{{ miembro }}</div>
+                        <li>{{ miembro }}</li>
                     {% endfor %}
                 </div>
 
