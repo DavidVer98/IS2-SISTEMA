@@ -1,3 +1,4 @@
+from bootstrap_datepicker_plus import DateTimePickerInput, DatePickerInput
 from django import forms
 from django.contrib.contenttypes.models import ContentType
 from django.forms import ModelForm
@@ -21,17 +22,25 @@ class ProyectoForm(ModelForm):
     class Meta:
         model = Proyecto #asosiciar un modelo a Proyecto
         fields = ['nombre_proyecto','scrum_master','estado', 'fecha_inicio']
+        widgets = {
+            'fecha_inicio': DatePickerInput(format='%Y-%m-%d'), # specify date-frmat
+            "locale": "es",
+        }
+
         # widgets = {
         #     'first_name': TextInput(
         #         attrs={
         #             'placeholder': 'Ingrese sus nombres',
         #         }
         # exclude = ['first_name', 'last_name', 'email', 'username', 'password','groups', 'user_permissions', 'last_login', 'date_joined', 'is_superuser', 'is_active', 'is_staff']
-class ProyectoCrearForms(ModelForm):
+class ProyectoCrearForms(forms.ModelForm):
     class Meta:
         model = Proyecto
         fields =  ['nombre_proyecto','scrum_master', 'fecha_inicio']
-
+        widgets = {
+            'fecha_inicio': DatePickerInput(format='%Y-%m-%d'), # specify date-frmat
+            "locale": "es",
+        }
 class setMiembroForms(ModelForm):
     # pk = forms.IntegerField()
     class Meta:

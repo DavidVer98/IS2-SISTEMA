@@ -1,5 +1,7 @@
 {% extends "baseHome.html" %}
-
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
 {% block head_content %}
     <title>Home</title>
 {% endblock %}
@@ -8,10 +10,19 @@
     <div class="content-container">
         <div class="container-fluid">
             <div class="jumbotron" style="margin-top: 45px">
+                <h1><i class="fa fa-file-text-o" aria-hidden="true"></i> Editar el rol del miembro - @{{ miembro_nombre }} </h1>
+                <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
                 <form method="POST">
                     {% csrf_token %}
-                    {{ form }}
-                    <button class="btn btn-primary" style="margin-left: 10px">Editar</button>
+                    {#                    {{ form }}#}
+                    {{ form.media }}
+                    {% bootstrap_form form %}
+                    <button class="btn btn-primary" style="margin-left: 10px">Aceptar <i class="fa fa-check"
+                                                                                         aria-hidden="true"></i>
+                    </button>
+                    <button class="btn btn-danger " style="margin-left: 10px"
+                            onclick="location.href='{% url 'miembros_proyecto' proyecto_id=proyecto_id %}'">Cancelar <i
+                            class="fa fa-times" aria-hidden="true"></i></button>
                 </form>
             </div>
 

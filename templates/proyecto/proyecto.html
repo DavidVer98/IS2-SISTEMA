@@ -17,7 +17,7 @@
             <li class="header">{{ proyecto.nombre_proyecto }} <i class="fa fa-briefcase" aria-hidden="true"></i></li>
             <li>
                 <a href="/home">
-                    <i class="fa fa-home" aria-hidden="true"></i> Home
+                    <i class="fa fa-home" aria-hidden="true"></i> Inicio
                 </a>
             </li>
             <li>
@@ -25,7 +25,7 @@
                     <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
                 </a>
             </li>
-            <li class="header">Another Menu</li>
+            <li class="header">Configuraciones</li>
             <li>
                 <a a href='{% url 'roles_proyecto' proyecto_id=proyecto_id %}'>
                     <i class="fa fa-users" aria-hidden="true"></i> Roles
@@ -56,7 +56,12 @@
 
     <div class="content-container">
         <div class="container-fluid">
-            <div class="jumbotron" style="margin-top: 45px">
+                    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'proyecto' proyecto_id %}">Proyecto</a></li>
+                </ol>
+            </nav>
+            <div class="jumbotron" style="margin-top: 0px">
                 <div class="row">
                     <div class="col-10 .col-md-10">
                           <h1><i class="fa fa-bullhorn" aria-hidden="true"></i> Bienvenido al proyecto!</h1>

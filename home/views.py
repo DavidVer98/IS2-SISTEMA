@@ -60,8 +60,8 @@ def editar(request, user_id):
         form = UserFormRol(request.POST, instance=user)
         if form.is_valid():
             form.save()
-            return redirect("home")
+            return redirect("listaUsuarios")
     else:
         form = UserFormRol(instance=user)
-    context = { "form" : form}
+    context = { "form" : form , 'rol_sistema':user}
     return render(request, "user/editar.html", context)

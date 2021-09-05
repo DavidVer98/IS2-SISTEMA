@@ -49,7 +49,8 @@ def editarProyecto(request, proyecto_id):
             return redirect("listarProyectos")
     else:
         form = ProyectoForm(instance=proyecto)
-    context = {"form": form}
+    proyecto = Proyecto.objects.get(id = proyecto_id)
+    context = {"form": form, 'proyecto':proyecto}
     # print("editar ->",context)
     return render(request, "proyecto/editar.html", context)
 
@@ -120,7 +121,7 @@ def crearProyecto(request):
                 return render(request, "listarProyectos", context)
             else:
                 error = True
-                context = {'error': error, 'form': form}
+                context = {'error': error, 'form': form, 'proyectos': proyecto, 'miembros': miembro}
                 return render(request, "proyecto/crearProyecto.html", context)
 
     else:
@@ -319,6 +320,7 @@ def editarRol(request, rol_id, proyecto_id):
             rol_actual.save()
             proyecto_actual.roles.add(rol_actual)
             proyecto_actual.save()
+            return redirect(reverse('listaRol', kwargs={'proyecto_id': proyecto_id}))
             # proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
             #
             # rol = Rol.objects.create_rol(nombre, grupo)
@@ -330,8 +332,10 @@ def editarRol(request, rol_id, proyecto_id):
 
     else:
         form = EditarGrupo()
+        proyecto = Proyecto.objects.get(id=proyecto_id)
+        rol_nombre = Rol.objects.get(id=rol_id)
+    context = {"rol_id": rol_id, "proyecto_id":proyecto_id ,"form": form, 'proyecto':proyecto, 'rol_nombre':rol_nombre}
 
-    context = {"rol_id": rol_id, "proyecto_id":proyecto_id ,"form": form}
     return render(request, "rol/editar.html", context)
 
 
@@ -391,8 +395,9 @@ def editar_rolmiembro(request, proyecto_id, miembro_id):
     else:
         form=editar_rolmiembro_form(instance=miembro)
         form.fields["rol"].queryset = Proyecto.objects.get(pk=proyecto_id).roles
+        miembro_nombre = Miembro.objects.get(id =miembro_id)
 
-    context = {"proyecto_id": proyecto_id, "miembro_id": miembro_id, "form": form}
+    context = {"proyecto_id": proyecto_id, "miembro_id": miembro_id, "form": form, 'miembro_nombre': miembro_nombre }
     return render(request, "proyecto/miembroEditar.html", context)
 
 

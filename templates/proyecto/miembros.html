@@ -15,7 +15,7 @@
             <li class="header">{{ proyecto.nombre_proyecto }}   <i class="fa fa-briefcase" aria-hidden="true"> </i>
             <li>
                 <a href="/home">
-                    <i class="fa fa-home" aria-hidden="true"></i> Home
+                    <i class="fa fa-home" aria-hidden="true"></i> Inicio
                 </a>
             </li>
             <li>
@@ -23,7 +23,7 @@
                     <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
                 </a>
             </li>
-            <li class="header">Another Menu</li>
+            <li class="header">Gestión</li>
             <li>
               <a  href='{% url 'roles_proyecto' proyecto_id=proyecto_id %}'>
                     <i class="fa fa-users" aria-hidden="true"></i> Roles
@@ -50,7 +50,13 @@
 
     <div class="content-container">
         <div class="container-fluid">
-            <div class="jumbotron" style="margin-top: 45px">
+                    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'proyecto' proyecto_id %}">Proyecto</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Miembros</li>
+                </ol>
+            </nav>
+            <div class="jumbotron" style="margin-top: 0px">
                 <div class="row">
                     <div class="col-10 .col-md-10">
                         <h1><i class="fa fa-thumb-tack" aria-hidden="true"></i>Miembros del proyecto </h1>
@@ -58,7 +64,7 @@
                     <div class="col-2 .col-md-2">
                         <button type="button" class="btn btn-secondary"
                                 onclick="location.href='{% url 'setMiembros_proyectos' proyecto_id  %}'"
-                        >Añadir Miembro <i class="fa fa-folder-open-o" aria-hidden="true"></i>
+                        >Añadir Miembro <i class="fa fa-user" aria-hidden="true"></i>
                         </button>
 
                     </div>
