@@ -50,6 +50,9 @@ INSTALLED_APPS = [
 
     # django-guardian
     'guardian',
+#Date picker y bootstra 4
+    "bootstrap4",
+    "bootstrap_datepicker_plus",
 ]
 
 MIDDLEWARE = [
