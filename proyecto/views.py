@@ -173,12 +173,11 @@ def crearGrupo(request, proyecto_id):
             data = form.cleaned_data
             nombre = data['nombre']
             permisos_elegidos = data['permisos_proyecto']
-
-            if Rol.objects.filter(nombre=nombre).exists():
+            proyecto_actual=Proyecto.objects.get(pk=proyecto_id)
+            if nombre in proyecto_actual.roles.all():
                 print('Un rol ya existe con ese nombre')
             else:
                 # No existe un grupo con el mismo
-                proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
                 Rol.crear(nombre, permisos_elegidos, proyecto_actual)
             return redirect(reverse('listaRol', kwargs={'proyecto_id': proyecto_id}))
     else:
@@ -222,28 +221,29 @@ def editarRol(request, rol_id, proyecto_id):
         Vista utilizada para edtiar el rol de los miembros de los proyectos .
         Solicita el id del proyecto
     """
-    # se deben reasignar los usuarios que tengan el rol, al nuevo grupo donde estaran los nuevos permisos
+    proyecto_actual = Proyecto.objects.get(id=proyecto_id)
     if request.method == "POST":
         form = EditarGrupo(request.POST or None)
 
         if form.is_valid():
             data = form.cleaned_data
-            nombre = data['nombre']
+            #nombre = data['nombre']
             permisos_elegidos = data['permisos_proyecto']
 
 
             rol_actual = Rol.objects.get(pk=rol_id)
-            rol_actual.editar(nombre, permisos_elegidos, proyecto_id)
+            rol_actual.editar(permisos_elegidos, proyecto_id)
 
             return redirect(reverse('listaRol', kwargs={'proyecto_id': proyecto_id}))
 
     else:
+        rol_actual= Rol.objects.get(pk=rol_id)
+        print(rol_actual.nombre)
         form = EditarGrupo()
-        proyecto = Proyecto.objects.get(id=proyecto_id)
-        rol_nombre = Rol.objects.get(id=rol_id)
-        context = {"rol_id": rol_id, "proyecto_id":proyecto_id ,"form": form, 'proyecto':proyecto, 'rol_nombre':rol_nombre}
 
-        return render(request, "rol/editar.html", context)
+    rol_nombre = Rol.objects.get(id=rol_id)
+    context = {"rol_id": rol_id, "proyecto_id":proyecto_id ,"form": form, 'proyecto':proyecto_actual, 'rol_nombre':rol_nombre}
+    return render(request, "rol/editar.html", context)
 
 
 def eliminarRol(request, rol_id, proyecto_id):

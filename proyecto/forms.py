@@ -55,7 +55,7 @@ class CrearGrupo(forms.Form):
 
 
 class EditarGrupo(forms.Form):
-    nombre = forms.CharField(max_length=50, required=True)
+    #nombre = forms.CharField(max_length=50, required=True)
     permisos_proyecto = forms.MultipleChoiceField(choices=permissions, required=False)
     rol_id = forms.CharField(widget=forms.HiddenInput())
 
