@@ -1,13 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, Permission
+from guardian.shortcuts import assign_perm
 
 from user.models import User
-
-
-class RolManager(models.Manager):
-    def create_rol(self, name, grupo):
-        rol = self.create(nombre=name, group=grupo)
-        return rol
 
 
 class Rol(models.Model):
@@ -19,10 +14,57 @@ class Rol(models.Model):
     """
     nombre = models.TextField(max_length=50)
     group = models.OneToOneField(Group, on_delete=models.CASCADE)
-    objects = RolManager()
 
     def __str__(self):
         return self.nombre
+
+    @classmethod
+    def crear(cls, name, permissions, proyecto_actual):
+        grupo = Group.objects.create(name=name)
+        rol = cls(nombre=name, group=grupo)
+        for perm in permissions:
+            print(perm)
+            assign_perm(perm, rol.group, proyecto_actual)
+        rol.save()
+        proyecto_actual.agregarRol(rol)
+        return rol
+
+    def editar(self, nombre, permisos_elegidos, proyecto_id):
+        # Se trae el modelo del rol
+        self.nombre = nombre
+
+        # se extraen los miembros del proyecto con el rol
+        miembros_con_el_rol = Miembro.objects.filter(rol=self)
+
+        # Se estrae el grupo del rol y se elimina
+        grupo_anterior = self.group
+        grupo_anterior.delete()
+
+        # se crea nuevo grupo
+        self.group = Group.objects.create(name=nombre)
+
+        # SE NECESITA EL PROYECTO_ID PARA ASIGNAR LOS NUEVOS PERMISOS
+        proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+
+        # se asignan los nuevos permisos al grupo
+        for perm in permisos_elegidos:
+            assign_perm(perm, self.group, proyecto_actual)
+        # se agregan a los miembros al nuevo grupo si es que alguno existe
+        if miembros_con_el_rol.exists():
+            for miembro in miembros_con_el_rol:
+                miembro.miembro.groups.add(self.group)
+
+        self.group.save()
+        self.save()
+        proyecto_actual.roles.add(self)
+        proyecto_actual.save()
+
+    @classmethod
+    def crearScrum(cls, proyecto_id):
+        permissions = Permission.objects.filter(content_type__app_label='proyecto', content_type__model='proyecto')
+        proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+        scrum = 'Scrum' + str(proyecto_id)
+        return cls.crear(scrum, permissions, proyecto_actual)
 
 
 class Proyecto(models.Model):
@@ -37,6 +79,21 @@ class Proyecto(models.Model):
     estado = models.CharField(max_length=100, default="PENDIENTE")
     fecha_inicio = models.DateField()
     roles = models.ManyToManyField(Rol)
+
+    def iniciar_proyecto(self):
+        self.estado = "ACTIVO"
+        self.save()
+
+    def setScrum(self, user, rol):
+        miembro = Miembro.objects.create(proyectos=self, miembro=user, rol=rol)
+        miembro.save()
+        user.groups.add(rol.group)
+        self.agregarRol(rol)
+        print("LOCURA")
+
+    def agregarRol(self, rol):
+        self.roles.add(rol)
+        return self.roles
 
     def __str__(self):
         return self.nombre_proyecto
