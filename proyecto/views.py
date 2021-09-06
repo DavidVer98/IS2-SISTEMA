@@ -2,6 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.views.generic import ListView
+from guardian.mixins import LoginRequiredMixin, PermissionListMixin
 from guardian.shortcuts import assign_perm
 import requests
 
@@ -17,18 +19,16 @@ from proyecto.forms import ProyectoForm, ProyectoCrearForms, setMiembroForms, Cr
 from proyecto.models import Proyecto, Miembro
 
 
-@login_required(login_url='/login')
-def listarProyectos(request):
+class listarProyectos(LoginRequiredMixin, PermissionListMixin, ListView):
     """
        **Listar Proyecto:**
         03/09/2021
         Vista utilizada para crear listar los proyectos
-        creados en el sistema.
+        creados en el sistema, el usuario debe tener el permiso de ver el proyecto.
     """
-    proyecto = Proyecto.objects.all()
-    miembro = Miembro.objects.all()
-    context = {'proyectos': proyecto, 'miembros': miembro}
-    return render(request, "home/listarProyectos.html", context)
+    model = Proyecto
+    permission_required = "VER_PROYECTO"
+    template_name = "home/listarProyectos.html"
 
 
 @login_required(login_url='/login')
