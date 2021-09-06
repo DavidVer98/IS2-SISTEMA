@@ -6,15 +6,15 @@ from django.contrib.auth.models import Group, Permission
 from proyecto.models import Proyecto, Miembro
 
 permissions = [
-    ("VISUALIZAR_PROYECTOS", "Puede visualizar los proyectos creados"),
-    ("CREAR_PROYECTOS", "Puede crear proyectos"),
-    ("CAMBIAR_ESTADO_PROYECTO", "Puede cambiar el estado de proyectos"),
-    ("ELIMINAR_PROYECTOS", "Puede elimiar proyectos"),
+    ("VER_PROYECTO", "Puede visualizar los proyectos creados"),
+    ("CREAR_PROYECTO", "Puede crear proyectos"),
+    ("EDITAR_PROYECTO", "Puede cambiar el estado de proyectos"),
+    ("ELIMINAR_PROYECTO", "Puede elimiar proyectos"),
     ("AGREGAR_MIEMBRO", "Puede agregar miembros a un proyecto"),
     ("ELIMINAR_MIEMBRO", "Puede eliminar miembros de un proyecto"),
-    ("VISUALIZAR_ROLES", "Puede ver la lista de roles del proyecto"),
-    ("CREAR_ROL", "Puede ver la lista de roles del proyecto"),
-    ("ASIGNAR_ROL", "Puede asignar rol a un miembro de proyecto"),
+    ("VER_ROL", "Puede ver lista de roles del proyecto"),
+    ("CREAR_ROL", "Puede crear roles del proyecto"),
+    ("ELIMINAR_ROL", "Puede eliminar roles del proyecto"),
 ]
 
 class ProyectoForm(ModelForm):
