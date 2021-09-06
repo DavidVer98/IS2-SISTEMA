@@ -4,7 +4,11 @@ sudo -u postgres psql -f db.sql
 
 sudo find -name [000]*_initial.py | grep -v venv | xargs rm -f
 
+python3.9 -m venv venv
+
 source venv/bin/activate
+
+pip install -r requirements.txt
 
 ./manage.py makemigrations
 
