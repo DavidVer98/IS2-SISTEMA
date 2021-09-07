@@ -49,8 +49,8 @@ def editarProyecto(request, proyecto_id):
             return redirect("listarProyectos")
     else:
         form = ProyectoForm(instance=proyecto)
-    proyecto = Proyecto.objects.get(id = proyecto_id)
-    context = {"form": form, 'proyecto':proyecto}
+    proyecto = Proyecto.objects.get(id=proyecto_id)
+    context = {"form": form, 'proyecto': proyecto}
     # print("editar ->",context)
     return render(request, "proyecto/editar.html", context)
 
@@ -69,7 +69,7 @@ def crearProyecto(request):
         if form.is_valid():
             data = form.cleaned_data
             nombre_proyecto = data['nombre_proyecto']
-            proyecto_actual = Proyecto.objects.filter(nombre_proyecto =nombre_proyecto)
+            proyecto_actual = Proyecto.objects.filter(nombre_proyecto=nombre_proyecto)
             if not proyecto_actual.exists():
                 user = data['scrum_master']
                 form.save()
@@ -97,13 +97,13 @@ def proyecto(request, proyecto_id):
     """
     proyecto = Proyecto.objects.get(pk=proyecto_id)
     try:
-        miembro= Miembro.objects.get(proyectos=proyecto_id, miembro=request.user)
+        miembro = Miembro.objects.get(proyectos=proyecto_id, miembro=request.user)
         scrum = 'Scrum' + str(proyecto_id)
-        es_scrum=False
+        es_scrum = False
         if miembro.rol.nombre == scrum:
-            es_scrum=True
+            es_scrum = True
         context = {'proyecto_id': proyecto_id,
-                   'proyecto': proyecto,'es_scrum':es_scrum}
+                   'proyecto': proyecto, 'es_scrum': es_scrum}
 
         return render(request, "proyecto/proyecto.html", context)
 
@@ -122,7 +122,7 @@ def getMiembros(request, proyecto_id):
     proyect = Proyecto.objects.get(pk=proyecto_id)
     miembros_proyecto = Miembro.objects.filter(proyectos__pk=proyecto_id)
     print(miembros_proyecto)
-    context = {'miembros_proyecto': miembros_proyecto, 'proyecto_id': proyecto_id, 'proyecto':proyect}
+    context = {'miembros_proyecto': miembros_proyecto, 'proyecto_id': proyecto_id, 'proyecto': proyect}
 
     return render(request, "proyecto/miembros.html", context)
 
@@ -154,9 +154,10 @@ def setMiembros(request, proyecto_id):
             return redirect(reverse('proyecto', kwargs={'proyecto_id': proyecto_id}))
     else:
         form = setMiembroForms()
-        scrum= 'Scrum'+ str(proyecto_id)
-        form.fields["rol"].queryset=Proyecto.objects.get(pk=proyecto_id).roles.exclude(nombre=scrum)
-    context = {'form': form , 'proyecto_id':proyecto.pk, 'proyecto':proyecto}
+        scrum = 'Scrum Master'
+        form.fields["miembro"].queryset = User.objects.all().exclude(miembro__proyectos=proyecto)
+        form.fields["rol"].queryset = Proyecto.objects.get(pk=proyecto_id).roles.exclude(nombre=scrum)
+    context = {'form': form, 'proyecto_id': proyecto.pk, 'proyecto': proyecto}
     return render(request, "proyecto/setMiembro.html", context)
 
 
@@ -173,7 +174,7 @@ def crearGrupo(request, proyecto_id):
             data = form.cleaned_data
             nombre = data['nombre']
             permisos_elegidos = data['permisos_proyecto']
-            proyecto_actual=Proyecto.objects.get(pk=proyecto_id)
+            proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
             if nombre in proyecto_actual.roles.all():
                 print('Un rol ya existe con ese nombre')
             else:
@@ -182,9 +183,9 @@ def crearGrupo(request, proyecto_id):
             return redirect(reverse('listaRol', kwargs={'proyecto_id': proyecto_id}))
     else:
         form = CrearGrupo()
-    proyecto = Proyecto.objects.get(pk = proyecto_id)
+    proyecto = Proyecto.objects.get(pk=proyecto_id)
 
-    context = {'form': form, 'proyecto_id': proyecto_id , 'proyecto': proyecto}
+    context = {'form': form, 'proyecto_id': proyecto_id, 'proyecto': proyecto}
     return render(request, "rol/crear.html", context)
 
 
@@ -209,9 +210,8 @@ def listarRol(request, proyecto_id):
     """
     proyecto = Proyecto.objects.get(pk=proyecto_id)
     roles = proyecto.roles.all()
-    context = {'rol': roles, 'proyecto_id':proyecto_id, 'proyecto':proyecto}
+    context = {'rol': roles, 'proyecto_id': proyecto_id, 'proyecto': proyecto}
     return render(request, "rol/listarRol.html", context)
-
 
 
 def editarRol(request, rol_id, proyecto_id):
@@ -227,9 +227,8 @@ def editarRol(request, rol_id, proyecto_id):
 
         if form.is_valid():
             data = form.cleaned_data
-            #nombre = data['nombre']
+            # nombre = data['nombre']
             permisos_elegidos = data['permisos_proyecto']
-
 
             rol_actual = Rol.objects.get(pk=rol_id)
             rol_actual.editar(permisos_elegidos, proyecto_id)
@@ -237,12 +236,13 @@ def editarRol(request, rol_id, proyecto_id):
             return redirect(reverse('listaRol', kwargs={'proyecto_id': proyecto_id}))
 
     else:
-        rol_actual= Rol.objects.get(pk=rol_id)
+        rol_actual = Rol.objects.get(pk=rol_id)
         print(rol_actual.nombre)
         form = EditarGrupo()
 
     rol_nombre = Rol.objects.get(id=rol_id)
-    context = {"rol_id": rol_id, "proyecto_id":proyecto_id ,"form": form, 'proyecto':proyecto_actual, 'rol_nombre':rol_nombre}
+    context = {"rol_id": rol_id, "proyecto_id": proyecto_id, "form": form, 'proyecto': proyecto_actual,
+               'rol_nombre': rol_nombre}
     return render(request, "rol/editar.html", context)
 
 
@@ -253,16 +253,15 @@ def eliminarRol(request, rol_id, proyecto_id):
         Vista utilizada para eliminar los roles de un proyecto.
         Solicita el id del proyecto y la id del rol
     """
-    rol= Rol.objects.get(id=rol_id)
-    error=False
-    if not(Miembro.objects.filter(rol=rol).exists()): # validar eliminacion de rol
-        grupo= rol.group
+    rol = Rol.objects.get(id=rol_id)
+    error = False
+    if not Miembro.objects.filter(rol=rol).exists():  # validar eliminacion de rol
+        grupo = rol.group
         grupo.delete()
         rol.delete()
     else:
         error = True
-
-    return redirect(reverse("listaRol",kwargs={"proyecto_id":proyecto_id}))
+    return redirect(reverse("listaRol", kwargs={"proyecto_id": proyecto_id}))
 
 
 def eliminarmiembro(request, proyecto_id, miembro_id):
@@ -278,6 +277,7 @@ def eliminarmiembro(request, proyecto_id, miembro_id):
     miembro.delete()
     return getMiembros(request, proyecto_id)
 
+
 def editar_rolmiembro(request, proyecto_id, miembro_id):
     """
        **Editar Roles de los mimebros de un proyecto:**
@@ -292,23 +292,23 @@ def editar_rolmiembro(request, proyecto_id, miembro_id):
         if form.is_valid():
             data = form.cleaned_data
             rol = data['rol']
-            usuario=miembro.miembro
-            rol_anterior=miembro.rol.group
+            usuario = miembro.miembro
+            rol_anterior = miembro.rol.group
             usuario.groups.remove(rol_anterior)
             usuario.groups.add(rol.group)
             form.instance.save()
             return redirect(reverse('miembros_proyecto', kwargs={'proyecto_id': proyecto_id}))
 
     else:
-        form=editar_rolmiembro_form(instance=miembro)
+        form = editar_rolmiembro_form(instance=miembro)
         form.fields["rol"].queryset = Proyecto.objects.get(pk=proyecto_id).roles
-        miembro_nombre = Miembro.objects.get(id =miembro_id)
+        miembro_nombre = Miembro.objects.get(id=miembro_id)
 
-    context = {"proyecto_id": proyecto_id, "miembro_id": miembro_id, "form": form, 'miembro_nombre': miembro_nombre }
+    context = {"proyecto_id": proyecto_id, "miembro_id": miembro_id, "form": form, 'miembro_nombre': miembro_nombre}
     return render(request, "proyecto/miembroEditar.html", context)
 
 
-def eliminarProyecto(request,proyecto_id):
+def eliminarProyecto(request, proyecto_id):
     """
        **Eliminar Proyecto:**
         03/09/2021
@@ -316,8 +316,8 @@ def eliminarProyecto(request,proyecto_id):
         Solicita el id del proyecto
     """
     print(proyecto_id)
-    proyecto=Proyecto.objects.get(id=proyecto_id)
-    if proyecto.estado=='PENDIENTE':
+    proyecto = Proyecto.objects.get(id=proyecto_id)
+    if proyecto.estado == 'PENDIENTE':
         proyecto.delete()
         Miembro.objects.filter(proyecto_id=proyecto_id).delete()
     return redirect("/home/proyectos/")
@@ -330,7 +330,7 @@ def iniciarProyecto(request, proyecto_id):
         Vista utilizada para iniciar el proyecto .
         Solicita el id del proyecto
     """
-    proyecto=Proyecto.objects.get(pk=proyecto_id)
+    proyecto = Proyecto.objects.get(pk=proyecto_id)
     proyecto.iniciar_proyecto()
-    context = {"proyecto_id": proyecto_id,"proyecto": proyecto}
-    return render(request,"desarrollo/desarrollo.html", context)
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto}
+    return render(request, "desarrollo/desarrollo.html", context)
