@@ -1,8 +1,9 @@
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import ListView
+from guardian.decorators import permission_required_or_403
 from guardian.mixins import LoginRequiredMixin, PermissionListMixin
 from guardian.shortcuts import assign_perm
 import requests
@@ -32,6 +33,7 @@ class listarProyectos(LoginRequiredMixin, PermissionListMixin, ListView):
 
 
 @login_required(login_url='/login')
+@permission_required('user.EDITAR_PROYECTO', login_url='/home')
 def editarProyecto(request, proyecto_id):
     """
        **Editar Proyecto:**
@@ -56,6 +58,7 @@ def editarProyecto(request, proyecto_id):
 
 
 @login_required(login_url='/login')
+@permission_required('user.CREAR_PROYECTO', login_url='/home')
 def crearProyecto(request):
     """
        **Crear Proyecto:**
@@ -88,6 +91,7 @@ def crearProyecto(request):
     return render(request, "proyecto/crearProyecto.html", context)
 
 
+@permission_required_or_403('VER_PROYECTO', (Proyecto, 'id', 'proyecto_id'))
 def proyecto(request, proyecto_id):
     """
        **Vista Proyecto:**
@@ -98,7 +102,7 @@ def proyecto(request, proyecto_id):
     proyecto = Proyecto.objects.get(pk=proyecto_id)
     try:
         miembro = Miembro.objects.get(proyectos=proyecto_id, miembro=request.user)
-        scrum = 'Scrum' + str(proyecto_id)
+        scrum = 'Scrum Master'
         es_scrum = False
         if miembro.rol.nombre == scrum:
             es_scrum = True
@@ -110,7 +114,7 @@ def proyecto(request, proyecto_id):
     except Exception as e:
         return redirect("listarProyectos")
 
-
+@permission_required_or_403('VER_MIEMBRO', (Proyecto, 'id', 'proyecto_id'))
 def getMiembros(request, proyecto_id):
     """
        **Listar Miembros :**
@@ -126,7 +130,7 @@ def getMiembros(request, proyecto_id):
 
     return render(request, "proyecto/miembros.html", context)
 
-
+@permission_required_or_403('AGREGAR_MIEMBRO', (Proyecto, 'id', 'proyecto_id'))
 def setMiembros(request, proyecto_id):
     """
        **Añadir miembros:**
@@ -161,6 +165,7 @@ def setMiembros(request, proyecto_id):
     return render(request, "proyecto/setMiembro.html", context)
 
 
+@permission_required_or_403('CREAR_ROL', (Proyecto, 'id', 'proyecto_id'))
 def crearGrupo(request, proyecto_id):
     """
        **Crear Grupo:**
@@ -182,6 +187,7 @@ def crearGrupo(request, proyecto_id):
                 Rol.crear(nombre, permisos_elegidos, proyecto_actual)
             return redirect(reverse('listaRol', kwargs={'proyecto_id': proyecto_id}))
     else:
+
         form = CrearGrupo()
     proyecto = Proyecto.objects.get(pk=proyecto_id)
 
@@ -200,6 +206,7 @@ def asignarPermisos(request, miembro_id):
     # print("Miembro -->", miembro)
 
 
+@permission_required_or_403('VER_ROL', (Proyecto, 'id', 'proyecto_id'))
 def listarRol(request, proyecto_id):
     """
        **Listar Roles:**
@@ -214,6 +221,7 @@ def listarRol(request, proyecto_id):
     return render(request, "rol/listarRol.html", context)
 
 
+@permission_required_or_403('EDITAR_ROL', (Proyecto, 'id', 'proyecto_id'))
 def editarRol(request, rol_id, proyecto_id):
     """
        **Editar Rol:**
@@ -246,6 +254,7 @@ def editarRol(request, rol_id, proyecto_id):
     return render(request, "rol/editar.html", context)
 
 
+@permission_required_or_403('ELIMINAR ROL', (Proyecto, 'id', 'proyecto_id'))
 def eliminarRol(request, rol_id, proyecto_id):
     """
        **Eliminar Rol:**
@@ -263,7 +272,7 @@ def eliminarRol(request, rol_id, proyecto_id):
         error = True
     return redirect(reverse("listaRol", kwargs={"proyecto_id": proyecto_id}))
 
-
+@permission_required_or_403('ELIMINAR_MIEMBRO', (Proyecto, 'id', 'proyecto_id'))
 def eliminarmiembro(request, proyecto_id, miembro_id):
     """
        **Eliminar Miembro:**
@@ -278,6 +287,7 @@ def eliminarmiembro(request, proyecto_id, miembro_id):
     return getMiembros(request, proyecto_id)
 
 
+@permission_required_or_403('EDITAR_MIEMBRO', (Proyecto, 'id', 'proyecto_id'))
 def editar_rolmiembro(request, proyecto_id, miembro_id):
     """
        **Editar Roles de los mimebros de un proyecto:**
@@ -307,7 +317,7 @@ def editar_rolmiembro(request, proyecto_id, miembro_id):
     context = {"proyecto_id": proyecto_id, "miembro_id": miembro_id, "form": form, 'miembro_nombre': miembro_nombre}
     return render(request, "proyecto/miembroEditar.html", context)
 
-
+@permission_required_or_403('ELIMINAR_PROYECTO', (Proyecto, 'id', 'proyecto_id'))
 def eliminarProyecto(request, proyecto_id):
     """
        **Eliminar Proyecto:**
@@ -319,10 +329,11 @@ def eliminarProyecto(request, proyecto_id):
     proyecto = Proyecto.objects.get(id=proyecto_id)
     if proyecto.estado == 'PENDIENTE':
         proyecto.delete()
-        Miembro.objects.filter(proyecto_id=proyecto_id).delete()
+
     return redirect("/home/proyectos/")
 
 
+@permission_required_or_403('INICIAR_PROYECTO', (Proyecto, 'id', 'proyecto_id'))
 def iniciarProyecto(request, proyecto_id):
     """
        **Iniciar Proyecto:**

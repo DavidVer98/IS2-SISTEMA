@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model;
 from allauth.socialaccount.models import SocialApp
 from django.contrib.sites.models import Site
 from user.models import User
+from django.contrib.auth.models import Group
 
 #se crea super usuario admin
 Admin = get_user_model();
@@ -11,6 +12,7 @@ Admin.objects.create_superuser('admin', 'admin@gmail.com', 'admin')
 usuario=User.objects.get(email='admin@gmail.com')
 usuario.rolSistema="Administrador"
 usuario.estaActivado=True
+usuario.groups.add(Group.objects.get(pk=1))
 usuario.save()
 
 #Configuracion del API y de los sitios

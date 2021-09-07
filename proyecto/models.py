@@ -100,15 +100,20 @@ class Proyecto(models.Model):
         return self.nombre_proyecto
 
     class Meta:
+        default_permissions = ()
         permissions = [
-            ("VER_PROYECTO", "Puede visualizar los proyectos creados"),
+            ("VER_PROYECTO", "Puede visualizar el proyecto en la lista de proyectos"),
             ("CREAR_PROYECTO", "Puede crear proyectos"),
-            ("EDITAR_PROYECTO", "Puede cambiar el estado de proyectos"),
+            ("EDITAR_PROYECTO", "Puede editar configuraciones basicas del proyecto"),
+            ("INICIAR_PROYECTO", "Puede iniciar la ejcucion de un proyecto"),
             ("ELIMINAR_PROYECTO", "Puede elimiar proyectos"),
+            ("VER_MIEMBRO", "Puede ver la lista de miembros del proyecto"),
             ("AGREGAR_MIEMBRO", "Puede agregar miembros al proyecto"),
+            ("EDITAR_MIEMBRO", "Puede agregar miembros al proyecto"),
             ("ELIMINAR_MIEMBRO", "Puede eliminar miembros del proyecto"),
             ("VER_ROL", "Puede ver lista de roles del proyecto"),
             ("CREAR_ROL", "Puede crear roles del proyecto"),
+            ("EDITAR_ROL", "Puede crear roles del proyecto"),
             ("ELIMINAR_ROL", "Puede eliminar roles del proyecto"),
         ]
 
