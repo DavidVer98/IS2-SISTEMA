@@ -33,7 +33,7 @@ class Rol(models.Model):
 
     def editar(self, permisos_elegidos, proyecto_id):
         # Se trae el modelo del rol
-
+        import random
 
         # se extraen los miembros del proyecto con el rol
         miembros_con_el_rol = Miembro.objects.filter(rol=self)
@@ -41,7 +41,9 @@ class Rol(models.Model):
         # Se estrae el grupo del rol y se elimina
         nombre_grupo=self.group.name
         grupo_anterior = self.group
-        grupo_anterior.delete()
+        grupo_anterior.name=str(random.getrandbits(60))
+        grupo_anterior.save()
+
 
         # se crea nuevo grupo
         self.group = Group.objects.create(name=nombre_grupo)
@@ -61,7 +63,7 @@ class Rol(models.Model):
         self.save()
         proyecto_actual.roles.add(self)
         proyecto_actual.save()
-
+        grupo_anterior.delete()
     @classmethod
     def crearScrum(cls, proyecto_id):
         permissions = Permission.objects.filter(content_type__app_label='proyecto', content_type__model='proyecto')
@@ -105,15 +107,15 @@ class Proyecto(models.Model):
             ("VER_PROYECTO", "Puede visualizar el proyecto en la lista de proyectos"),
             ("CREAR_PROYECTO", "Puede crear proyectos"),
             ("EDITAR_PROYECTO", "Puede editar configuraciones basicas del proyecto"),
-            ("INICIAR_PROYECTO", "Puede iniciar la ejcucion de un proyecto"),
-            ("ELIMINAR_PROYECTO", "Puede elimiar proyectos"),
+            ("INICIAR_PROYECTO", "Puede iniciar la ejecucion de un proyecto"),
+            ("ELIMINAR_PROYECTO", "Puede eliminar el proyecto"),
             ("VER_MIEMBRO", "Puede ver la lista de miembros del proyecto"),
             ("AGREGAR_MIEMBRO", "Puede agregar miembros al proyecto"),
-            ("EDITAR_MIEMBRO", "Puede agregar miembros al proyecto"),
+            ("EDITAR_MIEMBRO", "Puede editar roles de miembros del proyecto"),
             ("ELIMINAR_MIEMBRO", "Puede eliminar miembros del proyecto"),
             ("VER_ROL", "Puede ver lista de roles del proyecto"),
             ("CREAR_ROL", "Puede crear roles del proyecto"),
-            ("EDITAR_ROL", "Puede crear roles del proyecto"),
+            ("EDITAR_ROL", "Puede editar roles del proyecto"),
             ("ELIMINAR_ROL", "Puede eliminar roles del proyecto"),
         ]
 
