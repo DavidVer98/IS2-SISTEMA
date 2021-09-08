@@ -73,11 +73,12 @@
                         <h1><i class="fa fa-thumb-tack" aria-hidden="true"></i> Lista de Roles {{ error }} </h1>
                     </div>
                     <div class="col-2 .col-md-2">
-                        <button type="button" class="btn btn-secondary"
-                                onclick="location.href='{% url 'roles_proyecto' proyecto_id %}'"
-                        >Crear Rol <i class="fa fa-th-list" aria-hidden="true"></i>
-                        </button>
-
+                        {% if "CREAR_ROL" in proyecto_perms %}
+                            <button type="button" class="btn btn-secondary"
+                                    onclick="location.href='{% url 'roles_proyecto' proyecto_id %}'"
+                            >Crear Rol <i class="fa fa-th-list" aria-hidden="true"></i>
+                            </button>
+                        {% endif %}
                     </div>
                     <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
 

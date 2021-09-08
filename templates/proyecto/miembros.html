@@ -66,11 +66,12 @@
                         <h1><i class="fa fa-thumb-tack" aria-hidden="true"></i>Miembros del proyecto </h1>
                     </div>
                     <div class="col-2 .col-md-2">
+                        {% if "AGREGAR_MIEMBRO" in proyecto_perms %}
                         <button type="button" class="btn btn-secondary"
                                 onclick="location.href='{% url 'setMiembros_proyectos' proyecto_id  %}'"
                         >Añadir Miembro <i class="fa fa-user" aria-hidden="true"></i>
                         </button>
-
+                        {% endif %}
                     </div>
                     <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
 
@@ -96,13 +97,17 @@
                                     {{ miembro.rol }}
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-secondary"
-                                            onclick="location.href='{% url 'editarmiembro-proyecto' proyecto_id miembro.id  %}'">Editar
-                                    </button>
-                                    <button type="button" class="btn btn-danger"
-{#                                            onclick="eliminarmiembro({{ miembro.id }})">Borrar#}
-                                            onclick="location.href='{% url 'eliminarmiembro_proyecto' proyecto_id miembro.id  %}'">Borrar
-                                    </button>
+                                     {% if "EDITAR_MIEMBRO" in proyecto_perms %}
+                                        <button type="button" class="btn btn-secondary"
+                                                onclick="location.href='{% url 'editarmiembro-proyecto' proyecto_id miembro.id  %}'">Editar
+                                        </button>
+                                    {% endif %}
+                                    {% if "ELIMINAR_MIEMBRO" in proyecto_perms %}
+                                        <button type="button" class="btn btn-danger"
+    {#                                            onclick="eliminarmiembro({{ miembro.id }})">Borrar#}
+                                                onclick="location.href='{% url 'eliminarmiembro_proyecto' proyecto_id miembro.id  %}'">Borrar
+                                        </button>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}
