@@ -114,6 +114,7 @@ def proyecto(request, proyecto_id):
     except Exception as e:
         return redirect("listarProyectos")
 
+
 @permission_required_or_403('VER_MIEMBRO', (Proyecto, 'id', 'proyecto_id'))
 def getMiembros(request, proyecto_id):
     """
@@ -129,6 +130,7 @@ def getMiembros(request, proyecto_id):
     context = {'miembros_proyecto': miembros_proyecto, 'proyecto_id': proyecto_id, 'proyecto': proyect}
 
     return render(request, "proyecto/miembros.html", context)
+
 
 @permission_required_or_403('AGREGAR_MIEMBRO', (Proyecto, 'id', 'proyecto_id'))
 def setMiembros(request, proyecto_id):
@@ -272,6 +274,7 @@ def eliminarRol(request, rol_id, proyecto_id):
         error = True
     return redirect(reverse("listaRol", kwargs={"proyecto_id": proyecto_id}))
 
+
 @permission_required_or_403('ELIMINAR_MIEMBRO', (Proyecto, 'id', 'proyecto_id'))
 def eliminarmiembro(request, proyecto_id, miembro_id):
     """
@@ -311,11 +314,13 @@ def editar_rolmiembro(request, proyecto_id, miembro_id):
 
     else:
         form = editar_rolmiembro_form(instance=miembro)
-        form.fields["rol"].queryset = Proyecto.objects.get(pk=proyecto_id).roles
+        scrum = 'Scrum Master'
+        form.fields["rol"].queryset = Proyecto.objects.get(pk=proyecto_id).roles.exclude(nombre=scrum)
         miembro_nombre = Miembro.objects.get(id=miembro_id)
 
     context = {"proyecto_id": proyecto_id, "miembro_id": miembro_id, "form": form, 'miembro_nombre': miembro_nombre}
     return render(request, "proyecto/miembroEditar.html", context)
+
 
 @permission_required_or_403('ELIMINAR_PROYECTO', (Proyecto, 'id', 'proyecto_id'))
 def eliminarProyecto(request, proyecto_id):
@@ -327,21 +332,21 @@ def eliminarProyecto(request, proyecto_id):
     """
     print(proyecto_id)
     proyecto = Proyecto.objects.get(id=proyecto_id)
-    if proyecto.estado == 'PENDIENTE':
-        proyecto.delete()
-
+    if proyecto.estado != proyecto.CANCELADO:
+        proyecto.estado = proyecto.CANCELADO
+        proyecto.save()
     return redirect("/home/proyectos/")
 
 
 @permission_required_or_403('INICIAR_PROYECTO', (Proyecto, 'id', 'proyecto_id'))
-def iniciarProyecto(request, proyecto_id):
+def iniciar_proyecto(request, proyecto_id):
     """
        **Iniciar Proyecto:**
         03/09/2021
         Vista utilizada para iniciar el proyecto .
         Solicita el id del proyecto
     """
-    proyecto = Proyecto.objects.get(pk=proyecto_id)
-    proyecto.iniciar_proyecto()
-    context = {"proyecto_id": proyecto_id, "proyecto": proyecto}
+    proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+    proyecto_actual.iniciar_proyecto()
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual}
     return render(request, "desarrollo/desarrollo.html", context)

@@ -75,11 +75,11 @@
                 <i class="fa fa-home" aria-hidden="true"></i> Inicio
             </a>
         </li>
-        <li>
-            <a href="#">
-                <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
-            </a>
-        </li>
+{#        <li>#}
+{#            <a href="#">#}
+{#                <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard#}
+{#            </a>#}
+{#        </li>#}
         <li class="header">Opciones</li>
         <li>
             <a a href='{% url 'listarProyectos' %}'>
@@ -88,7 +88,7 @@
         </li>
         {#        <li>#}
         {#            <a href="#">#}
-        {#                <i class="fa fa-cog" aria-hidden="true"></i> Configuraciones#}
+        {#                <i class="fa fa-cog" aria-hidden="true"></i> Gestión#}
         {#            </a>#}
         {#        </li>#}
         {% if request.user.rolSistema == "Administrador" %}

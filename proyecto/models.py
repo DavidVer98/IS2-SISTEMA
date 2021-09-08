@@ -79,9 +79,17 @@ class Proyecto(models.Model):
      Model de los datos necesarios para el manejo de un Proyecto
 
     """
+    PENDIENTE='PENDIENTE'
+    ACTIVO='ACTIVO'
+    CANCELADO='CANCELADO'
+    ESTADO_PROYECTO_CHOICES = [
+        ('P', 'PENDIENTE'),
+        ('A', 'ACTIVO'),
+        ('C', 'CANCELADO'),
+    ]
     nombre_proyecto = models.CharField(max_length=50)
     scrum_master = models.ForeignKey(User, on_delete=models.CASCADE)
-    estado = models.CharField(max_length=100, default="PENDIENTE")
+    estado = models.CharField(max_length=50, choices=ESTADO_PROYECTO_CHOICES, default=PENDIENTE)
     fecha_inicio = models.DateField()
     roles = models.ManyToManyField(Rol)
 

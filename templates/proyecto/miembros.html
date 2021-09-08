@@ -1,18 +1,21 @@
 {% extends "baseProyecto.html" %}
+{% load guardian_tags %}
 
 {% block head_content %}
     <title>Home</title>
 {% endblock %}
 {% block container %}
-    <div class="sidebar-container">
+     <div class="sidebar-container">
         {#    <div class="sidebar-logo">#}
         <div class="container-fluid" style="margin: auto">
             <img src="/static/img/default-profile.png" class="rounded-circle" height="50" style="width: 50px;"/>
             {{ request.user.username }}
+
         </div>
         {#    </div>#}
         <ul class="sidebar-navigation">
-            <li class="header">{{ proyecto.nombre_proyecto }}   <i class="fa fa-briefcase" aria-hidden="true"> </i>
+            {% get_obj_perms request.user for proyecto as "proyecto_perms" %}
+            <li class="header">{{ proyecto.nombre_proyecto }} <i class="fa fa-briefcase" aria-hidden="true"></i></li>
             <li>
                 <a href="/home">
                     <i class="fa fa-home" aria-hidden="true"></i> Inicio
@@ -24,27 +27,28 @@
                 </a>
             </li>
             <li class="header">Gestión</li>
+            {% if "VER_MIEMBRO" in proyecto_perms %}
             <li>
-              <a  href='{% url 'roles_proyecto' proyecto_id=proyecto_id %}'>
-                    <i class="fa fa-users" aria-hidden="true"></i> Roles
-                </a>
-            </li>
-            <li>
-                <a href='{% url 'miembros_proyecto' proyecto_id=proyecto_id %}'>
+                <a href='{% url 'miembros_proyecto' proyecto_id=proyecto.id %}'>
                     <i class="fa fa-cog" aria-hidden="true"></i> Miembros
                 </a>
             </li>
+            {% endif %}
 
+            {#            <li>#}
+            {#                <a href='{% url 'listaUsuarios' %}'>#}
+            {#                    <i class="fa fa-users" aria-hidden="true"></i> Configurar#}
+            {#                </a>#}
+            {#            </li>#}
+            {% if "VER_ROL" in proyecto_perms %}
             <li>
-            <a href="{% url 'listaRol' proyecto_id=proyecto_id %}">
-                <i class="fa fa-user" aria-hidden="true"></i>Listar Roles
-            </a>
+                <a href="{% url 'listaRol' proyecto_id=proyecto_id %}">
+                    <i class="fa fa-user" aria-hidden="true"></i>Roles
+                </a>
+            {% endif %}
+
             </li>
-{#            <li>#}
-{#                <a href='{% url 'listaUsuarios' %}'>#}
-{#                    <i class="fa fa-users" aria-hidden="true"></i> Configurar#}
-{#                </a>#}
-{#            </li>#}
+
         </ul>
     </div>
 

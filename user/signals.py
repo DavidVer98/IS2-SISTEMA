@@ -7,7 +7,7 @@ def populate_models(sender, **kwargs):
     from django.contrib.auth.models import Group, Permission
     from django.contrib.contenttypes.models import ContentType
 
-    administradores, created = Group.objects.get_or_create(name='Administrador')
+    administradores, created = Group.objects.get_or_create(name=User.ADMINISTRADOR)
     #usuarios = Group.objects.get_or_create(name='Usuario')
 
     permissions=Permission.objects.filter(content_type__app_label=User._meta.app_label,

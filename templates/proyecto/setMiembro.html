@@ -1,4 +1,5 @@
 {% extends "baseProyecto.html" %}
+{% load guardian_tags %}
 {% load bootstrap4 %}
 {% bootstrap_css %}
 {% bootstrap_javascript jquery='full' %}
@@ -7,6 +8,7 @@
     <title>Miembros</title>
 {% endblock %}
 {% block container %}
+    {% get_obj_perms request.user for proyecto as "proyecto_perms" %}
     <div class="sidebar-container">
         {#    <div class="sidebar-logo">#}
         <div class="container-fluid" style="margin: auto">
@@ -27,26 +29,20 @@
                 </a>
             </li>
             <li class="header">Gestión</li>
-            <li>
-                <a href='{% url 'roles_proyecto' proyecto_id=proyecto_id %}'>
-                    <i class="fa fa-users" aria-hidden="true"></i> Roles
-                </a>
-            </li>
-            <li>
-                <a href='{% url 'miembros_proyecto' proyecto_id=proyecto_id %}'>
-                    <i class="fa fa-cog" aria-hidden="true"></i> Miembros
-                </a>
-            </li>
-            <li>
-                <a href="{% url 'listaRol' proyecto_id=proyecto_id %}">
-                    <i class="fa fa-user" aria-hidden="true"></i>Listar Roles
-                </a>
-            </li>
-            {#            <li>#}
-            {#                <a href='{% url 'listaUsuarios' %}'>#}
-            {#                    <i class="fa fa-users" aria-hidden="true"></i> Configurar#}
-            {#                </a>#}
-            {#            </li>#}
+            {% if "EDITAR_MIEMBRO" in proyecto_perms %}
+                <li>
+                    <a href='{% url 'miembros_proyecto' proyecto_id=proyecto_id %}'>
+                        <i class="fa fa-cog" aria-hidden="true"></i> Miembros
+                    </a>
+                </li>
+            {% endif %}
+            {% if "VER_ROL" in proyecto_perms %}
+                <li>
+                    <a href="{% url 'listaRol' proyecto_id=proyecto_id %}">
+                        <i class="fa fa-user" aria-hidden="true"></i>Roles
+                    </a>
+                </li>
+            {% endif %}
         </ul>
     </div>
 
@@ -72,10 +68,9 @@
                         <button class="btn btn-primary" style="margin-left: 10px">Aceptar <i class="fa fa-check"
                                                                                              aria-hidden="true"></i>
                         </button>
-                        <button class="btn btn-danger " style="margin-left: 10px"
+                        <a class="btn btn-danger " style="margin-left: 10px; color:white"
                                 onclick="location.href='{% url 'miembros_proyecto' proyecto_id=proyecto_id %}'">Cancelar
-                            <i
-                                    class="fa fa-times" aria-hidden="true"></i></button>
+                            <i class="fa fa-times" aria-hidden="true"></i></a>
                     </form>
                 </div>
             </div>

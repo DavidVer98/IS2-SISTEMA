@@ -1,4 +1,5 @@
 {% extends "baseHome.html" %}
+{% load guardian_tags %}
 
 {% block head_content %}
     <title>Lista Proyectos</title>
@@ -22,10 +23,13 @@
                         </div>
                         <div class="col-2 .col-md-2">
 
-                            <button type="button" class="btn btn-secondary"
+                            {% if request.user.rolSistema == "Administrador" %}
+                                    <button type="button" class="btn btn-secondary"
                                     onclick="location.href='{% url 'crearProyecto' %}'"
-                            >Crear Proyecto <i class="fa fa-folder-open-o" aria-hidden="true"></i>
+                                    >Crear Proyecto <i class="fa fa-folder-open-o" aria-hidden="true"></i>
                             </button>
+
+                            {% endif %}
 
                         </div>
                         <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
@@ -41,6 +45,9 @@
                         </tr>
                         </thead>
                         {% for proyecto in object_list %}
+
+                            {% get_obj_perms request.user for proyecto as "proyecto_perms" %}
+
                             <tbody style="text-align: left; ">
                             <tr>
                                 <th scope="row">{{ proyecto.pk }}</th>
@@ -53,14 +60,20 @@
                                 </td>
                                 <td>
 
+                                    {% if "EDITAR_PROYECTO" in proyecto_perms %}
                                     <button type="button" class="btn btn-secondary"
                                             onclick="location.href='{% url 'editarProyecto' proyecto.id %}'"
                                     >Editar
                                     </button>
+                                    {% endif %}
 
+
+                                    {% if "ELIMINAR_PROYECTO" in proyecto_perms %}
                                     <button type="button" class="btn btn-danger"
                                             onclick="eliminarProyecto({{ proyecto.id }})">Borrar
                                     </button>
+                                    {% endif %}
+
                                     <button type="button" class="btn btn-info"
                                             onclick="location.href='{% url 'proyecto' proyecto.id %}'">Ingresar
                                     </button>

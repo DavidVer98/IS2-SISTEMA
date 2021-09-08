@@ -1,4 +1,5 @@
 {% extends "baseProyecto.html" %}
+{% load guardian_tags %}
 {% load bootstrap4 %}
 {% bootstrap_css %}
 {% bootstrap_javascript jquery='full' %}
@@ -7,6 +8,7 @@
 {% endblock %}
 {% block container %}
     <div class="sidebar-container">
+        {% get_obj_perms request.user for proyecto as "proyecto_perms" %}
         {#    <div class="sidebar-logo">#}
         <div class="container-fluid" style="margin: auto">
             <img src="/static/img/default-profile.png" class="rounded-circle" height="50" style="width: 50px;"/>
@@ -26,26 +28,20 @@
                 </a>
             </li>
             <li class="header">Gestión</li>
-            <li>
-                <a href='{% url 'roles_proyecto' proyecto_id=proyecto_id %}'>
-                    <i class="fa fa-users" aria-hidden="true"></i> Roles
-                </a>
-            </li>
-            <li>
-                <a href='{% url 'miembros_proyecto' proyecto_id=proyecto_id %}'>
-                    <i class="fa fa-cog" aria-hidden="true"></i> Miembros
-                </a>
-            </li>
-            <li>
-                <a href="{% url 'listaRol' proyecto_id=proyecto_id %}">
-                    <i class="fa fa-user" aria-hidden="true"></i>Listar Roles
-                </a>
-            </li>
-            {#            <li>#}
-            {#                <a href='{% url 'listaUsuarios' %}'>#}
-            {#                    <i class="fa fa-users" aria-hidden="true"></i> Configurar#}
-            {#                </a>#}
-            {#            </li>#}
+            {% if "VER_MIEMBRO" in proyecto_perms %}
+                <li>
+                    <a href='{% url 'miembros_proyecto' proyecto_id=proyecto_id %}'>
+                        <i class="fa fa-cog" aria-hidden="true"></i> Miembros
+                    </a>
+                </li>
+            {% endif %}
+            {% if "VER_ROL" in proyecto_perms %}
+                <li>
+                    <a href="{% url 'listaRol' proyecto_id=proyecto_id %}">
+                        <i class="fa fa-user" aria-hidden="true"></i>Roles
+                    </a>
+                </li>
+            {% endif %}
         </ul>
     </div>
 

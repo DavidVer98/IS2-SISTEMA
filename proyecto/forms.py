@@ -28,7 +28,7 @@ class ProyectoForm(ModelForm):
     # tarea = models.CharField(max_length=100)
     class Meta:
         model = Proyecto  # asosiciar un modelo a Proyecto
-        fields = ['nombre_proyecto', 'scrum_master', 'estado', 'fecha_inicio']
+        fields = ['nombre_proyecto', 'scrum_master', 'fecha_inicio']
         widgets = {
             'fecha_inicio': DatePickerInput(format='%Y-%m-%d'),  # specify date-frmat
             "locale": "es",

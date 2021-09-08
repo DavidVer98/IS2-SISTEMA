@@ -53,7 +53,7 @@ def eliminar(request, user_id):
 
     error=False
     usuario = User.objects.get(pk=user_id)
-    if Miembro.objects.filter(miembro=usuario):
+    if not Miembro.objects.filter(miembro=usuario).exists():
         try:
             user = User.objects.get(id=user_id)
             user.delete()
@@ -83,9 +83,11 @@ def editar(request, user_id):
             grupo_administracion = Group.objects.get(name=user.ADMINISTRADOR)
             if rol_sistema == grupo_administracion.name:
                 user.groups.add(grupo_administracion)
+                user.is_superuser=True
             else:
                 user.groups.remove(grupo_administracion)
-
+                user.is_superuser = False
+            user.save()
             return redirect("listaUsuarios")
     else:
         form = UserFormRol(instance=user)
