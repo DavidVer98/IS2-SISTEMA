@@ -47,13 +47,24 @@ def editarProyecto(request, proyecto_id):
     if request.method == "POST":
         form = ProyectoForm(request.POST, instance=proyecto)
         if form.is_valid():
-            form.save()
+            data=form.cleaned_data
+            nombre_proyecto = data['nombre_proyecto']
+            scrum_nuevo = data['scrum_master']
+            proyecto_actual = Proyecto.objects.filter(nombre_proyecto=nombre_proyecto)
+            if not proyecto_actual.exists():
+                form.save()
+            else:
+                pass
+            proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+            proyecto_actual.reasignarScrum(scrum_nuevo)
             return redirect("listarProyectos")
     else:
         form = ProyectoForm(instance=proyecto)
+        #se filtra de la lista a los usuarios de tipo administrador
+        form.fields['scrum_master'].queryset = User.objects.all().exclude(groups__name='Administrador')
     proyecto = Proyecto.objects.get(id=proyecto_id)
     context = {"form": form, 'proyecto': proyecto}
-    # print("editar ->",context)
+
     return render(request, "proyecto/editar.html", context)
 
 
@@ -87,6 +98,8 @@ def crearProyecto(request):
 
     else:
         form = ProyectoCrearForms()
+        form.fields['scrum_master'].queryset= User.objects.all().exclude(groups__name='Administrador')
+
     context = {'form': form}
     return render(request, "proyecto/crearProyecto.html", context)
 
@@ -161,7 +174,8 @@ def setMiembros(request, proyecto_id):
     else:
         form = setMiembroForms()
         scrum = 'Scrum Master'
-        form.fields["miembro"].queryset = User.objects.all().exclude(miembro__proyectos=proyecto)
+        form.fields["miembro"].queryset = User.objects.all().exclude(miembro__proyectos=proyecto).\
+            exclude(groups__name='Administrador')
         form.fields["rol"].queryset = Proyecto.objects.get(pk=proyecto_id).roles.exclude(nombre=scrum)
     context = {'form': form, 'proyecto_id': proyecto.pk, 'proyecto': proyecto}
     return render(request, "proyecto/setMiembro.html", context)
@@ -195,17 +209,6 @@ def crearGrupo(request, proyecto_id):
 
     context = {'form': form, 'proyecto_id': proyecto_id, 'proyecto': proyecto}
     return render(request, "rol/crear.html", context)
-
-
-def asignarPermisos(request, miembro_id):
-    """
-       **Asinga Permiso:**
-        03/09/2021
-        Funcion utilizada para adingar permisos a los miembros del proyecto.
-        Solicita el id del miembro
-    """
-    miembro = Miembro.objects.get(pk=miembro_id)
-    # print("Miembro -->", miembro)
 
 
 @permission_required_or_403('VER_ROL', (Proyecto, 'id', 'proyecto_id'))

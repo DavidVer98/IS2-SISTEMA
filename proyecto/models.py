@@ -94,13 +94,28 @@ class Proyecto(models.Model):
     roles = models.ManyToManyField(Rol)
 
     def iniciar_proyecto(self):
-        self.estado = "ACTIVO"
+        self.estado = self.ACTIVO
         self.save()
 
     def setScrum(self, user, rol):
         miembro = Miembro.objects.create(proyectos=self, miembro=user, rol=rol)
         miembro.save()
         user.groups.add(rol.group)
+
+    def reasignarScrum(self, scrum_nuevo):
+        miembro = Miembro.objects.get(proyectos=self, miembro=self.scrum_master.pk)
+        grupo_rol=miembro.rol.group
+        scrum_anterior = miembro.miembro
+        # se remueve del grupo scrum master al scrum master anterior
+        scrum_anterior.groups.remove(grupo_rol)
+        #se asigna al nuevo scrum master como miembro del proyecto
+        miembro.miembro=scrum_nuevo
+        # se asigna al nuevo scrum master al grupo scrum master
+        miembro.miembro.groups.add(grupo_rol)
+        miembro.save()
+        self.scrum_master = scrum_nuevo
+        self.save()
+
 
     def agregarRol(self, rol):
         self.roles.add(rol)
