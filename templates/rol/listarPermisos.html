@@ -1,0 +1,142 @@
+{% extends "baseProyecto.html" %}
+{% load guardian_tags %}
+{% block head_content %}
+    <title>Lista de Roles</title>
+{% endblock %}
+
+{% block container %}
+    {% get_obj_perms request.user for proyecto as "proyecto_perms" %}
+     <div class="sidebar-container " style="margin-top: 57px">
+
+        {#    <div class="sidebar-logo">#}
+        <div class="container-fluid" style="margin: 5px">
+            <img src="/static/img/default-profile.png" class="rounded-circle" height="50" style="width: 50px;"/>
+            {{ request.user.username }}
+
+        </div>
+        {#    </div>#}
+        <ul class="sidebar-navigation">
+
+            <li class="header">{{ proyecto.nombre_proyecto }} <i class="fa fa-briefcase" aria-hidden="true"></i></li>
+            <li>
+                <a href="/home">
+                    <i class="fa fa-home" aria-hidden="true"></i> Inicio
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
+                </a>
+            </li>
+            <li class="header">Gestión</li>
+            {% if "VER_MIEMBRO" in proyecto_perms %}
+            <li>
+                <a href='{% url 'miembros_proyecto' proyecto_id=proyecto.id %}'>
+                    <i class="fa fa-cog" aria-hidden="true"></i> Miembros
+                </a>
+            </li>
+            {% endif %}
+
+            {#            <li>#}
+            {#                <a href='{% url 'listaUsuarios' %}'>#}
+            {#                    <i class="fa fa-users" aria-hidden="true"></i> Configurar#}
+            {#                </a>#}
+            {#            </li>#}
+            {% if "VER_ROL" in proyecto_perms %}
+            <li>
+                <a href="{% url 'listaRol' proyecto_id=proyecto_id %}">
+                    <i class="fa fa-user" aria-hidden="true"></i>Roles
+                </a>
+            {% endif %}
+
+            </li>
+
+        </ul>
+    </div>
+    <div class="content-container">
+
+        <div class="container-fluid" style="margin-top: 50px">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'proyecto' proyecto_id %}">Proyecto</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'listaRol' proyecto_id %}">Lista de Roles</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Lista de Permisos</li>
+                </ol>
+            </nav>
+            <div class="jumbotron">
+                <div class="row">
+                    {% if error %}
+                        <div class="alert alert-danger" role="alert">
+                            Existe un usuario asignado a este Rol !
+                        </div>
+                    {% endif %}
+                    <div class="col-10 .col-md-10">
+                        <h1><i class="fa fa-thumb-tack" aria-hidden="true"></i> Lista de permisos del rol  <span class="text-muted">#{{ nombre_rol }}</span> </h1>
+                    </div>
+                    <div class="col-2 .col-md-2">
+                        {% if "CREAR_ROL" in proyecto_perms %}
+                            <button type="button" class="btn btn-secondary"
+                                    onclick="location.href='{% url 'roles_proyecto' proyecto_id %}'"
+                            >Crear Rol <i class="fa fa-th-list" aria-hidden="true"></i>
+                            </button>
+                        {% endif %}
+
+                    </div>
+                    <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
+
+                    <table class="overflow-auto table table-striped table-dark container">
+
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Opciones</th>
+                        </tr>
+                        </thead>
+                        {% for i in permisos_rol %}
+                            <tbody style="text-align: left; ">
+                            <tr>
+                                <th scope="row">{{ i.pk }}</th>
+                                <td>{{ i.name }}</td>
+                                </td>
+
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        function editarRol(id, proyecto_id) {
+            console.log(id)
+            Swal.fire({
+                'title': '¿Estas seguro?',
+                {#'text': 'esta acción no se pude deshacer',#}
+                'icon': 'question',
+                'showCancelButton': true
+            })
+                .then(function (result) {
+                    if (result.isConfirmed) {
+                        window.location.href = id + "/editar";
+                    }
+                })
+        }
+
+        function eliminarRol(id, proyecto_id) {
+            console.log(id)
+            Swal.fire({
+                'title': '¿Estas seguro?',
+                'text': 'esta acción no se pude deshacer',
+                'icon': 'warning',
+                'showCancelButton': true
+            })
+                .then(function (result) {
+                    if (result.isConfirmed) {
+                        window.location.href = id + "/eliminar";
+                    }
+                })
+        }
+    </script>
+{% endblock %}
