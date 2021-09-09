@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.views.generic import ListView
 from guardian.decorators import permission_required_or_403
 from guardian.mixins import LoginRequiredMixin, PermissionListMixin
-from guardian.shortcuts import assign_perm
+from guardian.shortcuts import assign_perm, get_group_perms
 import requests
 
 from proyecto.models import Proyecto
@@ -20,17 +20,17 @@ from proyecto.forms import ProyectoForm, ProyectoCrearForms, setMiembroForms, Cr
 from proyecto.models import Proyecto, Miembro
 
 
-class listarProyectos(LoginRequiredMixin, PermissionListMixin, ListView):
+def listarProyectos(request):
     """
-       **Listar Proyecto:**
+       Listar Proyecto:
         03/09/2021
         Vista utilizada para crear listar los proyectos
-        creados en el sistema, el usuario debe tener permiso en cada proyecto para que estos sean visibles a el.
+        creados en el sistema.
     """
-    model = Proyecto
-    permission_required = "VER_PROYECTO"
-    template_name = "home/listarProyectos.html"
-
+    proyecto = Proyecto.objects.all()
+    miembro = Miembro.objects.all()
+    context = {'proyectos': proyecto, 'miembros': miembro}
+    return render(request, "home/listarProyectos.html", context)
 
 @login_required(login_url='/login')
 @permission_required('user.EDITAR_PROYECTO', login_url='/home')
@@ -230,7 +230,7 @@ def listarRol(request, proyecto_id):
 def editarRol(request, rol_id, proyecto_id):
     """
        **Editar Rol:**
-        03/09/2021
+        03/09/2021|
         Vista utilizada para edtiar el rol de los miembros de los proyectos .
         Solicita el id del proyecto
     """
@@ -259,7 +259,7 @@ def editarRol(request, rol_id, proyecto_id):
     return render(request, "rol/editar.html", context)
 
 
-@permission_required_or_403('ELIMINAR ROL', (Proyecto, 'id', 'proyecto_id'))
+@permission_required_or_403('ELIMINAR_ROL', (Proyecto, 'id', 'proyecto_id'))
 def eliminarRol(request, rol_id, proyecto_id):
     """
        **Eliminar Rol:**
@@ -288,9 +288,10 @@ def eliminarmiembro(request, proyecto_id, miembro_id):
     """
     miembro = Miembro.objects.get(pk=miembro_id)
     usuario = miembro.miembro
-    usuario.groups.remove(miembro.rol.group)
-    miembro.delete()
-    return getMiembros(request, proyecto_id)
+    if(miembro.rol.nombre != 'Scrum Master' ):
+        usuario.groups.remove(miembro.rol.group)
+        miembro.delete()
+    return redirect(reverse('miembros_proyecto', kwargs={'proyecto_id': proyecto_id}))
 
 
 @permission_required_or_403('EDITAR_MIEMBRO', (Proyecto, 'id', 'proyecto_id'))
@@ -321,7 +322,11 @@ def editar_rolmiembro(request, proyecto_id, miembro_id):
         form.fields["rol"].queryset = Proyecto.objects.get(pk=proyecto_id).roles.exclude(nombre=scrum)
         miembro_nombre = Miembro.objects.get(id=miembro_id)
 
-    context = {"proyecto_id": proyecto_id, "miembro_id": miembro_id, "form": form, 'miembro_nombre': miembro_nombre}
+    proyect = Proyecto.objects.get(pk=proyecto_id)
+    miembros_proyecto = Miembro.objects.filter(proyectos__pk=proyecto_id)
+
+    context = {"proyecto_id": proyecto_id, "miembro_id": miembro_id, "form": form, 'miembro_nombre': miembro_nombre,
+               'miembros_proyecto': miembros_proyecto, 'proyecto': proyect}
     return render(request, "proyecto/miembroEditar.html", context)
 
 
@@ -353,3 +358,20 @@ def iniciar_proyecto(request, proyecto_id):
     proyecto_actual.iniciar_proyecto()
     context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual}
     return render(request, "desarrollo/desarrollo.html", context)
+
+@permission_required_or_403('VER_ROL', (Proyecto, 'id', 'proyecto_id'))
+def permisosRol(request, rol_id, proyecto_id):
+    """
+       **Iniciar Proyecto:**
+        08/09/2021
+        Vista utilizada para listar los permisos de un rol .
+        Solicita el id del proyecto
+    """
+    proyecto = Proyecto.objects.get(pk=proyecto_id)
+    rol_actual = Rol.objects.get(pk=rol_id)
+    permisos_rol = get_group_perms(rol_actual.group, proyecto)
+    nombre_rol = rol_actual.nombre
+    nombre_permiso = Permission.objects.filter(codename__in=permisos_rol).values('name')
+
+    context = {'permisos_rol': nombre_permiso, 'proyecto_id': proyecto_id, 'proyecto': proyecto ,'nombre_rol':nombre_rol}
+    return render(request, "rol/listarPermisos.html", context)

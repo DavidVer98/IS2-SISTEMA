@@ -6,9 +6,9 @@
 {% endblock %}
 {% block container %}
 
-    <div class="sidebar-container">
+    <div class="sidebar-container" style="margin-top: 57px">
         {#    <div class="sidebar-logo">#}
-        <div class="container-fluid" style="margin: auto">
+        <div class="container-fluid" style="margin: 5px">
             <img src="/static/img/default-profile.png" class="rounded-circle" height="50" style="width: 50px;"/>
             {{ request.user.username }}
 
@@ -53,7 +53,7 @@
     </div>
 
     <div class="content-container">
-        <div class="container-fluid">
+     <div class="container-fluid" style="margin-top: 50px">
                     <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{% url 'proyecto' proyecto_id %}">Proyecto</a></li>

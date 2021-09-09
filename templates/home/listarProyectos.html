@@ -44,10 +44,10 @@
                             <th scope="col">Opciones</th>
                         </tr>
                         </thead>
-                        {% for proyecto in object_list %}
+                        {% for proyecto in proyectos %}
 
                             {% get_obj_perms request.user for proyecto as "proyecto_perms" %}
-
+                            {% if request.user.rolSistema == "Usuario" and   "VER_PROYECTO" in proyecto_perms or request.user.rolSistema == "Administrador" %}
                             <tbody style="text-align: left; ">
                             <tr>
                                 <th scope="row">{{ proyecto.pk }}</th>
@@ -60,7 +60,8 @@
                                 </td>
                                 <td>
 
-                                    {% if "EDITAR_PROYECTO" in proyecto_perms %}
+{#                                    {% if "EDITAR_PROYECTO" in proyecto_perms %}#}
+                                    {% if perms.user.EDITAR_PROYECTOS%}
                                     <button type="button" class="btn btn-secondary"
                                             onclick="location.href='{% url 'editarProyecto' proyecto.id %}'"
                                     >Editar
@@ -70,17 +71,20 @@
 
                                     {% if "ELIMINAR_PROYECTO" in proyecto_perms %}
                                     <button type="button" class="btn btn-danger"
-                                            onclick="eliminarProyecto({{ proyecto.id }})">Borrar
+                                            onclick="eliminarProyecto({{ proyecto.id }})">Cancelar
                                     </button>
                                     {% endif %}
-
+                                    {% if "VER_PROYECTO" in proyecto_perms %}
                                     <button type="button" class="btn btn-info"
                                             onclick="location.href='{% url 'proyecto' proyecto.id %}'">Ingresar
                                     </button>
+                                {% endif %}
                                 </td>
                             </tr>
-                        {% endfor %}
+
                         </tbody>
+                            {% endif %}
+                        {% endfor %}
                     </table>
 
                 </div>

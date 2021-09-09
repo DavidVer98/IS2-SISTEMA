@@ -83,7 +83,7 @@ def editar(request, user_id):
             grupo_administracion = Group.objects.get(name=user.ADMINISTRADOR)
             if rol_sistema == grupo_administracion.name:
                 user.groups.add(grupo_administracion)
-                user.is_superuser=True
+                # user.is_superuser=True
             else:
                 user.groups.remove(grupo_administracion)
                 user.is_superuser = False
