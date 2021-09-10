@@ -48,18 +48,22 @@
                     </a>
                 </li>
             {% endif %}
-             <li class="header">Desarrollo</li>
-                <li>
-                    <a href="{% url 'listaRol' proyecto_id=proyecto_id %}">
-                        <i class="fa fa-user" aria-hidden="true"></i>Roles
-                    </a>
-                </li>
         </ul>
     </div>
+    <style>
+        #element1 {
+            float: left;
+        }
 
+        #element2 {
+            margin-left: 5px;
+            padding-left: 5px;
+            float: left;
+        }
+    </style>
     <div class="content-container">
-     <div class="container-fluid" style="margin-top: 50px">
-                    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <div class="container-fluid" style="margin-top: 50px">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{% url 'proyecto' proyecto_id %}">Proyecto</a></li>
                 </ol>
@@ -67,25 +71,40 @@
             <div class="jumbotron" style="margin-top: 0px">
                 <div class="row">
                     <div class="col-10 .col-md-10">
-                          <h1><i class="fa fa-book" aria-hidden="true"></i> {{ proyecto.nombre_proyecto }}</h1>
-                {#                <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>#}
+                        <div>
+                            <h1 id="element1"><i class="fa fa-book" aria-hidden="true"></i> {{ proyecto.nombre_proyecto }}</h1>
+                            {#                <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>#}
+                            {% if proyecto.estado == 'PENDIENTE' %}
+                                <a id="element2" href="" class="badge badge-warning">{{ proyecto.estado }}</a>
+                            {% endif %}
+                            {% if proyecto.estado == 'ACTIVO' %}
+                                <a id="element2" href="" class="badge badge-primary">{{ proyecto.estado }}</a>
+                            {% endif %}
+                            {% if proyecto.estado == 'CANCELADO' %}
+                                <a id="element2" href="" class="badge badge-danger">{{ proyecto.estado }}</a>
+                            {% endif %}
+                        </div>
 
                     </div>
                     <div class="col-2 .col-md-2">
-                             {% if proyecto.estado == 'ACTIVO' %}
-                             <a href="#" class="badge badge-primary">{{ proyecto.estado }}</a>
-                             {% endif %}
-                             {% if proyecto.estado == 'CANCELADO' %}
-                             <a href="#" class="badge badge-danger">{{ proyecto.estado }}</a>
-                             {% endif %}
-                         {% if es_scrum  %}
-                            <button type="button" class="btn btn-secondary"  onclick="location.href='{% url 'iniciarProyecto' proyecto_id=proyecto_id %}'"
-                            >Iniciar Proyecto  <i class="fa fa-folder-open-o" aria-hidden="true"></i>
+{#                        {% if proyecto.estado == 'PENDIENTE' %}#}
+{#                            <a href="" class="badge badge-warning">{{ proyecto.estado }}</a>#}
+{#                        {% endif %}#}
+{#                        {% if proyecto.estado == 'ACTIVO' %}#}
+{#                            <a href="" class="badge badge-primary">{{ proyecto.estado }}</a>#}
+{#                        {% endif %}#}
+{#                        {% if proyecto.estado == 'CANCELADO' %}#}
+{#                            <a href="" class="badge badge-danger">{{ proyecto.estado }}</a>#}
+{#                        {% endif %}#}
+                        {% if "INICIAR_PROYECTO" in proyecto_perms %}
+                            <button type="button" class="btn btn-secondary"
+                                    onclick="location.href='{% url 'iniciarProyecto' proyecto_id=proyecto_id %}'"
+                            >Iniciar Proyecto <i class="fa fa-folder-open-o" aria-hidden="true"></i>
                             </button>
-                         {% endif  %}
+                        {% endif %}
                     </div>
-                    <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;" />
-                    <h4  style="width: 75%; margin-top: 10px"><span>Descripción:</span>{{ proyecto.descripcion }}</h4>
+                    <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
+                    <h4 style="width: 75%; margin-top: 10px"><span>Descripción:</span>{{ proyecto.descripcion }}</h4>
                 </div>
 
 
