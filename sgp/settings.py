@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'user',
     'home',
     'proyecto',
+    'desarrollo',
 
     # django-guardian
     'guardian',
@@ -185,5 +186,6 @@ SITE_ID = 1
 
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'login'
+
 
 AUTH_USER_MODEL = 'user.User'

@@ -8,6 +8,7 @@ from guardian.mixins import LoginRequiredMixin, PermissionListMixin
 from guardian.shortcuts import assign_perm, get_group_perms
 import requests
 
+from desarrollo.views import desarrollo
 from proyecto.models import Proyecto
 
 # Create your views here.
@@ -113,16 +114,22 @@ def proyecto(request, proyecto_id):
         Solicita el id del proyecto
     """
     proyecto = Proyecto.objects.get(pk=proyecto_id)
+    miembro = Miembro.objects.get(proyectos=proyecto_id, miembro=request.user)
     try:
-        miembro = Miembro.objects.get(proyectos=proyecto_id, miembro=request.user)
-        scrum = 'Scrum Master'
-        es_scrum = False
-        if miembro.rol.nombre == scrum:
-            es_scrum = True
-        context = {'proyecto_id': proyecto_id,
-                   'proyecto': proyecto, 'es_scrum': es_scrum}
+        if proyecto.estado == proyecto.PENDIENTE or miembro.rol.nombre =='Scrum Master':
+            miembro = Miembro.objects.get(proyectos=proyecto_id, miembro=request.user)
+            scrum = 'Scrum Master'
+            es_scrum = False
+            if miembro.rol.nombre == scrum:
+                es_scrum = True
+            context = {'proyecto_id': proyecto_id,
+                       'proyecto': proyecto, 'es_scrum': es_scrum}
 
-        return render(request, "proyecto/proyecto.html", context)
+            return render(request, "proyecto/proyecto.html", context)
+        elif proyecto.estado == proyecto.ACTIVO:
+            print("AS?")
+            return redirect(reverse('desarrollo', kwargs={'proyecto_id': proyecto_id}))
+
 
     except Exception as e:
         return redirect("listarProyectos")
@@ -357,7 +364,7 @@ def iniciar_proyecto(request, proyecto_id):
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     proyecto_actual.iniciar_proyecto()
     context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual}
-    return render(request, "desarrollo/desarrollo.html", context)
+    return redirect(reverse('desarrollo', kwargs={'proyecto_id': proyecto_id}))
 
 @permission_required_or_403('VER_ROL', (Proyecto, 'id', 'proyecto_id'))
 def permisosRol(request, rol_id, proyecto_id):

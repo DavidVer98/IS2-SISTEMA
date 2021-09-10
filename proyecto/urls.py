@@ -20,7 +20,7 @@ urlpatterns = [
     path('<int:proyecto_id>/miembros/<int:miembro_id>/eliminar', eliminarmiembro, name="eliminarmiembro_proyecto"),
     path('<int:proyecto_id>/miembros/<int:miembro_id>/editar', editar_rolmiembro, name="editarmiembro-proyecto"),
     path('<int:proyecto_id>/eliminar', eliminarProyecto, name="eliminarProyecto"),
-    path('<int:proyecto_id>/desarrollo', iniciar_proyecto, name="iniciarProyecto"),
+    path('<int:proyecto_id>/iniciar', iniciar_proyecto, name="iniciarProyecto"),
     # r'^/(?P<proyecto_id>\d+)/$' setMiembros '<int:proyecto_id>/miembros' proyect/1/miembros
 
 ]
