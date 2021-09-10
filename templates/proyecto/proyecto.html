@@ -48,7 +48,12 @@
                     </a>
                 </li>
             {% endif %}
-
+             <li class="header">Desarrollo</li>
+                <li>
+                    <a href="{% url 'listaRol' proyecto_id=proyecto_id %}">
+                        <i class="fa fa-user" aria-hidden="true"></i>Roles
+                    </a>
+                </li>
         </ul>
     </div>
 
@@ -62,11 +67,17 @@
             <div class="jumbotron" style="margin-top: 0px">
                 <div class="row">
                     <div class="col-10 .col-md-10">
-                          <h1><i class="fa fa-bullhorn" aria-hidden="true"></i> Bienvenido al proyecto!</h1>
+                          <h1><i class="fa fa-book" aria-hidden="true"></i> {{ proyecto.nombre_proyecto }}</h1>
                 {#                <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>#}
 
                     </div>
                     <div class="col-2 .col-md-2">
+                             {% if proyecto.estado == 'ACTIVO' %}
+                             <a href="#" class="badge badge-primary">{{ proyecto.estado }}</a>
+                             {% endif %}
+                             {% if proyecto.estado == 'CANCELADO' %}
+                             <a href="#" class="badge badge-danger">{{ proyecto.estado }}</a>
+                             {% endif %}
                          {% if es_scrum  %}
                             <button type="button" class="btn btn-secondary"  onclick="location.href='{% url 'iniciarProyecto' proyecto_id=proyecto_id %}'"
                             >Iniciar Proyecto  <i class="fa fa-folder-open-o" aria-hidden="true"></i>
@@ -74,7 +85,7 @@
                          {% endif  %}
                     </div>
                     <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;" />
-                    <h2>Nombre del proyecto - {{ proyecto.nombre_proyecto }}</h2>
+                    <h4  style="width: 75%; margin-top: 10px"><span>Descripción:</span>{{ proyecto.descripcion }}</h4>
                 </div>
 
 

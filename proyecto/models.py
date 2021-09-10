@@ -92,6 +92,7 @@ class Proyecto(models.Model):
     estado = models.CharField(max_length=50, choices=ESTADO_PROYECTO_CHOICES, default=PENDIENTE)
     fecha_inicio = models.DateField()
     roles = models.ManyToManyField(Rol)
+    descripcion = models.TextField(max_length=800)
 
     def iniciar_proyecto(self):
         self.estado = self.ACTIVO

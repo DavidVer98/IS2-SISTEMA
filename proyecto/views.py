@@ -33,7 +33,7 @@ def listarProyectos(request):
     return render(request, "home/listarProyectos.html", context)
 
 @login_required(login_url='/login')
-@permission_required('user.EDITAR_PROYECTO', login_url='/home')
+@permission_required('user.EDITAR_PROYECTOS', login_url='/home')
 def editarProyecto(request, proyecto_id):
     """
        **Editar Proyecto:**
@@ -44,19 +44,19 @@ def editarProyecto(request, proyecto_id):
 
     """
     proyecto = Proyecto.objects.get(pk=proyecto_id)
+    nombre_anterior = proyecto.nombre_proyecto
     if request.method == "POST":
-        form = ProyectoForm(request.POST, instance=proyecto)
+        form = ProyectoForm(request.POST)
         if form.is_valid():
             data=form.cleaned_data
             nombre_proyecto = data['nombre_proyecto']
+            descripcion = data['descripcion']
             scrum_nuevo = data['scrum_master']
             proyecto_actual = Proyecto.objects.filter(nombre_proyecto=nombre_proyecto)
-            if not proyecto_actual.exists():
-                form.save()
-            else:
-                pass
-            proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
-            proyecto_actual.reasignarScrum(scrum_nuevo)
+            if (not proyecto_actual.exists()) or nombre_anterior == nombre_proyecto:
+                proyecto.nombre_proyecto = nombre_proyecto
+            proyecto.descripcion = descripcion
+            proyecto.reasignarScrum(scrum_nuevo)
             return redirect("listarProyectos")
     else:
         form = ProyectoForm(instance=proyecto)
@@ -106,13 +106,14 @@ def crearProyecto(request):
 
 @permission_required_or_403('VER_PROYECTO', (Proyecto, 'id', 'proyecto_id'))
 def proyecto(request, proyecto_id):
+    proyecto = Proyecto.objects.get(pk = proyecto_id)
     """
        **Vista Proyecto:**
         03/09/2021
         Vista utilizada recibir a los usuarios en un proyecto.
         Solicita el id del proyecto
     """
-    proyecto = Proyecto.objects.get(pk=proyecto_id)
+    # proyecto = Proyecto.objects.get(pk=proyecto_id)
     try:
         miembro = Miembro.objects.get(proyectos=proyecto_id, miembro=request.user)
         scrum = 'Scrum Master'

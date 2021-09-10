@@ -15,3 +15,5 @@ pip install -r requirements.txt
 ./manage.py migrate
 
 cat djangoconfig.txt | python manage.py shell
+
+./manage.py runserver
