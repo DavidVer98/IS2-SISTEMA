@@ -106,14 +106,13 @@ def crearProyecto(request):
 
 @permission_required_or_403('VER_PROYECTO', (Proyecto, 'id', 'proyecto_id'))
 def proyecto(request, proyecto_id):
-    proyecto = Proyecto.objects.get(pk = proyecto_id)
     """
        **Vista Proyecto:**
         03/09/2021
         Vista utilizada recibir a los usuarios en un proyecto.
         Solicita el id del proyecto
     """
-    # proyecto = Proyecto.objects.get(pk=proyecto_id)
+    proyecto = Proyecto.objects.get(pk=proyecto_id)
     try:
         miembro = Miembro.objects.get(proyectos=proyecto_id, miembro=request.user)
         scrum = 'Scrum Master'
