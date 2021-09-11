@@ -58,7 +58,7 @@ class setMiembroForms(ModelForm):
     # pk = forms.IntegerField()
     class Meta:
         model = Miembro
-        fields = ['miembro', 'proyectos', 'rol']
+        fields = ['miembro', 'proyectos', 'rol', 'produccion_por_semana']
         # exclude = ['pk']
         exclude = ['proyectos']
 

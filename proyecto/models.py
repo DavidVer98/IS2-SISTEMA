@@ -160,6 +160,7 @@ class Miembro(models.Model):
     miembro = models.ForeignKey(User, on_delete=models.PROTECT)
     proyectos = models.ForeignKey(Proyecto, on_delete=models.CASCADE)
     rol = models.ForeignKey(Rol, on_delete=models.PROTECT)
+    produccion_por_semana = models.IntegerField("Horas de produccion semanal",default=0, blank=True ,null=False )
 
     def __str__(self):
         return self.miembro.username
