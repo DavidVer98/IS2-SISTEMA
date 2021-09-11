@@ -27,8 +27,6 @@ def listarUsuarios(request):
     """
     user = User.objects.all()
     context = {'user': user}
-    print(request.user.has_perm('user.view_user'))
-    print(user.values())
     return render(request, 'home/listaUsuarios.html', context)
 
 

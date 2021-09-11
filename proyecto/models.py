@@ -105,7 +105,13 @@ class Proyecto(models.Model):
 
     def reasignarScrum(self, scrum_nuevo):
         miembro = Miembro.objects.get(proyectos=self, miembro=self.scrum_master.pk)
-        grupo_rol=miembro.rol.group
+        # si el nuevo scrum es parte del proyecto, se borra la relacion anterior
+        if Miembro.objects.filter(proyectos=self, miembro=scrum_nuevo).exists():
+            miembro_existente=Miembro.objects.get(proyectos=self, miembro=scrum_nuevo)
+            grupo_rol_de_miembro=miembro_existente.rol.group
+            miembro_existente.miembro.groups.remove(grupo_rol_de_miembro)
+            miembro_existente.delete()
+        grupo_rol = miembro.rol.group
         scrum_anterior = miembro.miembro
         # se remueve del grupo scrum master al scrum master anterior
         scrum_anterior.groups.remove(grupo_rol)

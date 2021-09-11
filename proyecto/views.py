@@ -114,8 +114,8 @@ def proyecto(request, proyecto_id):
         Solicita el id del proyecto
     """
     proyecto = Proyecto.objects.get(pk=proyecto_id)
-    miembro = Miembro.objects.get(proyectos=proyecto_id, miembro=request.user)
     try:
+        miembro = Miembro.objects.get(proyectos=proyecto_id, miembro=request.user)
         if proyecto.estado == proyecto.PENDIENTE or miembro.rol.nombre =='Scrum Master':
             miembro = Miembro.objects.get(proyectos=proyecto_id, miembro=request.user)
             scrum = 'Scrum Master'
