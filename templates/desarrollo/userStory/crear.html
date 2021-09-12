@@ -13,21 +13,31 @@
             <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{% url 'desarrollo' proyecto_id %}">Desarrollo</a></li>
-                    <li class="breadcrumb-item"><a href="{% url 'productBacklog' proyecto_id %}">Product Backlog</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'productBacklog' proyecto_id %}">Product Backlog</a>
+                    </li>
                     <li class="breadcrumb-item active" aria-current="page">Crear User Story</li>
                 </ol>
 
             </nav>
             <div class="jumbotron" style="margin-top: 0px">
-                                <h1> <i class="fa fa-files-o" aria-hidden="true"></i> Crear User Story </h1>
-                 <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
-                    <form method="POST">
+                {% if error %}
+                    <div class="alert alert-danger" role="alert">
+                        Ya existe un User Story con ese nombre !
+                    </div>
+                {% endif %}
+                <h1><i class="fa fa-files-o" aria-hidden="true"></i> Crear User Story </h1>
+                <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
+                <form method="POST">
                     {% csrf_token %}
 
-{#                    {{ form.as_p }}#}
-                     {% bootstrap_form form %}
-                    <button class="btn btn-primary" style="margin-left: 10px">Aceptar <i class="fa fa-check" aria-hidden="true"></i></button>
-                    <a class="btn btn-danger " style="margin-left: 10px; color:white" onclick="location.href='{% url 'productBacklog'  proyecto_id %}'">Cancelar <i class="fa fa-times" aria-hidden="true"></i></a>
+                    {#                    {{ form.as_p }}#}
+                    {% bootstrap_form form %}
+                    <button class="btn btn-primary" style="margin-left: 10px">Aceptar <i class="fa fa-check"
+                                                                                         aria-hidden="true"></i>
+                    </button>
+                    <a class="btn btn-danger " style="margin-left: 10px; color:white"
+                       onclick="location.href='{% url 'productBacklog'  proyecto_id %}'">Cancelar <i class="fa fa-times"
+                                                                                                     aria-hidden="true"></i></a>
                 </form>
             </div>
         </div>

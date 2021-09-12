@@ -27,16 +27,25 @@ def crearUserStory(request, proyecto_id):
 
     form = UserStoryForms(request.POST or None)
     if request.method == "POST":
-        # data = form.cleaned_data
         if form.is_valid():
-            form.instance.proyecto = proyecto_actual
-            form.save()
-            return redirect(reverse('productBacklog', kwargs={'proyecto_id': proyecto_id}))
+            data = form.cleaned_data
+            nombre_user_story_form = data['nombre']
+            nombre_user_story = UserStory.objects.filter(nombre=nombre_user_story_form)
+            if not nombre_user_story.exists():
+                form.instance.proyecto = proyecto_actual
+                form.save()
+                return redirect(reverse('productBacklog', kwargs={'proyecto_id': proyecto_id}))
+            else:
+                error = True
+                context = { "error":error,"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form}
+                return render(request,'desarrollo/userStory/crear.html', context)
+
     else:
         form = UserStoryForms()
 
     context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form}
     return render(request, "desarrollo/userStory/crear.html", context)
+
 
 
 def editarUserStory(request, proyecto_id, user_story_id):
@@ -45,11 +54,20 @@ def editarUserStory(request, proyecto_id, user_story_id):
 
     if request.method == "POST":
         form = UserStoryForms(request.POST or None, instance=user_story)
-        # data = form.cleaned_data
+
         if form.is_valid():
-            form.instance.proyecto = proyecto_actual
-            form.instance.save()
-            return redirect(reverse('productBacklog', kwargs={'proyecto_id': proyecto_id}))
+            user_story = UserStory.objects.get(pk=user_story_id)
+            data = form.cleaned_data
+            nombre_user_story_form = data['nombre']
+            user_story_filtro = UserStory.objects.filter(nombre=nombre_user_story_form)
+            if nombre_user_story_form == user_story.nombre or not user_story_filtro.exists():
+                form.instance.proyecto = proyecto_actual
+                form.instance.save()
+                return redirect(reverse('productBacklog', kwargs={'proyecto_id': proyecto_id}))
+            else:
+                error = True
+                context = {"error": error, "proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form}
+                return render(request, 'desarrollo/userStory/editar.html', context)
     else:
         form = UserStoryForms(instance=user_story)
 

@@ -405,104 +405,80 @@
 
                     </div>
                     <div class="col-2 .col-md-2">
-                        {% if "INICIAR_PROYECTO" in proyecto_perms %}
+
+                            {% if "INICIAR_PROYECTO" in proyecto_perms and proyecto.estado == proyecto.PENDIENTE %}
                             <button type="button" class="btn btn-secondary"
                                     onclick="location.href='{% url 'iniciarProyecto' proyecto_id=proyecto_id %}'"
                             >Iniciar Proyecto <i class="fa fa-folder-open-o" aria-hidden="true"></i>
                             </button>
-                        {% endif %}
+                    {% endif %}
                     </div>
                     <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
 {#                    <h4 style="width: 75%; margin-top: 10px"><span>Descripción:</span>{{ proyecto.descripcion }}</h4>#}
                 </div>
 <div class="row">
-    <div class="col-lg-4">
-        <div class="card card-margin">
+ <div class="col-lg-4">
+       <div class="card card-margin" style="height: 90%;">
             <div class="card-header no-border">
-                <h5 class="card-title">Recordatorio</h5>
+                <h5 class="card-title">Descripción</h5>
             </div>
             <div class="card-body pt-0">
                 <div class="widget-49">
                     <div class="widget-49-title-wrapper">
-                        <div class="widget-49-date-primary">
-                            <span class="widget-49-date-day">09</span>
-                            <span class="widget-49-date-month">apr</span>
-                        </div>
-                        <div class="widget-49-meeting-info">
-                            <span class="widget-49-pro-title">PRO-08235 DeskOpe. Website</span>
-                            <span class="widget-49-meeting-time">12:00 to 13.30 Hrs</span>
-                        </div>
                     </div>
-                    <ol class="widget-49-meeting-points">
-                        <li class="widget-49-meeting-item"><span>Expand module is removed</span></li>
-                        <li class="widget-49-meeting-item"><span>Data migration is in scope</span></li>
-                        <li class="widget-49-meeting-item"><span>Session timeout increase to 30 minutes</span></li>
-                    </ol>
-                    <div class="widget-49-meeting-action">
-                        <a href="#" class="btn btn-sm btn-flash-border-primary">View All</a>
-                    </div>
+                    <p class="text-muted">{{ proyecto.descripcion }}</p>
+
                 </div>
             </div>
         </div>
     </div>
     <div class="col-lg-4">
-        <div class="card card-margin">
+               <div class="card card-margin" style="height: 90%;">
             <div class="card-header no-border">
-                <h5 class="card-title">Recordatorio</h5>
+                <h5 class="card-title" style="position: absolute">Miembros</h5>
             </div>
-            <div class="card-body pt-0">
+            <div class="card-body pt-0" >
+            <div class="card" style="height: 90%; display: flex; overflow-y: scroll">
                 <div class="widget-49">
                     <div class="widget-49-title-wrapper">
-                        <div class="widget-49-date-warning">
-                            <span class="widget-49-date-day">13</span>
-                            <span class="widget-49-date-month">apr</span>
-                        </div>
+
                         <div class="widget-49-meeting-info">
-                            <span class="widget-49-pro-title">Reunion con los pibes!</span>
-                            <span class="widget-49-meeting-time">12:00 to 13.30 Hrs</span>
                         </div>
                     </div>
                     <ol class="widget-49-meeting-points">
-                        <li class="widget-49-meeting-item"><span>Elias pio era?</span></li>
-                        <li class="widget-49-meeting-item"><span>Ta potente ese tal is2</span></li>
-                        <li class="widget-49-meeting-item"><span>El panshi carrizo ya era</span></li>
+                        {% for i in miembros %}
+                        <li class="widget-49-meeting-item"><span>{{ i }}</span></li>
+                        {% endfor %}
                     </ol>
-                    <div class="widget-49-meeting-action">
-                        <a href="#" class="btn btn-sm btn-flash-border-warning">View All</a>
-                    </div>
                 </div>
+            </div>
             </div>
         </div>
     </div>
-    <div class="col-lg-4">
-        <div class="card card-margin">
+        <div class="col-lg-4">
+        <div class="card card-margin" style="height: 90%;">
             <div class="card-header no-border">
-                <h5 class="card-title">Recordatorio</h5>
+                <h5 class="card-title" style="position: absolute">Roles</h5>
             </div>
-            <div class="card-body pt-0">
+            <div class="card-body pt-0" >
+            <div class="card" style="height: 90%; display: flex; overflow-y: scroll">
                 <div class="widget-49">
                     <div class="widget-49-title-wrapper">
-                        <div class="widget-49-date-success">
-                            <span class="widget-49-date-day">22</span>
-                            <span class="widget-49-date-month">apr</span>
-                        </div>
+
                         <div class="widget-49-meeting-info">
-                            <span class="widget-49-pro-title">PRO-027865 Opera module</span>
-                            <span class="widget-49-meeting-time">12:00 to 13.30 Hrs</span>
                         </div>
                     </div>
                     <ol class="widget-49-meeting-points">
-                        <li class="widget-49-meeting-item"><span>Scope is revised and updated</span></li>
-                        <li class="widget-49-meeting-item"><span>Time-line has been changed</span></li>
-                        <li class="widget-49-meeting-item"><span>Received approval to start wire-frame</span></li>
+                        {% for i in proyecto.roles.all %}
+                        <li class="widget-49-meeting-item"><span>{{ i.nombre }}</span></li>
+                        {% endfor %}
                     </ol>
-                    <div class="widget-49-meeting-action">
-                        <a href="#" class="btn btn-sm btn-flash-border-success">View All</a>
-                    </div>
                 </div>
+            </div>
             </div>
         </div>
     </div>
+
 </div>
 
 

@@ -117,17 +117,16 @@ def proyecto(request, proyecto_id):
     try:
         miembro = Miembro.objects.get(proyectos=proyecto_id, miembro=request.user)
         if proyecto.estado == proyecto.PENDIENTE or miembro.rol.nombre =='Scrum Master':
-            miembro = Miembro.objects.get(proyectos=proyecto_id, miembro=request.user)
-            scrum = 'Scrum Master'
-            es_scrum = False
-            if miembro.rol.nombre == scrum:
-                es_scrum = True
-            context = {'proyecto_id': proyecto_id,
-                       'proyecto': proyecto, 'es_scrum': es_scrum}
+            miembros = Miembro.objects.filter(proyectos=proyecto_id)
+            proyecto = Proyecto.objects.get(pk=proyecto_id)
+            roles = proyecto.roles.all()
+
+            context = {'proyecto_id': proyecto_id, 'miembros':miembros,
+                       'proyecto': proyecto, 'roles':roles}
 
             return render(request, "proyecto/proyecto.html", context)
         elif proyecto.estado == proyecto.ACTIVO:
-            print("AS?")
+
             return redirect(reverse('desarrollo', kwargs={'proyecto_id': proyecto_id}))
 
 
