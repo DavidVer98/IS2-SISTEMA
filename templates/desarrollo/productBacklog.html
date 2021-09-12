@@ -17,7 +17,7 @@
             <div class="jumbotron" style="margin-top: 0px">
                 <div class="row">
                     <div class="col-10 .col-md-10">
-                        <h1><i class="fa fa-list-alt" aria-hidden="true"></i></i> Lista de User Stories</h1>
+                        <h1><i class="fa fa-list-alt" aria-hidden="true"></i></i> Product Backlog</h1>
                     </div>
 
                  <div class="col-2 .col-md-2">
@@ -50,9 +50,13 @@
                                 {{ userStory.prioridad }}
                             </td>
                             <td>
-                                <button type="button" class="btn btn-secondary">Editar
+                                <button type="button" class="btn btn-secondary"
+                                            onclick="location.href='{% url 'editarUserStory' proyecto_id userStory.id %}'"
+                                >Editar
                                 </button>
-                                <button type="button" class="btn btn-danger">Borrar
+                                <button type="button" class="btn btn-danger"
+                                            onclick="location.href='{% url 'eliminarUserStory' proyecto_id userStory.id %}'"
+                                    >Borrar
                                 </button>
                             </td>
                         </tr>

@@ -9,7 +9,6 @@ from proyecto.models import Proyecto, Miembro
 
 permissions = [
     ("VER_PROYECTO", "Puede visualizar el proyecto en la lista de proyectos"),
-    ("CREAR_PROYECTO", "Puede crear proyectos"),
     ("EDITAR_PROYECTO", "Puede editar configuraciones basicas del proyecto"),
     ("INICIAR_PROYECTO", "Puede iniciar la ejecucion de un proyecto"),
     ("ELIMINAR_PROYECTO", "Puede eliminar el proyecto"),
