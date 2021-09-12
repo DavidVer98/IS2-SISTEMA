@@ -1,0 +1,69 @@
+{% extends "baseDesarrollo.html" %}
+
+{% block head_content %}
+    <title>Home</title>
+{% endblock %}
+{% block container %}
+
+    <div class="content-container">
+        <div class="container-fluid" style="margin-top: 50px">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'desarrollo' proyecto_id %}">Desarrollo</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Product Backlog</li>
+                </ol>
+
+            </nav>
+            <div class="jumbotron" style="margin-top: 0px">
+                <div class="row">
+                    <div class="col-10 .col-md-10">
+                        <h1><i class="fa fa-list-alt" aria-hidden="true"></i></i> Lista de User Stories</h1>
+                    </div>
+
+                 <div class="col-2 .col-md-2">
+{#                        {% if "INICIAR_PROYECTO" in proyecto_perms %}#}
+                            <button type="button" class="btn btn-secondary"
+                                    onclick="location.href='{% url 'crearUserStory' proyecto_id=proyecto_id %}'"
+                            >Crear User Story <i class="fa fa-file" aria-hidden="true"></i>
+                            </button>
+{#                        {% endif %}#}
+                    </div>
+
+                    <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
+
+                </div>
+                  <table class="overflow-auto table table-striped table-dark container">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Prioridad</th>
+                        <th scope="col">Opciones</th>
+                    </tr>
+                    </thead>
+                    {% for userStory in userStory %}
+                        <tbody style="text-align: left; ">
+                        <tr>
+                            <th scope="row">{{ userStory.id }}</th>
+                            <td>{{ userStory.nombre }}</td>
+                            <td>
+                                {{ userStory.prioridad }}
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-secondary">Editar
+                                </button>
+                                <button type="button" class="btn btn-danger">Borrar
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

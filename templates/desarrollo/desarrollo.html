@@ -1,83 +1,31 @@
-{% extends "baseProyecto.html" %}
+{% extends "baseDesarrollo.html" %}
 
 {% block head_content %}
     <title>Home</title>
 {% endblock %}
 {% block container %}
 
-    <div class="sidebar-container">
-        {#    <div class="sidebar-logo">#}
-        <div class="container-fluid" style="margin: auto">
-            <img src="/static/img/default-profile.png" class="rounded-circle" height="50" style="width: 50px;"/>
-            {{ request.user.username }}
-
-        </div>
-        {#    </div>#}
-        <ul class="sidebar-navigation">
-{#            <li class="header">{{ proyecto.nombre_proyecto }} <i class="fa fa-briefcase" aria-hidden="true"></i></li>#}
-{#            <li>#}
-{#                <a href="/home">#}
-{#                    <i class="fa fa-home" aria-hidden="true"></i> Home#}
-{#                </a>#}
-{#            </li>#}
-{#            <li>#}
-{#                <a href="#">#}
-{#                    <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard#}
-{#                </a>#}
-{#            </li>#}
-{#            <li class="header">Another Menu</li>#}
-{#            <li>#}
-{#                <a a href='{% url 'roles_proyecto' proyecto_id=proyecto_id %}'>#}
-{#                    <i class="fa fa-users" aria-hidden="true"></i> Roles#}
-{#                </a>#}
-{#            </li>#}
-{#            <li>#}
-{#                <a href='{% url 'miembros_proyecto' proyecto_id=proyecto.id %}'>#}
-{#                    <i class="fa fa-cog" aria-hidden="true"></i> Miembros#}
-{#                </a>#}
-{#            </li>#}
-{##}
-            {#            <li>#}
-            {#                <a href='{% url 'listaUsuarios' %}'>#}
-            {#                    <i class="fa fa-users" aria-hidden="true"></i> Configurar#}
-            {#                </a>#}
-            {#            </li>#}
-{##}
-{#            <li>#}
-{#                <a href="{% url 'listaRol' proyecto_id=proyecto_id %}">#}
-{#                    <i class="fa fa-user" aria-hidden="true"></i>Listar Roles#}
-{#                </a>#}
-{##}
-{##}
-{#            </li>#}
-
-        </ul>
-    </div>
-
     <div class="content-container">
-        <div class="container-fluid">
-            <div class="jumbotron" style="margin-top: 45px">
+        <div class="container-fluid" style="margin-top: 50px">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'desarrollo' proyecto_id %}">Desarrollo</a></li>
+                </ol>
+            </nav>
+            <div class="jumbotron" style="margin-top: 0px">
                 <div class="row">
                     <div class="col-10 .col-md-10">
-                          <h1><i class="fa fa-bullhorn" aria-hidden="true"></i> Proyecto Iniciado!</h1>
-                {#                <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>#}
-
+                        <h1><i class="fa fa-bullhorn" aria-hidden="true"></i> Proyecto Iniciado!</h1>
                     </div>
-{#                    <div class="col-2 .col-md-2">#}
-{##}
-{#                        <button type="button" class="btn btn-secondary"  onclick="location.href='{% url 'iniciarProyecto' proyecto_id=proyecto.pk %}'"#}
-{#                        >Iniciar Proyecto  <i class="fa fa-folder-open-o" aria-hidden="true"></i>#}
-{#                        </button>#}
-{##}
-{#                    </div>#}
-                    <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;" />
+
+                    <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
                     <h2>Nombre del proyecto </h2>
                     <li>{{ proyecto.nombre_proyecto }}</li>
 
                     <h3>Roles del Proyecto iniciado</h3>
                     {% for rol in proyecto.roles.all %}
                         <li>
-                                {{rol  }}
+                            {{ rol }}
                         </li>
                     {% endfor %}
 

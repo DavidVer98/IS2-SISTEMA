@@ -20,9 +20,9 @@ class UserStory(models.Model):
         ('QA', 'QA'),
         ('RELEASE', 'RELEASE'),
     ]
-    BAJA = 0
-    NORMAL = 1
-    ALTA = 2
+    BAJA = 'Baja'
+    NORMAL = 'Normal'
+    ALTA = 'Alta'
     PRIORIDAD_USERSTORY_CHOICES = (
         (BAJA, 'Baja'),
         (NORMAL, 'Normal'),
@@ -35,11 +35,12 @@ class UserStory(models.Model):
     nombre = models.CharField(max_length=50)
     descripcion = models.TextField(max_length=300)
     estado = models.CharField(max_length=50, choices=ESTADO_USERSTORY_CHOICES, default=TO_DO)
-    estimacion = models.FloatField()
-    prioridad = models.IntegerField(choices=PRIORIDAD_USERSTORY_CHOICES, blank=True)
+    estimacion = models.FloatField(blank=True, null=True)
+    prioridad = models.CharField(max_length=50,default=BAJA, choices=PRIORIDAD_USERSTORY_CHOICES)
 
 
 class EstimacionPlanificada(models.Model):
+    userStory = models.ForeignKey(UserStory, on_delete=models.CASCADE)
     estimacion_Scrum = models.IntegerField()
     estimacion_Miembro = models.IntegerField()
 
@@ -47,6 +48,10 @@ class EstimacionPlanificada(models.Model):
 class ProductBacklog(models.Model):
     userStories = models.ManyToManyField(UserStory)
 
+
+class SprintPlanning(models.Model):
+    userStories = models.ManyToManyField(UserStory)
+    miembros = models.ManyToManyField(Miembro)
 
 
 
