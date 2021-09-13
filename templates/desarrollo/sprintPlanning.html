@@ -25,6 +25,7 @@
                                 <th scope="col">#</th>
                                 <th scope="col">Nombre</th>
                                 <th scope="col">Prioridad</th>
+                                <th scope="col">Miembro asignado</th>
                                 <th scope="col">Opciones</th>
                             </tr>
                             </thead>
@@ -37,8 +38,18 @@
                                         {{ userStory.prioridad }}
                                     </td>
                                     <td>
+                                        {% if userStory.miembro_asignado != None %}
+                                        {{ userStory.miembro_asignado }}
+
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                         <button type="button" class="btn btn-secondary"
+                                                onclick="location.href='{% url 'asignarMiembroUS' proyecto_id userStory.id %}'"
+                                        ><i class="bi bi-person-plus-fill"></i>
+                                        </button>
                                         <button type="button" class="btn btn-info"
-                                                onclick="location.href='{% url 'editarUserStory' proyecto_id userStory.id %}'"
+                                                onclick="location.href='{% url 'planningPoker' proyecto_id userStory.id %}'"
                                         ><i class="bi bi-suit-spade"></i>
                                         </button>
                                         <button type="button" class="btn btn-danger"
@@ -57,11 +68,15 @@
                         <p class="text-muted" style="text-align: center; margin-top: -20px"><i class="bi bi-gear"></i>
                             Opciones</p>
                         <hr>
-                        <div class="text-muted" style="margin-top: 20px"><i class="fa fa-th-list"
-                                                                            aria-hidden="true"></i> Descartar
+                        <div class="text-muted" style="margin-top: 20px"><i class="bi bi-person-plus"></i> Asignar a miembro
                         </div>
                         <div class="text-muted" style="margin-top: 10px"><i class="bi bi-suit-spade"></i> Planning Poker
                         </div>
+                        <div class="text-muted" style="margin-top: 10px"><i class="fa fa-th-list"
+                                                                            aria-hidden="true"></i> Descartar
+                        </div>
+
+
 
                     </div>
                 </div>

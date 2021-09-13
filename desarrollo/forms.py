@@ -1,4 +1,4 @@
-from desarrollo.models import UserStory
+from desarrollo.models import UserStory, EstimacionPlanificada
 from django import forms
 
 from proyecto.models import Proyecto, Miembro
@@ -16,3 +16,18 @@ class UserStoryForms(forms.ModelForm):
         fields = ['nombre', 'descripcion', 'miembro', 'proyecto', 'miembro', 'estado_sprint', 'estimacion', 'prioridad',
                   'estado_desarrollo']
         exclude = ['proyecto', 'miembro', 'estado_sprint', 'estimacion']
+
+
+class UserStoryMiembroForms(forms.ModelForm):
+    class Meta:
+        model = UserStory
+        fields = ['nombre', 'descripcion', 'miembro_asignado', 'proyecto', 'estado_sprint', 'estimacion', 'prioridad',
+                  'estado_desarrollo']
+        exclude = ['nombre', 'descripcion', 'proyecto', 'estado_sprint', 'estimacion', 'prioridad',
+                   'estado_desarrollo']
+
+
+class PlanningPokerForms(forms.ModelForm):
+    class Meta:
+        model= EstimacionPlanificada
+        fields = ['estimacion_scrum','estimacion_miembro']

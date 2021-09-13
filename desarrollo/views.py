@@ -3,8 +3,8 @@ from django.urls import reverse
 from django.shortcuts import render, redirect
 
 # Create your views here.
-from desarrollo.forms import UserStoryForms
-from desarrollo.models import UserStory
+from desarrollo.forms import UserStoryForms, UserStoryMiembroForms, PlanningPokerForms
+from desarrollo.models import UserStory, EstimacionPlanificada
 from proyecto.models import Proyecto
 
 
@@ -34,18 +34,18 @@ def crearUserStory(request, proyecto_id):
             if not nombre_user_story.exists():
                 form.instance.proyecto = proyecto_actual
                 form.save()
+
                 return redirect(reverse('productBacklog', kwargs={'proyecto_id': proyecto_id}))
             else:
                 error = True
-                context = { "error":error,"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form}
-                return render(request,'desarrollo/userStory/crear.html', context)
+                context = {"error": error, "proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form}
+                return render(request, 'desarrollo/userStory/crear.html', context)
 
     else:
         form = UserStoryForms()
 
     context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form}
     return render(request, "desarrollo/userStory/crear.html", context)
-
 
 
 def editarUserStory(request, proyecto_id, user_story_id):
@@ -74,29 +74,64 @@ def editarUserStory(request, proyecto_id, user_story_id):
     context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form, 'user_story': user_story}
     return render(request, "desarrollo/userStory/editar.html", context)
 
+
 def eliminarUserStory(request, proyecto_id, user_story_id):
     user_story = UserStory.objects.get(pk=user_story_id)
     user_story.delete()
     return redirect(reverse('productBacklog', kwargs={'proyecto_id': proyecto_id}))
 
-def sprintPlanning(request, proyecto_id):
 
+def sprintPlanning(request, proyecto_id):
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
-    userStory = UserStory.objects.filter(estado_desarrollo=UserStory.EN_SPRINT_PLANNING, proyecto =proyecto_id)
-    context = { "proyecto_id" : proyecto_id , 'userStory':userStory, "proyecto": proyecto_actual}
-    return render(request,"desarrollo/sprintPlanning.html",context)
+    userStory = UserStory.objects.filter(estado_desarrollo=UserStory.EN_SPRINT_PLANNING, proyecto=proyecto_id)
+    context = {"proyecto_id": proyecto_id, 'userStory': userStory, "proyecto": proyecto_actual}
+    return render(request, "desarrollo/sprintPlanning.html", context)
+
 
 def sprint_planning_estado(request, proyecto_id, user_story_id):
-    user_story_actual = UserStory.objects.get(pk = user_story_id)
+    user_story_actual = UserStory.objects.get(pk=user_story_id)
     user_story_actual.estado_desarrollo = UserStory.EN_SPRINT_PLANNING
     user_story_actual.save()
     return redirect(reverse('productBacklog', kwargs={'proyecto_id': proyecto_id}))
 
+
 def product_backlog_estado(request, proyecto_id, user_story_id):
-    user_story_actual = UserStory.objects.get(pk = user_story_id)
+    user_story_actual = UserStory.objects.get(pk=user_story_id)
     user_story_actual.estado_desarrollo = UserStory.EN_PRODUCT_BACKLOG
+    user_story_actual.user=None
     user_story_actual.save()
     return redirect(reverse('sprintPlanning', kwargs={'proyecto_id': proyecto_id}))
 
 
+def asignarMiembroUS(request, proyecto_id, user_story_id):
+    user_story_actual = UserStory.objects.get(pk=user_story_id)
+    proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+    if request.method == "POST":
+        form = UserStoryMiembroForms(request.POST or None, instance=user_story_actual)
+        if form.is_valid():
+            form.instance.save()
+            return redirect(reverse('sprintPlanning', kwargs={'proyecto_id': proyecto_id}))
+    else:
+        form = UserStoryMiembroForms(instance=user_story_actual)
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form, 'user_story': user_story_actual}
+    return render(request, "desarrollo/asignarMiembroUS.html", context)
 
+
+def planningPoker(request, proyecto_id, user_story_id):
+    user_story_actual = UserStory.objects.get(pk=user_story_id)
+    if request.user == user_story_actual.miembro_asignado:
+        proyecto_actual=Proyecto.objects.get(pk=proyecto_id)
+
+        estimacion, fue_creado= EstimacionPlanificada.objects.get_or_create(user_story=user_story_actual)
+        print(fue_creado)
+
+        if request.method == "POST":
+            form = PlanningPokerForms(request.POST or None, instance=estimacion)
+            if form.is_valid():
+                form.instance.save()
+                return redirect(reverse('sprintPlanning', kwargs={'proyecto_id': proyecto_id}))
+        else:
+            form = PlanningPokerForms(instance=estimacion)
+        context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form, 'user_story': user_story_actual}
+
+    return render(request, "desarrollo/planningPoker.html", context)
