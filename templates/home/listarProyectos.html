@@ -1,70 +1,97 @@
 {% extends "baseHome.html" %}
+{% load guardian_tags %}
 
 {% block head_content %}
     <title>Lista Proyectos</title>
 {% endblock %}
 
 {% block container %}
-    <div class="content-container">
-        <div class="container-fluid" style="margin-top: 45px">
-            <div class="jumbotron">
-                <div class="row">
-                    <div class="col-10 .col-md-10">
-                        <h1><i class="fa fa-thumb-tack" aria-hidden="true"></i> Lista Proyectos</h1>
-                    </div>
-                    <div class="col-2 .col-md-2">
+    <div class="content-container" style="margin-top: 50px">
+        <div class="container-fluid">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+{#                    <li class="breadcrumb-item"><a href="{% url 'proyecto' proyecto_id %}">Proyecto</a></li>#}
+{#                    <li class="breadcrumb-item"><a href="{% url 'listaRol' proyecto_id %}">Lista de roles</a></li>#}
+                    <li class="breadcrumb-item active" aria-current="page">Lista de Proyectos</li>
+                </ol>
+            </nav>
+                <div class="jumbotron">
+                    <div class="row">
+                        <div class="col-10 .col-md-10">
+                            <h1><i class="fa fa-thumb-tack" aria-hidden="true"></i> Lista Proyectos</h1>
+                        </div>
+                        <div class="col-2 .col-md-2">
 
-                        <button type="button" class="btn btn-secondary"  onclick="location.href='{% url 'crearProyecto' %}'"
-                        >Crear Proyecto  <i class="fa fa-folder-open-o" aria-hidden="true"></i>
-                        </button>
+                            {% if request.user.rolSistema == "Administrador" %}
+                                    <button type="button" class="btn btn-secondary"
+                                    onclick="location.href='{% url 'crearProyecto' %}'"
+                                    >Crear Proyecto <i class="fa fa-folder-open-o" aria-hidden="true"></i>
+                            </button>
 
+                            {% endif %}
+
+                        </div>
+                        <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
                     </div>
-                    <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;" />
-                </div>
-                <table class="table table-striped table-dark container">
-                    <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Estado</th>
-                        <th scope="col">Fecha Inicio</th>
-                        <th scope="col">Opciones</th>
-                    </tr>
-                    </thead>
-                    {% for proyecto in proyectos %}
-                        <tbody style="text-align: left; ">
+                    <table class="table table-striped table-dark container">
+                        <thead>
                         <tr>
-                            <th scope="row">{{ proyecto.pk }}</th>
-                            <td>{{ proyecto.nombre_proyecto }}</td>
-                            <td>
-                                {{ proyecto.estado }}
-                            </td>
-                            <td>
-                                {{ proyecto.fecha_inicio }}
-                            </td>
-                            <td>
-
-                                <button type="button" class="btn btn-secondary" onclick="location.href='{% url 'editarProyecto' proyecto.id %}'"
-                                >Editar
-                                </button>
-
-                                <button type="button" class="btn btn-danger"
-                                        onclick="eliminarProyecto({{ proyecto.id }})">Borrar
-                                </button>
-                                <button type="button" class="btn btn-info" onclick="location.href='{% url 'proyecto' proyecto.id %}'">Ingresar
-                                </button>
-                            </td>
+                            <th scope="col">#</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Estado</th>
+                            <th scope="col">Fecha Inicio</th>
+                            <th scope="col">Opciones</th>
                         </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        {% for proyecto in proyectos %}
+
+                            {% get_obj_perms request.user for proyecto as "proyecto_perms" %}
+                            {% if request.user.rolSistema == "Usuario" and   "VER_PROYECTO" in proyecto_perms or request.user.rolSistema == "Administrador" %}
+                            <tbody style="text-align: left; ">
+                            <tr>
+                                <th scope="row">{{ proyecto.pk }}</th>
+                                <td>{{ proyecto.nombre_proyecto }}</td>
+                                <td>
+                                    {{ proyecto.estado }}
+                                </td>
+                                <td>
+                                    {{ proyecto.fecha_inicio }}
+                                </td>
+                                <td>
+
+{#                                    {% if "EDITAR_PROYECTO" in proyecto_perms %}#}
+                                    {% if perms.user.EDITAR_PROYECTOS%}
+                                    <button type="button" class="btn btn-secondary"
+                                            onclick="location.href='{% url 'editarProyecto' proyecto.id %}'"
+                                    >Editar
+                                    </button>
+                                    {% endif %}
 
 
+                                    {% if "ELIMINAR_PROYECTO" in proyecto_perms %}
+                                    <button type="button" class="btn btn-danger"
+                                            onclick="eliminarProyecto({{ proyecto.id }})">Cancelar
+                                    </button>
+                                    {% endif %}
+                                    {% if "VER_PROYECTO" in proyecto_perms %}
+                                    <button type="button" class="btn btn-info"
+                                            onclick="location.href='{% url 'proyecto' proyecto.id %}'">Ingresar
+                                    </button>
+                                {% endif %}
+                                </td>
+                            </tr>
+
+                        </tbody>
+                            {% endif %}
+                        {% endfor %}
+                    </table>
+
+                </div>
             </div>
         </div>
     </div>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
         function eliminarProyecto(id) {
             console.log(id)
             Swal.fire({

@@ -1,26 +1,48 @@
 {% extends "baseHome.html" %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+
+
 
 {% block head_content %}
     <title>Home</title>
 {% endblock %}
 {% block container %}
 
-    <div class="content-container">
+        <div class="content-container" style="margin-top: 50px">
         <div class="container-fluid">
-            <div class="jumbotron" style="margin-top: 45px">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'listarProyectos' %}">Lista de Proyectos</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Crear Proyecto</li>
+                </ol>
+            </nav>
+
+            <div class="jumbotron" style="margin-top: 0px">
                 {% if error %}
                     <div class="alert alert-danger" role="alert">
                         Error al crear el proyecto !
                     </div>
                 {% endif %}
-                <h1>Crear Proyecto </h1>
+
+        <div class="container-fluid ">
+                <h1> <i class="fa fa-file-text-o" aria-hidden="true"></i> Crear Proyecto </h1>
+                 <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
+            </div>
+            <div class="container-fluid">
                 <form method="POST">
                     {% csrf_token %}
-                    {{ form }}
-                    <button class="btn btn-primary" style="margin-left: 10px">Editar</button>
-                </form>
-            </div>
 
+                    {{ form.media }}
+                     {% bootstrap_form form %}
+                    <button class="btn btn-primary" style="margin-left: 10px">Aceptar <i class="fa fa-check" aria-hidden="true"></i></button>
+                    <a class="btn btn-danger " style="margin-left: 10px; color:white" onclick="location.href='{% url 'listarProyectos'  %}'">Cancelar <i class="fa fa-times" aria-hidden="true"></i></a>
+                </form>
+
+            </div>
+            </div>
+            </nav>
         </div>
     </div>
 

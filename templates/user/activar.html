@@ -1,27 +1,29 @@
-{% extends "baseHome.html" %}
+{% extends "baseProyecto.html" %}
 {% block head_content %}
     <title>Usuarios</title>
 {% endblock %}
 
 {% block container %}
-    <div class="content-container">
-
-        <div class="container-fluid">
-            <div class="jumbotron" style="background-color:transparent; margin-top: 50px" >
-                {% load static %}
-                <div class="row">
-                    <div class="col">
-                         <h1 style="text-align: center"> Lo sentimos, tu usuario no esta activado <i class="fa fa-frown-o" aria-hidden="true"></i></h1>
-                        <hr style="width:50%; margin-left:25% !important; margin-right:1% !important;" />
-                    </div>
-                </div>
-                <img src="{% static 'img/activar1.png' %}" style="width: 55%;  display: block;
+    <div class="align-content-center" style="background-color:transparent; margin-top: 100px">
+        <h1 style="text-align: center"> Lo sentimos, tu usuario no esta activado <i class="fa fa-frown-o"
+                                                                                    aria-hidden="true"></i></h1>
+        <hr style="width:50%; margin-left:25% !important; margin-right:1% !important;"/>
+        <h2 class="text-muted" style="text-align: center"> Un Administrador debe activar la cuenta.</h2>
+        {% load static %}
+        <img src="{% static 'img/activar1.png' %}" style="width: 45%;  display: block;
   margin-left: auto;
   margin-right: auto;" alt="">
 
-            </div>
-        </div>
 
     </div>
+    <!-- Copyright -->
+    <div class="text-center text-white p-2  fixed-bottom" style="background-color:#383c44">
+        © 2021 Copyright:
+        <img src="{% static 'img/logo1.png' %}" width="45" height="40">
+        <a class="text-white   " href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">SGP.com</a>
     </div>
+    <!-- Copyright -->
+
+
+
 {% endblock %}

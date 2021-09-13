@@ -1,22 +1,80 @@
 {% extends "baseProyecto.html" %}
+{% load guardian_tags %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
 {% block head_content %}
     <title>Home</title>
 {% endblock %}
 {% block container %}
-
+    <div class="sidebar-container" style="margin-top: 57px">
+        {% get_obj_perms request.user for proyecto as "proyecto_perms" %}
+        {#    <div class="sidebar-logo">#}
+              <div class="container-fluid" style="margin: 5px">
+            <img src="/static/img/default-profile.png" class="rounded-circle" height="50" style="width: 50px;"/>
+            {{ request.user.username }}
+        </div>
+        {#    </div>#}
+        <ul class="sidebar-navigation">
+            <li class="header">{{ proyecto.nombre_proyecto }} <i class="fa fa-briefcase" aria-hidden="true"></i></li>
+            <li>
+                <a href="/home">
+                    <i class="fa fa-home" aria-hidden="true"></i> Inicio
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
+                </a>
+            </li>
+            <li class="header">Gestión</li>
+            {% if "VER_MIEMBRO" in proyecto_perms %}
+                <li>
+                    <a href='{% url 'miembros_proyecto' proyecto_id=proyecto_id %}'>
+                        <i class="fa fa-cog" aria-hidden="true"></i> Miembros
+                    </a>
+                </li>
+            {% endif %}
+            {% if "VER_ROL" in proyecto_perms %}
+                <li>
+                    <a href="{% url 'listaRol' proyecto_id=proyecto_id %}">
+                        <i class="fa fa-user" aria-hidden="true"></i>Roles
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
 
     <div class="content-container">
-        <div class="container-fluid">
-            <div class="jumbotron" style="margin-top: 45px">
+                <div class="container-fluid" style="margin-top: 50px">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'proyecto' proyecto_id %}">Proyecto</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'listaRol' proyecto_id %}">Lista de roles</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Editar rol</li>
+                </ol>
+            </nav>
+            <div class="jumbotron" style="margin-top: 0px">
+                <h1><i class="fa fa-file-text-o" aria-hidden="true"></i> Editar el rol de: #{{ rol_nombre.nombre }}
+                </h1>
+                <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
                 <form method="POST"> {% csrf_token %}
-                    {{ form.as_p }}
-                    <input type="hidden" name="rol_id" value="{{rol_id}}">
+                    {#                    {{ form.as_p }}#}
+                    {{ form.media }}
+                    {% bootstrap_form form %}
+                    <input type="hidden" name="rol_id" value="{{ rol_id }}">
 
-                    <input type="submit" value="Editar">
+                    <button class="btn btn-primary" style="margin-left: 10px"
+                            onclick="location.href='{% url 'listaRol' proyecto_id=proyecto_id %}'">Aceptar <i
+                            class="fa fa-check" aria-hidden="true"></i>
+                    </button>
+                    <a class="btn btn-danger " style="margin-left: 10px; color:white"
+                            onclick="location.href='{% url 'listaRol' proyecto_id=proyecto_id %}'">Cancelar <i
+                            class="fa fa-times" aria-hidden="true"></i></a>
 
                 </form>
             </div>
-            <div>{{ proyecto_id }}</div>
+
         </div>
     </div>
 {% endblock %}

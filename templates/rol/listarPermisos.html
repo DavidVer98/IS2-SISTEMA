@@ -6,7 +6,7 @@
 
 {% block container %}
     {% get_obj_perms request.user for proyecto as "proyecto_perms" %}
-     <div class="sidebar-container" style="margin-top: 57px">
+     <div class="sidebar-container " style="margin-top: 57px">
 
         {#    <div class="sidebar-logo">#}
         <div class="container-fluid" style="margin: 5px">
@@ -59,7 +59,8 @@
             <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{% url 'proyecto' proyecto_id %}">Proyecto</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Lista de roles</li>
+                    <li class="breadcrumb-item"><a href="{% url 'listaRol' proyecto_id %}">Lista de Roles</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Lista de Permisos</li>
                 </ol>
             </nav>
             <div class="jumbotron">
@@ -70,7 +71,7 @@
                         </div>
                     {% endif %}
                     <div class="col-10 .col-md-10">
-                        <h1><i class="fa fa-thumb-tack" aria-hidden="true"></i> Lista de Roles {{ error }} </h1>
+                        <h1><i class="fa fa-thumb-tack" aria-hidden="true"></i> Lista de permisos del rol  <span class="text-muted">#{{ nombre_rol }}</span> </h1>
                     </div>
                     <div class="col-2 .col-md-2">
                         {% if "CREAR_ROL" in proyecto_perms %}
@@ -79,6 +80,7 @@
                             >Crear Rol <i class="fa fa-th-list" aria-hidden="true"></i>
                             </button>
                         {% endif %}
+
                     </div>
                     <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
 
@@ -91,30 +93,13 @@
                             <th scope="col">Opciones</th>
                         </tr>
                         </thead>
-                        {% for i in rol %}
+                        {% for i in permisos_rol %}
                             <tbody style="text-align: left; ">
                             <tr>
                                 <th scope="row">{{ i.pk }}</th>
-                                <td>@{{ i.nombre }}</td>
-
-
+                                <td>{{ i.name }}</td>
                                 </td>
-                                <td>
 
-                                    <button type="button" class="btn btn-info"
-                                            onclick=" permisosRol({{ i.pk }},{{ proyecto_id }})">Permisos
-                                    </button>
-                                    {% if "EDITAR_ROL" in proyecto_perms and i.nombre != 'Scrum Master' %}
-                                    <button type="button" class="btn btn-secondary"
-                                            onclick="editarRol({{ i.pk }},{{ proyecto_id }})">Editar
-                                    </button>
-                                    {% endif %}
-                                    {% if "ELIMINAR_ROL" in proyecto_perms  and i.nombre != 'Scrum Master'%}
-                                    <button type="button" class="btn btn-danger"
-                                            onclick="eliminarRol({{ i.pk }},{{ proyecto_id }})">Borrar
-                                    </button>
-                                    {% endif %}
-                                </td>
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -153,21 +138,5 @@
                     }
                 })
         }
-                function permisosRol(id,proyecto_id) {
-            console.log(id)
-            Swal.fire({
-                'title': '¿Estas seguro?',
-                'text': 'esta acción no se pude deshacer',
-                'icon': 'warning',
-                'showCancelButton': true
-            })
-                .then(function (result) {
-                    if (result.isConfirmed) {
-                        window.location.href = id + "/permisos";
-                    }
-                })
-        }
-
-
     </script>
 {% endblock %}
