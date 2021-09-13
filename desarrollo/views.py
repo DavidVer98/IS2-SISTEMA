@@ -17,7 +17,7 @@ def desarrollo(request, proyecto_id):
 
 def productBacklog(request, proyecto_id):
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
-    userStory = UserStory.objects.filter(proyecto=proyecto_id)
+    userStory = UserStory.objects.filter(proyecto=proyecto_id, estado_desarrollo=UserStory.EN_PRODUCT_BACKLOG)
     context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'userStory': userStory}
     return render(request, "desarrollo/productBacklog.html", context)
 
@@ -79,5 +79,24 @@ def eliminarUserStory(request, proyecto_id, user_story_id):
     user_story.delete()
     return redirect(reverse('productBacklog', kwargs={'proyecto_id': proyecto_id}))
 
-# def sprintPlanning(request):
-#     return render(request, )
+def sprintPlanning(request, proyecto_id):
+
+    proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+    userStory = UserStory.objects.filter(estado_desarrollo=UserStory.EN_SPRINT_PLANNING, proyecto =proyecto_id)
+    context = { "proyecto_id" : proyecto_id , 'userStory':userStory, "proyecto": proyecto_actual}
+    return render(request,"desarrollo/sprintPlanning.html",context)
+
+def sprint_planning_estado(request, proyecto_id, user_story_id):
+    user_story_actual = UserStory.objects.get(pk = user_story_id)
+    user_story_actual.estado_desarrollo = UserStory.EN_SPRINT_PLANNING
+    user_story_actual.save()
+    return redirect(reverse('productBacklog', kwargs={'proyecto_id': proyecto_id}))
+
+def product_backlog_estado(request, proyecto_id, user_story_id):
+    user_story_actual = UserStory.objects.get(pk = user_story_id)
+    user_story_actual.estado_desarrollo = UserStory.EN_PRODUCT_BACKLOG
+    user_story_actual.save()
+    return redirect(reverse('sprintPlanning', kwargs={'proyecto_id': proyecto_id}))
+
+
+

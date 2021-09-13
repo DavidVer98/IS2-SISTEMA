@@ -14,9 +14,59 @@
                 </ol>
 
             </nav>
-            <div class="jumbotron" style="margin-top: 0px">
+            <div class="row">
+                <div class="col-md-10">
+                    <div class="jumbotron" style="margin-top: 0px">
+                        <h1><i class="fa fa-file-text-o" aria-hidden="true"></i> Sprint Planning </h1>
+                        <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
+                        <table class="overflow-auto table table-striped table-dark container">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Prioridad</th>
+                                <th scope="col">Opciones</th>
+                            </tr>
+                            </thead>
+                            {% for userStory in userStory %}
+                                <tbody style="text-align: left; ">
+                                <tr>
+                                    <th scope="row">{{ userStory.id }}</th>
+                                    <td>{{ userStory.nombre }}</td>
+                                    <td>
+                                        {{ userStory.prioridad }}
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-info"
+                                                onclick="location.href='{% url 'editarUserStory' proyecto_id userStory.id %}'"
+                                        ><i class="bi bi-suit-spade"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger"
+                                                onclick="location.href='{% url 'product_backlog_estado' proyecto_id userStory.id %}'"
+                                        ><i class="fa fa-th-list" aria-hidden="true"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="jumbotron">
+                        <p class="text-muted" style="text-align: center; margin-top: -20px"><i class="bi bi-gear"></i>
+                            Opciones</p>
+                        <hr>
+                        <div class="text-muted" style="margin-top: 20px"><i class="fa fa-th-list"
+                                                                            aria-hidden="true"></i> Descartar
+                        </div>
+                        <div class="text-muted" style="margin-top: 10px"><i class="bi bi-suit-spade"></i> Planning Poker
+                        </div>
 
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 {% endblock %}

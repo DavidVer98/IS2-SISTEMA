@@ -13,5 +13,6 @@ class UserStoryForms(forms.ModelForm):
     # prioridad = forms.IntegerField(choices=PRIORIDAD_USERSTORY_CHOICES, blank=True)
     class Meta:
         model = UserStory
-        fields = ['nombre','descripcion','miembro' ,'proyecto','miembro','estado','estimacion', 'prioridad']
-        exclude = ['proyecto','miembro','estado', 'estimacion']
+        fields = ['nombre', 'descripcion', 'miembro', 'proyecto', 'miembro', 'estado_sprint', 'estimacion', 'prioridad',
+                  'estado_desarrollo']
+        exclude = ['proyecto', 'miembro', 'estado_sprint', 'estimacion']

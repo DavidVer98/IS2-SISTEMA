@@ -14,60 +14,79 @@
                 </ol>
 
             </nav>
-            <div class="jumbotron" style="margin-top: 0px">
-                <div class="row">
-                    <div class="col-10 .col-md-10">
-                        <h1><i class="fa fa-list-alt" aria-hidden="true"></i></i> Product Backlog</h1>
-                    </div>
+            <div class="row">
+                <div class="col-md-10   ">
+                    <div class="jumbotron" style="margin-top: 0px">
+                        <div class="row">
+                            <div class="col-10 .col-md-10">
+                                <h1><i class="fa fa-list-alt" aria-hidden="true"></i></i> Product Backlog</h1>
+                            </div>
 
-                 <div class="col-2 .col-md-2">
-{#                        {% if "INICIAR_PROYECTO" in proyecto_perms %}#}
-                            <button type="button" class="btn btn-secondary"
-                                    onclick="location.href='{% url 'crearUserStory' proyecto_id=proyecto_id %}'"
-                            >Crear User Story <i class="fa fa-file" aria-hidden="true"></i>
-                            </button>
-{#                        {% endif %}#}
-                    </div>
-
-                    <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
-
-                </div>
-                  <table class="overflow-auto table table-striped table-dark container">
-                    <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Prioridad</th>
-                        <th scope="col">Opciones</th>
-                    </tr>
-                    </thead>
-                    {% for userStory in userStory %}
-                        <tbody style="text-align: left; ">
-                        <tr>
-                            <th scope="row">{{ userStory.id }}</th>
-                            <td>{{ userStory.nombre }}</td>
-                            <td>
-                                {{ userStory.prioridad }}
-                            </td>
-                            <td>
+                            <div class="col-2 .col-md-2">
+                                {#                        {% if "INICIAR_PROYECTO" in proyecto_perms %}#}
                                 <button type="button" class="btn btn-secondary"
-                                            onclick="location.href='{% url 'editarUserStory' proyecto_id userStory.id %}'"
-                                >Editar
+                                        onclick="location.href='{% url 'crearUserStory' proyecto_id=proyecto_id %}'"
+                                >Crear User Story <i class="fa fa-file" aria-hidden="true"></i>
                                 </button>
-                                <button type="button" class="btn btn-danger"
-                                            onclick="location.href='{% url 'eliminarUserStory' proyecto_id userStory.id %}'"
-                                    >Borrar
-                                </button>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                                {#                        {% endif %}#}
+                            </div>
+
+                            <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
+
+                        </div>
+                        <table class="overflow-auto table table-striped table-dark container">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Prioridad</th>
+                                <th scope="col">Opciones</th>
+                            </tr>
+                            </thead>
+                            {% for userStory in userStory %}
+                                <tbody style="text-align: left; ">
+                                <tr>
+                                    <th scope="row">{{ userStory.id }}</th>
+                                    <td>{{ userStory.nombre }}</td>
+                                    <td>
+                                        {{ userStory.prioridad }}
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-success"
+                                                onclick="location.href='{% url 'sprintPlanningEstado' proyecto_id userStory.id %}'">
+                                            <i class="bi bi-clock-history"></i></button>
+                                        <button type="button" class="btn btn-secondary"
+                                                onclick="location.href='{% url 'editarUserStory' proyecto_id userStory.id %}'"
+                                        ><i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger"
+                                                onclick="location.href='{% url 'eliminarUserStory' proyecto_id userStory.id %}'"
+                                        ><i class="bi bi-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
 
 
+                    </div>
+                </div>
+              <div class="col-md-2">
+                    <div class="jumbotron" >
+                        <p class="text-muted" style="text-align: center; margin-top: -20px"><i class="bi bi-gear"></i> Opciones</p>
+                        <hr>
+                        <div style="margin-left:-10px ">
+                        <div class="text-muted" style="margin-top: 20px"><i class="bi bi-clock-history"></i> Añadir a Sprint Planning</div>
+                        <div class="text-muted" style="margin-top: 10px"><i class="bi bi-pencil"></i> Editar </div>
+                        <div class="text-muted" style="margin-top: 10px"><i class="bi bi-trash"></i>  Eliminar</div>
+                            </div>
+
+                    </div>
+                </div>
             </div>
-
         </div>
+
     </div>
 
 {% endblock %}
