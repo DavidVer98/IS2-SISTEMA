@@ -1,10 +1,11 @@
 {% extends "baseDesarrollo.html" %}
+{% load guardian_tags %}
 
 {% block head_content %}
     <title>Home</title>
 {% endblock %}
 {% block container %}
-
+    {% get_obj_perms request.user for proyecto as "proyecto_perms" %}
     <div class="content-container">
         <div class="container-fluid" style="margin-top: 50px">
             <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
@@ -23,12 +24,12 @@
                             </div>
 
                             <div class="col-2 .col-md-2">
-                                {#                        {% if "INICIAR_PROYECTO" in proyecto_perms %}#}
-                                <button type="button" class="btn btn-secondary"
-                                        onclick="location.href='{% url 'crearUserStory' proyecto_id=proyecto_id %}'"
-                                >Crear User Story <i class="fa fa-file" aria-hidden="true"></i>
-                                </button>
-                                {#                        {% endif %}#}
+                                {% if "CREAR_USER_STORY" in proyecto_perms %}
+                                    <button type="button" class="btn btn-secondary"
+                                            onclick="location.href='{% url 'crearUserStory' proyecto_id=proyecto_id %}'"
+                                    >Crear User Story <i class="fa fa-file" aria-hidden="true"></i>
+                                    </button>
+                                {% endif %}
                             </div>
 
                             <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
@@ -52,17 +53,23 @@
                                         {{ userStory.prioridad }}
                                     </td>
                                     <td>
+                                        {% if "PLANIFICAR_SPRINT" in proyecto_perms %}
                                         <button class="btn btn-success"
                                                 onclick="location.href='{% url 'sprintPlanningEstado' proyecto_id userStory.id %}'">
                                             <i class="bi bi-clock-history"></i></button>
+                                        {% endif %}
+                                        {% if "EDITAR_USER_STORY" in proyecto_perms %}
                                         <button type="button" class="btn btn-secondary"
                                                 onclick="location.href='{% url 'editarUserStory' proyecto_id userStory.id %}'"
                                         ><i class="bi bi-pencil"></i>
                                         </button>
+                                        {% endif %}
+                                        {% if "ELIMINAR_USER_STORY" in proyecto_perms %}
                                         <button type="button" class="btn btn-danger"
                                                 onclick="location.href='{% url 'eliminarUserStory' proyecto_id userStory.id %}'"
                                         ><i class="bi bi-trash"></i>
                                         </button>
+                                        {% endif %}
                                     </td>
                                 </tr>
                             {% endfor %}

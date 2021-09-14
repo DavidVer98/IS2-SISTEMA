@@ -1,10 +1,11 @@
 {% extends "baseDesarrollo.html" %}
+{% load guardian_tags %}
 
 {% block head_content %}
     <title>Home</title>
 {% endblock %}
 {% block container %}
-
+    {% get_obj_perms request.user for proyecto as "proyecto_perms" %}
     <div class="content-container">
         <div class="container-fluid" style="margin-top: 50px">
             <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
@@ -26,12 +27,14 @@
                                 <th scope="col">Nombre</th>
                                 <th scope="col">Prioridad</th>
                                 <th scope="col">Miembro asignado</th>
+                                <th scope="col">Estado de Estimacion</th>
                                 <th scope="col">Opciones</th>
                             </tr>
                             </thead>
                             {% for userStory in userStory %}
                                 <tbody style="text-align: left; ">
                                 <tr>
+                                {% if proyecto.scrum_master ==  request.user or userStory.miembro_asignado == request.user %}
                                     <th scope="row">{{ userStory.id }}</th>
                                     <td>{{ userStory.nombre }}</td>
                                     <td>
@@ -44,19 +47,39 @@
                                         {% endif %}
                                     </td>
                                     <td>
-                                         <button type="button" class="btn btn-secondary"
-                                                onclick="location.href='{% url 'asignarMiembroUS' proyecto_id userStory.id %}'"
-                                        ><i class="bi bi-person-plus-fill"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-info"
-                                                onclick="location.href='{% url 'planningPoker' proyecto_id userStory.id %}'"
-                                        ><i class="bi bi-suit-spade"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-danger"
-                                                onclick="location.href='{% url 'product_backlog_estado' proyecto_id userStory.id %}'"
-                                        ><i class="fa fa-th-list" aria-hidden="true"></i>
-                                        </button>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="estimacionCompletada"
+                                           id="flexCheckDisabled"
+                                            {% if userStory.estimacion > 0 %}
+                                           checked {% endif %}  disabled>
+                                    {% if userStory.estimacion == 0 %}
+                                        Incompleta
+                                    {% else %}
+                                        Completada
+                                    {% endif %}
+                                </div>
+                            </td>
+                                    <td>
+                                        {% if "PLANIFICAR_SPRINT" in proyecto_perms %}
+                                             <button type="button" class="btn btn-secondary"
+                                                    onclick="location.href='{% url 'asignarMiembroUS' proyecto_id userStory.id %}'"
+                                            ><i class="bi bi-person-plus-fill"></i>
+                                            </button>
+                                        {% endif %}
+                                        {% if "ESTIMAR_USER_STORY" in proyecto_perms %}
+                                            <button type="button" class="btn btn-info"
+                                                    onclick="location.href='{% url 'planningPoker' proyecto_id userStory.id %}'"
+                                            ><i class="bi bi-suit-spade"></i>
+                                            </button>
+                                        {% endif %}
+                                        {% if "PLANIFICAR_SPRINT" in proyecto_perms %}
+                                            <button type="button" class="btn btn-danger"
+                                                    onclick="location.href='{% url 'product_backlog_estado' proyecto_id userStory.id %}'"
+                                            ><i class="fa fa-th-list" aria-hidden="true"></i>
+                                            </button>
+                                        {% endif %}
                                     </td>
+                                {% endif %}
                                 </tr>
                             {% endfor %}
                             </tbody>
