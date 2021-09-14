@@ -46,15 +46,15 @@ class UserStory(models.Model):
     nombre = models.CharField(max_length=50)
     descripcion = models.TextField(max_length=300)
     estado_sprint = models.CharField(max_length=50, choices=ESTADO_USERSTORY_CHOICES, default=TO_DO)
-    estimacion = models.FloatField(blank=True, null=True)
+    estimacion = models.FloatField(default=0, blank=True, null=False)
     prioridad = models.CharField(max_length=50,default=BAJA, choices=PRIORIDAD_USERSTORY_CHOICES)
     estado_desarrollo = models.CharField(max_length=50,default=EN_PRODUCT_BACKLOG, choices=ESTADO_DESARROLLO_USERSTORY_CHOICES)
 
 
 class EstimacionPlanificada(models.Model):
     user_story = models.ForeignKey(UserStory, on_delete=models.CASCADE)
-    estimacion_scrum = models.IntegerField(blank=True, null=True)
-    estimacion_miembro = models.IntegerField(blank=True, null=True)
+    estimacion_scrum = models.PositiveIntegerField(default=0,blank=True, null=True)
+    estimacion_miembro = models.PositiveIntegerField(default=0, blank=True, null=True)
 
 
 # class ProductBacklog(models.Model):

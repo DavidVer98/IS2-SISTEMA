@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from desarrollo.forms import UserStoryForms, UserStoryMiembroForms, PlanningPokerForms
 from desarrollo.models import UserStory, EstimacionPlanificada
-from proyecto.models import Proyecto
+from proyecto.models import Proyecto, Miembro
 
 
 def desarrollo(request, proyecto_id):
@@ -119,19 +119,36 @@ def asignarMiembroUS(request, proyecto_id, user_story_id):
 
 def planningPoker(request, proyecto_id, user_story_id):
     user_story_actual = UserStory.objects.get(pk=user_story_id)
-    if request.user == user_story_actual.miembro_asignado:
-        proyecto_actual=Proyecto.objects.get(pk=proyecto_id)
+    proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+    miembro = Miembro.objects.get(proyectos=proyecto_actual, miembro=request.user)
 
+    if request.user == user_story_actual.miembro_asignado or miembro.rol.nombre=='Scrum Master':
         estimacion, fue_creado= EstimacionPlanificada.objects.get_or_create(user_story=user_story_actual)
-        print(fue_creado)
 
         if request.method == "POST":
             form = PlanningPokerForms(request.POST or None, instance=estimacion)
+
             if form.is_valid():
-                form.instance.save()
+                estimacion= EstimacionPlanificada.objects.get(user_story=user_story_actual)
+                data = form.cleaned_data
+                estimacion_scrum=data["estimacion_scrum"]
+                estimacion_miembro = data["estimacion_miembro"]
+                if miembro.rol.nombre == 'Scrum Master':
+                    estimacion.estimacion_scrum=estimacion_scrum
+                else:
+                    estimacion.estimacion_miembro=estimacion_miembro
+                estimacion.save()
+                if estimacion.estimacion_miembro > 0 and estimacion.estimacion_scrum > 0:
+                    user_story_actual.estimacion= (estimacion.estimacion_miembro + estimacion.estimacion_scrum)/2
+                    user_story_actual.save()
                 return redirect(reverse('sprintPlanning', kwargs={'proyecto_id': proyecto_id}))
         else:
             form = PlanningPokerForms(instance=estimacion)
-        context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form, 'user_story': user_story_actual}
+            if miembro.rol.nombre=='Scrum Master':
+                form.fields['estimacion_miembro'].disabled = True
+            else:
+                form.fields['estimacion_scrum'].disabled = True
+
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form, 'user_story': user_story_actual}
 
     return render(request, "desarrollo/planningPoker.html", context)
