@@ -33,6 +33,20 @@ def listarProyectos(request):
     context = {'proyectos': proyecto, 'miembros': miembro}
     return render(request, "home/listarProyectos.html", context)
 
+def filtrarProyecto(request,proyecto_estado):
+    """
+       filtrar Proyecto:
+        13/09/2021
+        Vista utilizada para filtrar los proyectos asegun su estado.
+    """
+    if(proyecto_estado!= "TODOS"):
+        proyecto = Proyecto.objects.filter(estado=proyecto_estado)
+    else:
+        proyecto = Proyecto.objects.all()
+    miembro = Miembro.objects.all()
+    context = {'proyectos': proyecto, 'miembros': miembro, 'filtro':proyecto_estado}
+    return render(request, "home/listarProyectos.html", context)
+
 @login_required(login_url='/login')
 @permission_required('user.EDITAR_PROYECTOS', login_url='/home')
 def editarProyecto(request, proyecto_id):
