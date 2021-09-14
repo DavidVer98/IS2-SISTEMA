@@ -103,7 +103,8 @@ def crearProyecto(request):
                 user = data['scrum_master']
                 form.save()
                 proyecto_actual = Proyecto.objects.get(nombre_proyecto=nombre_proyecto)
-                rol = Rol.crearScrum(proyecto_actual.pk)
+                #rol = Rol.crearScrum(proyecto_actual.pk)
+                rol=Rol.rolespordefecto(proyecto_actual.pk)
                 proyecto_actual.setScrum(user, rol)
                 return redirect("listarProyectos")
             else:

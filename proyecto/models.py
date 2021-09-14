@@ -14,10 +14,28 @@ class Rol(models.Model):
     """
     nombre = models.TextField(max_length=50)
     group = models.OneToOneField(Group, on_delete=models.CASCADE)
-
+    developer_perm = [
+        ("VER_PROYECTO"),
+        ("VER_MIEMBRO"),
+        ("VER_ROL"),
+        ("VER_PRODUCT_BACKLOG"),
+        ("VER_SPRINT_PLANNING"),
+        ("ESTIMAR_USER_STORY"),
+    ]
+    productowner_perm = [
+        ("VER_PROYECTO"),
+        ("VER_MIEMBRO"),
+        ("VER_ROL"),
+        ("VER_PRODUCT_BACKLOG"),
+        ("VER_SPRINT_PLANNING"),
+    ]
     def __str__(self):
         return self.nombre
 
+    def permdeveloper(cls):
+        return cls.developer_perm
+    def permproductowner(cls):
+        return cls.productowner_perm
     @classmethod
     def crear(cls, name, permissions, proyecto_actual):
         #Para permitir creacion de roles con igual nombre pero con nombre de group distinto
@@ -71,6 +89,15 @@ class Rol(models.Model):
         scrum = 'Scrum Master'
         return cls.crear(scrum, permissions, proyecto_actual)
 
+    @classmethod
+    def rolespordefecto(cls, proyecto_id):
+        permissions = Permission.objects.filter(content_type__app_label='proyecto', content_type__model='proyecto')
+        permissionsdev= permissions.filter(codename__in=cls.permdeveloper(cls))
+        permissionsproductowner = permissions.filter(codename__in=cls.permproductowner(cls))
+        proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+        cls.crear('Developer',permissionsdev, proyecto_actual)
+        cls.crear('Product Owner', permissionsproductowner, proyecto_actual)
+        return  cls.crear('Scrum Master', permissions, proyecto_actual)
 
 class Proyecto(models.Model):
     """
@@ -151,8 +178,8 @@ class Proyecto(models.Model):
 
             ("VER_PRODUCT_BACKLOG", "Puede visualizar la seccion de product backlog"),
             ("CREAR_USER_STORY", "Puede crear user stories"),
-            ("EDITAR_USER_STORY", "Puede crear user stories"),
-            ("ELIMINAR_USER_STORY", "Puede crear user stories"),
+            ("EDITAR_USER_STORY", "Puede editar user stories"),
+            ("ELIMINAR_USER_STORY", "Puede eliminar user stories"),
 
             ("VER_SPRINT_PLANNING", "Puede ver la seccion de planificacion de sprint"),
             ("PLANIFICAR_SPRINT", "Puede planificar el siguiente sprint"),
