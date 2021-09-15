@@ -33,7 +33,7 @@
                             <div class="col-md-3" style="text-align: end">
 {#                                {% if "CREAR_USER_STORY" in proyecto_perms %}#}
                                     <button type="button" class="btn btn-secondary"
-                                            onclick="location.href='{% url 'desarrollo' proyecto_id=proyecto_id %}'"
+                                            onclick="location.href='{% url 'iniciarSprint' proyecto_id=proyecto_id %}'"
                                     >Iniciar Sprint <i class="fa fa-check-square-o" aria-hidden="true"></i>
                                     </button>
 {#                                {% endif %}#}
@@ -137,4 +137,5 @@
             </div>
         </div>
     </div>
+     </div>
 {% endblock %}

@@ -15,7 +15,7 @@ class UserStoryForms(forms.ModelForm):
         model = UserStory
         fields = ['nombre', 'descripcion', 'miembro', 'proyecto', 'miembro', 'estado_sprint', 'estimacion', 'prioridad',
                   'estado_desarrollo']
-        exclude = ['proyecto', 'miembro', 'estado_sprint', 'estimacion']
+        exclude = ['proyecto', 'miembro', 'estado_sprint', 'estimacion', 'estado_desarrollo']
 
 
 class UserStoryMiembroForms(forms.ModelForm):

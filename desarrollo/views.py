@@ -199,29 +199,22 @@ def planningPoker(request, proyecto_id, user_story_id):
     return redirect(reverse('sprintPlanning', kwargs={'proyecto_id': proyecto_id}))
 
 
-# def iniciarSprint(request, proyecto_id):
-#     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
-#     user_stories = UserStory.objects.filter(proyecto=proyecto_actual, estado_desarrollo=UserStory.EN_SPRINT_PLANNING)
-#
-#     error = False
-#     mensaje_error=""
-#     if user_stories.exists():
-#         for user_story in user_stories:
-#             if user_story.estimacion == 0:
-#                 error = True
-#                 mensaje_error = "No se han estimado todos los User Stories"
-#
-#         if not error:
-#             # for user_story in user_stories:
-#             #     user_story.estado_desarrollo = UserStory.EN_SPRINT_BACKLOG
-#             #     user_story.save()
-#             pass
-#             return redirect(reverse('sprintBacklog', kwargs={'proyecto_id': proyecto_id}))
-#     else:
-#         error = True
-#         mensaje_error= "No se ha agregado ningun User Story a la planificacion"
-#
-#     return sprintPlanning(request, proyecto_id)
+def iniciarSprint(request, proyecto_id):
+    proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+    user_stories = UserStory.objects.filter(proyecto=proyecto_actual, estado_desarrollo=UserStory.EN_SPRINT_PLANNING)
+
+    error = False
+    if user_stories.exists():
+        for user_story in user_stories:
+            if user_story.estimacion == 0:
+                error = True
+
+        if not error:
+            for user_story in user_stories:
+                user_story.estado_desarrollo = UserStory.EN_SPRINT_BACKLOG
+                user_story.save()
+            return redirect(reverse('sprintBacklog', kwargs={'proyecto_id': proyecto_id}))
+    return redirect(reverse('sprintPlanning', kwargs={'proyecto_id': proyecto_id}))
 
 
 
