@@ -1,0 +1,41 @@
+{% extends "baseDesarrollo.html" %}
+
+{% block head_content %}
+    <title>Home</title>
+{% endblock %}
+{% block container %}
+
+    <div class="content-container">
+        <div class="container-fluid" style="margin-top: 50px">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'desarrollo' proyecto_id %}">Desarrollo</a></li>
+                </ol>
+            </nav>
+            <div class="jumbotron" style="margin-top: 0px">
+                <div class="row">
+                    <div class="col-10 .col-md-10">
+                        <h1><i class="fa fa-bullhorn" aria-hidden="true"></i> Proyecto Iniciado!</h1>
+                    </div>
+
+                    <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
+                    <h2>Nombre del proyecto </h2>
+                    <li>{{ proyecto.nombre_proyecto }}</li>
+
+                    <h3>Roles del Proyecto iniciado</h3>
+                    {% for user_story in user_stories%}
+                        <li>
+                            {{ user_story.nombre }}
+                        </li>
+                    {% endfor %}
+
+
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

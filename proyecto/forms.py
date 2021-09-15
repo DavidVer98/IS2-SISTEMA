@@ -88,4 +88,4 @@ class EditarGrupo(forms.Form):
 class editar_rolmiembro_form(ModelForm):
     class Meta:
         model = Miembro
-        fields = ['rol']
+        fields = ['rol', 'produccion_por_semana']

@@ -1,7 +1,7 @@
 # from audioop import reverse
 from django.urls import reverse
 from django.shortcuts import render, redirect
-
+from django.db.models import Sum
 # Create your views here.
 from desarrollo.forms import UserStoryForms, UserStoryMiembroForms, PlanningPokerForms
 from desarrollo.models import UserStory, EstimacionPlanificada
@@ -93,8 +93,16 @@ def eliminarUserStory(request, proyecto_id, user_story_id):
 @permission_required_or_403('VER_SPRINT_PLANNING', (Proyecto, 'id', 'proyecto_id'))
 def sprintPlanning(request, proyecto_id):
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
-    userStory = UserStory.objects.filter(estado_desarrollo=UserStory.EN_SPRINT_PLANNING, proyecto=proyecto_id)
-    context = {"proyecto_id": proyecto_id, 'userStory': userStory, "proyecto": proyecto_actual}
+    user_stories = UserStory.objects.filter(estado_desarrollo=UserStory.EN_SPRINT_PLANNING, proyecto=proyecto_id)
+    estimacion_total = user_stories.aggregate(Sum("estimacion")).get('estimacion__sum')
+
+    miembros = Miembro.objects.filter(miembro_id__in=user_stories.values("miembro_asignado_id"),
+                                      proyectos_id__exact=proyecto_id)
+    capacidad_miembros = miembros.aggregate(Sum("produccion_por_semana")).get('produccion_por_semana__sum')
+    if capacidad_miembros is None: capacidad_miembros = 0
+
+    context = {"proyecto_id": proyecto_id, 'userStory': user_stories, "proyecto": proyecto_actual,
+               "estimacion_total": estimacion_total, "capacidad_miembros": capacidad_miembros}
     return render(request, "desarrollo/sprintPlanning.html", context)
 
 
@@ -132,7 +140,7 @@ def asignarMiembroUS(request, proyecto_id, user_story_id):
             form.instance.save()
             estimacion_anterior = EstimacionPlanificada.objects.get(user_story=user_story_actual)
             estimacion_anterior.estimacion_miembro = 0
-            user_story_actual.estimacion=0
+            user_story_actual.estimacion = 0
             user_story_actual.save()
             estimacion_anterior.save()
             return redirect(reverse('sprintPlanning', kwargs={'proyecto_id': proyecto_id}))
@@ -184,7 +192,42 @@ def planningPoker(request, proyecto_id, user_story_id):
             else:
                 form.fields['estimacion_scrum'].disabled = True
 
-            context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form, 'user_story': user_story_actual}
+            context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form,
+                       'user_story': user_story_actual}
             return render(request, "desarrollo/planningPoker.html", context)
 
     return redirect(reverse('sprintPlanning', kwargs={'proyecto_id': proyecto_id}))
+
+
+# def iniciarSprint(request, proyecto_id):
+#     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+#     user_stories = UserStory.objects.filter(proyecto=proyecto_actual, estado_desarrollo=UserStory.EN_SPRINT_PLANNING)
+#
+#     error = False
+#     mensaje_error=""
+#     if user_stories.exists():
+#         for user_story in user_stories:
+#             if user_story.estimacion == 0:
+#                 error = True
+#                 mensaje_error = "No se han estimado todos los User Stories"
+#
+#         if not error:
+#             # for user_story in user_stories:
+#             #     user_story.estado_desarrollo = UserStory.EN_SPRINT_BACKLOG
+#             #     user_story.save()
+#             pass
+#             return redirect(reverse('sprintBacklog', kwargs={'proyecto_id': proyecto_id}))
+#     else:
+#         error = True
+#         mensaje_error= "No se ha agregado ningun User Story a la planificacion"
+#
+#     return sprintPlanning(request, proyecto_id)
+
+
+
+def sprintBacklog(request, proyecto_id):
+    proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+    user_stories = UserStory.objects.filter(proyecto=proyecto_actual, estado_desarrollo=UserStory.EN_SPRINT_BACKLOG)
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, "user_stories": user_stories}
+
+    return render(request, "desarrollo/sprintBacklog.html", context)

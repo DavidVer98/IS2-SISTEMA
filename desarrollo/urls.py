@@ -1,11 +1,14 @@
 from django.urls import path
 
 from desarrollo.views import desarrollo, productBacklog, crearUserStory, editarUserStory, eliminarUserStory, \
-    sprintPlanning, sprint_planning_estado, product_backlog_estado, asignarMiembroUS, planningPoker
+    sprintPlanning, sprint_planning_estado, product_backlog_estado, asignarMiembroUS, planningPoker, sprintBacklog
+    # iniciarSprint
 
 urlpatterns = [
 
     path('<int:proyecto_id>/desarrollo', desarrollo, name="desarrollo"),
+    # path('<int:proyecto_id>/desarrollo/iniciarsprint', iniciarSprint, name="iniciarSprint"),
+    path('<int:proyecto_id>/desarrollo/sprintbacklog', sprintBacklog, name="sprintBacklog"),
     path('<int:proyecto_id>/desarrollo/sprintplanning', sprintPlanning, name="sprintPlanning"),
     path('<int:proyecto_id>/desarrollo/sprintplanning/<int:user_story_id>/asignarmiembro', asignarMiembroUS, name="asignarMiembroUS"),
     path('<int:proyecto_id>/desarrollo/sprintplanning/<int:user_story_id>/planningpoker', planningPoker, name="planningPoker"),
