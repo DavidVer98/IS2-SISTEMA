@@ -6,10 +6,11 @@ from django.contrib.auth.models import Group
 
 #se crea super usuario admin
 Admin = get_user_model();
-Admin.objects.create_superuser('admin', 'admin@gmail.com', 'admin')
+Admin.objects.create_superuser('admin', 'pistoleronani1912@gmail.com', 'admin')
+
 
 #configuraciones iniciales de super usuario admin
-usuario=User.objects.get(email='admin@gmail.com')
+usuario=User.objects.get(email='pistoleronani1912@gmail.com')
 usuario.rolSistema="Administrador"
 usuario.estaActivado=True
 usuario.groups.add(Group.objects.get(pk=1))
