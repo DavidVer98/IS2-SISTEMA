@@ -6,7 +6,7 @@
 
 {% block container %}
     {% get_obj_perms request.user for proyecto as "proyecto_perms" %}
-     <div class="sidebar-container" style="margin-top: 57px">
+    <div class="sidebar-container" style="margin-top: 57px">
 
         {#    <div class="sidebar-logo">#}
         <div class="container-fluid" style="margin: 5px">
@@ -24,17 +24,24 @@
                 </a>
             </li>
             <li>
-                <a href="#">
-                    <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
+                <a href="{% url 'proyecto' proyecto_id=proyecto_id %}">
+                    <i class="fa fa-briefcase" aria-hidden="true"></i>Proyecto
                 </a>
             </li>
+            {% if proyecto.estado == 'ACTIVO' %}
+                <li>
+                    <a href="{% url 'desarrollo' proyecto_id=proyecto_id %}">
+                        <i class="fa fa-align-right" aria-hidden="true"></i>Desarrollo
+                    </a>
+                </li>
+            {% endif %}
             <li class="header">Gestión</li>
             {% if "VER_MIEMBRO" in proyecto_perms %}
-            <li>
-                <a href='{% url 'miembros_proyecto' proyecto_id=proyecto.id %}'>
-                    <i class="fa fa-cog" aria-hidden="true"></i> Miembros
-                </a>
-            </li>
+                <li>
+                    <a href='{% url 'miembros_proyecto' proyecto_id=proyecto.id %}'>
+                        <i class="fa fa-cog" aria-hidden="true"></i> Miembros
+                    </a>
+                </li>
             {% endif %}
 
             {#            <li>#}
@@ -43,7 +50,7 @@
             {#                </a>#}
             {#            </li>#}
             {% if "VER_ROL" in proyecto_perms %}
-            <li>
+                <li>
                 <a href="{% url 'listaRol' proyecto_id=proyecto_id %}">
                     <i class="fa fa-user" aria-hidden="true"></i>Roles
                 </a>
@@ -69,10 +76,10 @@
                             Existe un usuario asignado a este Rol !
                         </div>
                     {% endif %}
-                    <div class="col-10 .col-md-10">
+                    <div class="col-md-8">
                         <h1><i class="fa fa-thumb-tack" aria-hidden="true"></i> Lista de Roles {{ error }} </h1>
                     </div>
-                    <div class="col-2 .col-md-2">
+                    <div class="col-md-4" style="text-align: end">
                         {% if "CREAR_ROL" in proyecto_perms %}
                             <button type="button" class="btn btn-secondary"
                                     onclick="location.href='{% url 'roles_proyecto' proyecto_id %}'"
@@ -102,17 +109,19 @@
                                 <td>
 
                                     <button type="button" class="btn btn-info"
-                                            onclick=" permisosRol({{ i.pk }},{{ proyecto_id }})">Permisos
+                                            onclick="location.href='{% url 'permisosRol' proyecto_id i.pk %}'">Permisos
                                     </button>
                                     {% if "EDITAR_ROL" in proyecto_perms and i.nombre != 'Scrum Master' %}
-                                    <button type="button" class="btn btn-secondary"
-                                            onclick="editarRol({{ i.pk }},{{ proyecto_id }})">Editar
-                                    </button>
+                                        <button type="button" class="btn btn-secondary"
+                                                onclick="location.href='{% url 'editarRol' proyecto_id i.pk %}'">
+                                            Editar
+                                        </button>
                                     {% endif %}
-                                    {% if "ELIMINAR_ROL" in proyecto_perms  and i.nombre != 'Scrum Master'%}
-                                    <button type="button" class="btn btn-danger"
-                                            onclick="eliminarRol({{ i.pk }},{{ proyecto_id }})">Borrar
-                                    </button>
+                                    {% if "ELIMINAR_ROL" in proyecto_perms  and i.nombre != 'Scrum Master' %}
+                                        <button type="button" class="btn btn-danger"
+                                                onclick="eliminarRol({{ i.pk }},{{ proyecto_id }}, {{ i.nombre.split }})">
+                                            Borrar
+                                        </button>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -123,6 +132,7 @@
             </div>
         </div>
     </div>
+
     <script type="text/javascript">
         function editarRol(id, proyecto_id) {
             console.log(id)
@@ -139,13 +149,16 @@
                 })
         }
 
-        function eliminarRol(id, proyecto_id) {
-            console.log(id)
+        function eliminarRol(id, proyecto_id, nombre) {
+            console.log(id, nombre)
             Swal.fire({
                 'title': '¿Estas seguro?',
-                'text': 'esta acción no se pude deshacer',
-                'icon': 'warning',
-                'showCancelButton': true
+                'text': `Se eliminara el rol de "${nombre}" del proyecto`,
+                'icon': 'error',
+                'showCancelButton': true,
+                'cancelButtonColor': '#d33',
+                'confirmButtonText': 'Confirmar',
+                'cancelButtonText': 'Cancelar'
             })
                 .then(function (result) {
                     if (result.isConfirmed) {
@@ -153,7 +166,8 @@
                     }
                 })
         }
-                function permisosRol(id,proyecto_id) {
+
+        function permisosRol(id, proyecto_id) {
             console.log(id)
             Swal.fire({
                 'title': '¿Estas seguro?',

@@ -6,7 +6,7 @@
 
 {% block container %}
     {% get_obj_perms request.user for proyecto as "proyecto_perms" %}
-     <div class="sidebar-container " style="margin-top: 57px">
+    <div class="sidebar-container " style="margin-top: 57px">
 
         {#    <div class="sidebar-logo">#}
         <div class="container-fluid" style="margin: 5px">
@@ -24,17 +24,24 @@
                 </a>
             </li>
             <li>
-                <a href="#">
-                    <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
+                <a href="{% url 'proyecto' proyecto_id=proyecto_id %}">
+                    <i class="fa fa-briefcase" aria-hidden="true"></i>Proyecto
                 </a>
             </li>
+            {% if proyecto.estado == 'ACTIVO' %}
+                <li>
+                    <a href="{% url 'desarrollo' proyecto_id=proyecto_id %}">
+                        <i class="fa fa-align-right" aria-hidden="true"></i>Desarrollo
+                    </a>
+                </li>
+            {% endif %}
             <li class="header">Gestión</li>
             {% if "VER_MIEMBRO" in proyecto_perms %}
-            <li>
-                <a href='{% url 'miembros_proyecto' proyecto_id=proyecto.id %}'>
-                    <i class="fa fa-cog" aria-hidden="true"></i> Miembros
-                </a>
-            </li>
+                <li>
+                    <a href='{% url 'miembros_proyecto' proyecto_id=proyecto.id %}'>
+                        <i class="fa fa-cog" aria-hidden="true"></i> Miembros
+                    </a>
+                </li>
             {% endif %}
 
             {#            <li>#}
@@ -43,7 +50,7 @@
             {#                </a>#}
             {#            </li>#}
             {% if "VER_ROL" in proyecto_perms %}
-            <li>
+                <li>
                 <a href="{% url 'listaRol' proyecto_id=proyecto_id %}">
                     <i class="fa fa-user" aria-hidden="true"></i>Roles
                 </a>
@@ -71,16 +78,8 @@
                         </div>
                     {% endif %}
                     <div class="col-10 .col-md-10">
-                        <h1><i class="fa fa-thumb-tack" aria-hidden="true"></i> Lista de permisos del rol  <span class="text-muted">#{{ nombre_rol }}</span> </h1>
-                    </div>
-                    <div class="col-2 .col-md-2">
-                        {% if "CREAR_ROL" in proyecto_perms %}
-                            <button type="button" class="btn btn-secondary"
-                                    onclick="location.href='{% url 'roles_proyecto' proyecto_id %}'"
-                            >Crear Rol <i class="fa fa-th-list" aria-hidden="true"></i>
-                            </button>
-                        {% endif %}
-
+                        <h1><i class="fa fa-thumb-tack" aria-hidden="true"></i> Lista de permisos del rol <span
+                                class="text-muted">#{{ nombre_rol }}</span></h1>
                     </div>
                     <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
 
@@ -88,15 +87,12 @@
 
                         <thead>
                         <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Opciones</th>
+                            <th scope="col">Permiso</th>
                         </tr>
                         </thead>
                         {% for i in permisos_rol %}
                             <tbody style="text-align: left; ">
                             <tr>
-                                <th scope="row">{{ i.pk }}</th>
                                 <td>{{ i.name }}</td>
                                 </td>
 

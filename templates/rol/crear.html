@@ -2,14 +2,16 @@
 {% load bootstrap4 %}
 {% bootstrap_css %}
 {% bootstrap_javascript jquery='full' %}
+{% load guardian_tags %}
 
 {% block head_content %}
-    <title>Home</title>
+    <title>Crear Rol</title>
 {% endblock %}
 {% block container %}
+    {% get_obj_perms request.user for proyecto as "proyecto_perms" %}
     <div class="sidebar-container" style="margin-top: 57px">
         {#    <div class="sidebar-logo">#}
-         <div class="container-fluid" style="margin: 5px">
+        <div class="container-fluid" style="margin: 5px">
             <img src="/static/img/default-profile.png" class="rounded-circle" height="50" style="width: 50px;"/>
             {{ request.user.username }}
         </div>
@@ -22,26 +24,33 @@
                 </a>
             </li>
             <li>
-                <a href="#">
-                    <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
+                <a href="{% url 'proyecto' proyecto_id=proyecto_id %}">
+                    <i class="fa fa-briefcase" aria-hidden="true"></i>Proyecto
                 </a>
             </li>
+            {% if proyecto.estado == 'ACTIVO' %}
+                <li>
+                    <a href="{% url 'desarrollo' proyecto_id=proyecto_id %}">
+                        <i class="fa fa-align-right" aria-hidden="true"></i>Desarrollo
+                    </a>
+                </li>
+            {% endif %}
             <li class="header">Gestión</li>
-            <li>
-                <a a href='{% url 'roles_proyecto' proyecto_id %}'>
-                    <i class="fa fa-users" aria-hidden="true"></i> Roles
-                </a>
-            </li>
-            <li>
-                <a href='{% url 'miembros_proyecto' proyecto_id=proyecto_id %}'>
-                    <i class="fa fa-cog" aria-hidden="true"></i> Miembros
-                </a>
-            </li>
+            {% if "VER_MIEMBRO" in proyecto_perms %}
+                <li>
+                    <a href='{% url 'miembros_proyecto' proyecto_id=proyecto.id %}'>
+                        <i class="fa fa-cog" aria-hidden="true"></i> Miembros
+                    </a>
+                </li>
+            {% endif %}
 
-            <li>
+            {% if "VER_ROL" in proyecto_perms %}
+                <li>
                 <a href="{% url 'listaRol' proyecto_id=proyecto_id %}">
-                    <i class="fa fa-user" aria-hidden="true"></i>Listar Roles
+                    <i class="fa fa-user" aria-hidden="true"></i>Roles
                 </a>
+            {% endif %}
+
             </li>
         </ul>
     </div>
@@ -68,7 +77,7 @@
                                                                                              aria-hidden="true"></i>
                         </button>
                         <a class="btn btn-danger " style="margin-left: 10px; color:white"
-                                onclick="location.href='{% url 'listaRol' proyecto_id=proyecto_id %}'">Cancelar <i
+                           onclick="location.href='{% url 'listaRol' proyecto_id=proyecto_id %}'">Cancelar <i
                                 class="fa fa-times" aria-hidden="true"></i></a>
                     </div>
                 </form>

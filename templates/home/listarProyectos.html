@@ -17,10 +17,10 @@
             </nav>
                 <div class="jumbotron">
                     <div class="row">
-                        <div class="col-10 .col-md-10">
+                         <div class="col-md-8">
                             <h1><i class="fa fa-thumb-tack" aria-hidden="true"></i> Lista Proyectos</h1>
                         </div>
-                        <div class="col-2 .col-md-2">
+                         <div class="col-md-4" style="text-align: end">
 
                             {% if request.user.rolSistema == "Administrador" %}
                                     <button type="button" class="btn btn-secondary"
@@ -32,7 +32,7 @@
 
                         </div>
                         <div >
-                            <select name="filtrar" id="filtrar" onChange="obeteneropcion()">
+                            <select class="btn btn-secondary" style="margin-bottom: 10px" name="filtrar" id="filtrar" onChange="obeteneropcion()">
                                         <option value="" >FILTRAR</option>
                                         <option value="TODOS" >TODOS</option>
                                         <option value="PENDIENTE">PENDIENTE</option>
@@ -110,7 +110,10 @@
                 'title': '¿Estas seguro?',
                 'text': 'esta acción no se pude deshacer',
                 'icon': 'warning',
-                'showCancelButton': true
+                'showCancelButton': true,
+                'cancelButtonColor': '#d33',
+                'confirmButtonText': 'Confirmar',
+                'cancelButtonText': 'Cancelar'
             })
                 .then(function (result) {
                     if (result.isConfirmed) {

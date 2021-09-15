@@ -23,8 +23,8 @@
                 </a>
             </li>
             <li>
-                <a href="#">
-                    <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
+                <a href="{% url 'proyecto' proyecto_id=proyecto_id %}">
+                    <i class="fa fa-briefcase" aria-hidden="true"></i>Proyecto
                 </a>
             </li>
             {% if proyecto.estado == 'ACTIVO' %}
@@ -60,7 +60,7 @@
             </nav>
             <div class="jumbotron" style="margin-top: 0px">
                 <div class="row">
-                    <div class="col-sm-10 col-md-9   ">
+                     <div class="col-md-8">
                         <div>
                             <h1 id="element1"><i class="fa fa-book"
                                                  aria-hidden="true"></i> {{ proyecto.nombre_proyecto }}</h1>
@@ -77,10 +77,15 @@
                         </div>
 
                     </div>
-                    <div class="col-sm-2 col-md-3">
+                     <div class="col-md-4" style="text-align: end">
 
                         {% if "INICIAR_PROYECTO" in proyecto_perms and proyecto.estado == proyecto.PENDIENTE %}
                             <button type="button" class="btn btn-secondary"
+                                    onclick="location.href='{% url 'iniciarProyecto' proyecto_id=proyecto_id %}'"
+                            >Iniciar Proyecto <i class="fa fa-folder-open-o" aria-hidden="true"></i>
+                            </button>
+                        {% else %}
+                            <button type="button" class="btn btn-secondary" disabled
                                     onclick="location.href='{% url 'iniciarProyecto' proyecto_id=proyecto_id %}'"
                             >Iniciar Proyecto <i class="fa fa-folder-open-o" aria-hidden="true"></i>
                             </button>
@@ -90,8 +95,9 @@
                     {#                    <h4 style="width: 75%; margin-top: 10px"><span>Descripción:</span>{{ proyecto.descripcion }}</h4>#}
                 </div>
                 <div class="row">
-                    <div class="col-lg-4">
-                        <div class="card card-margin" style="height: 95%;">
+                    <div class="col-lg-6">
+                        <div class="card card-margin"
+                             style="height: 100%;  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);transition:0.3s;">
                             <div class="card-header no-border">
                                 <h5 class="card-title">Descripción</h5>
                             </div>
@@ -105,8 +111,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4">
-                        <div class="card card-margin" style="height: 40%;">
+                    <div class="col-lg-3 ">
+                        <div class="card card-margin"
+                             style="height: 100%;box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);transition:0.3s;">
                             <div class="card-header no-border">
                                 <h5 class="card-title" style="position: absolute">Miembros</h5>
                             </div>
@@ -127,12 +134,15 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card card-margin" style="height: 47%;">
+                    </div>
+                 <div class="col-lg-3 ">
+                        <div class="card card-margin"
+                             style="height: 100%;box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);transition:0.3s;">
                             <div class="card-header no-border">
                                 <h5 class="card-title" style="position: absolute">Roles</h5>
                             </div>
                             <div class="card-body pt-0">
-                                <div class="card " style="height: 80%; display: flex; overflow-y: scroll;">
+                                <div class="card " style="height: 90%; display: flex; overflow-y: scroll;">
                                     <div class="widget-49">
                                         <div class="widget-49-title-wrapper">
 

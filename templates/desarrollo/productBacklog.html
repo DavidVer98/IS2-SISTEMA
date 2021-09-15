@@ -16,14 +16,14 @@
 
             </nav>
             <div class="row">
-                <div class="col-md-10   ">
+                <div class="col-sm-12 col-lg-9">
                     <div class="jumbotron" style="margin-top: 0px">
                         <div class="row">
-                            <div class="col-10 .col-md-10">
+                            <div class="col-md-8">
                                 <h1><i class="fa fa-list-alt" aria-hidden="true"></i></i> Product Backlog</h1>
                             </div>
 
-                            <div class="col-2 .col-md-2">
+                            <div class="col-md-3" style="text-align: end">
                                 {% if "CREAR_USER_STORY" in proyecto_perms %}
                                     <button type="button" class="btn btn-secondary"
                                             onclick="location.href='{% url 'crearUserStory' proyecto_id=proyecto_id %}'"
@@ -66,8 +66,8 @@
                                         {% endif %}
                                         {% if "ELIMINAR_USER_STORY" in proyecto_perms %}
                                         <button type="button" class="btn btn-danger"
-                                                onclick="location.href='{% url 'eliminarUserStory' proyecto_id userStory.id %}'"
-                                        ><i class="bi bi-trash"></i>
+                                                 onclick="eliminarUS({{ userStory.nombre.split }},{{ userStory.id }})">
+                                        <i class="bi bi-trash"></i>
                                         </button>
                                         {% endif %}
                                     </td>
@@ -79,8 +79,8 @@
 
                     </div>
                 </div>
-              <div class="col-md-2">
-                    <div class="jumbotron" >
+              <div class="col-sm-12 col-lg-3">
+                    <div class="jumbotron" style="box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);transition:0.3s; margin-left: 20px; width: 90%">
                         <p class="text-muted" style="text-align: center; margin-top: -20px"><i class="bi bi-gear"></i> Opciones</p>
                         <hr>
                         <div style="margin-left:-10px ">
@@ -95,5 +95,27 @@
         </div>
 
     </div>
+    <script type="text/javascript">
+
+        function eliminarUS(nombre, userStory_id) {
+            Swal.fire({
+                'title': '¿Estas seguro?',
+                'text': `Se eliminara el User Story "${nombre}" del proyecto`,
+                'icon': 'error',
+                'showCancelButton': true,
+                'cancelButtonColor': '#d33',
+                'confirmButtonText': 'Confirmar',
+                'cancelButtonText': 'Cancelar'
+            })
+                .then(function (result) {
+                    if (result.isConfirmed) {
+                        window.location.href = "productbacklog/" + userStory_id + "/eliminar";
+
+                    }
+                })
+        }
+
+
+    </script>
 
 {% endblock %}
