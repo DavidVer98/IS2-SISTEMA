@@ -26,29 +26,31 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 listadeemail=[]
+
 def msg(email1):
     # create message object instance
     if email1 not in listadeemail:
-        listadeemail.append(email1)
         usuario = User.objects.filter(rolSistema="Administrador")
-        for u in usuario:
-            msg = MIMEMultipart()
+        if len(usuario) > 1 :
+            listadeemail.append(email1)
+            for u in usuario:
+                msg = MIMEMultipart()
+                usuarios="http://127.0.0.1:8080/home/usuarios"
+                message = "El usuario con email " + email1 + " ha intentado ingresar al sistema" +" puede activarlo en el sector "+ usuarios
 
-            message = "el usuario con email " + email1 + " ha intentado ingresar al sistema"
+                # setup the parameters of the message
+                password = 'sgp12345'
+                msg['From'] = "sistemagestordeproyectos@gmail.com"
+                msg['To'] = u.email
+                msg['Subject'] = "Usuario no autorizado"
+                fromaddr = "chapiparrizo@gmail.com"
+                # add in the message body
+                msg.attach(MIMEText(message, 'plain'))
 
-            # setup the parameters of the message
-            password = 'sgp12345'
-            msg['From'] = "sistemagestordeproyectos@gmail.com"
-            msg['To'] = u.email
-            msg['Subject'] = "Usuario no autorizado"
-            fromaddr = "chapiparrizo@gmail.com"
-            # add in the message body
-            msg.attach(MIMEText(message, 'plain'))
-
-            smtpserver = smtplib.SMTP("smtp.gmail.com", 587)
-            smtpserver.ehlo()
-            smtpserver.starttls()
-            smtpserver.ehlo()
-            smtpserver.login(msg['From'], password)
-            smtpserver.sendmail(msg['From'], msg['To'], msg.as_string())
-            smtpserver.quit()
+                smtpserver = smtplib.SMTP("smtp.gmail.com", 587)
+                smtpserver.ehlo()
+                smtpserver.starttls()
+                smtpserver.ehlo()
+                smtpserver.login(msg['From'], password)
+                smtpserver.sendmail(msg['From'], msg['To'], msg.as_string())
+                smtpserver.quit()
