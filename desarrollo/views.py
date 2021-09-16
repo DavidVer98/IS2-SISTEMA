@@ -23,6 +23,7 @@ def desarrollo(request, proyecto_id):
 def productBacklog(request, proyecto_id):
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     userStory = UserStory.objects.filter(proyecto=proyecto_id, estado_desarrollo=UserStory.EN_PRODUCT_BACKLOG)
+    # userStory.order_by('-prioridad')
     context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'userStory': userStory}
     return render(request, "desarrollo/productBacklog.html", context)
 

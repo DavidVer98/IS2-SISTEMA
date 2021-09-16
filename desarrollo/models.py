@@ -20,14 +20,16 @@ class UserStory(models.Model):
         ('QA', 'QA'),
         ('RELEASE', 'RELEASE'),
     ]
-    BAJA = 'Baja'
-    NORMAL = 'Normal'
-    ALTA = 'Alta'
+    BAJA = 1
+    NORMAL = 2
+    ALTA = 3
     PRIORIDAD_USERSTORY_CHOICES = (
         (BAJA, 'Baja'),
         (NORMAL, 'Normal'),
         (ALTA, 'Alta'),
     )
+    class Meta:
+        ordering = ["-prioridad"]
 
     EN_PRODUCT_BACKLOG = 'EN PRODUCT BACKLOG'
     EN_SPRINT_BACKLOG='EN SPRINT BACKLOG'
@@ -47,7 +49,7 @@ class UserStory(models.Model):
     descripcion = models.TextField(max_length=300)
     estado_sprint = models.CharField(max_length=50, choices=ESTADO_USERSTORY_CHOICES, default=TO_DO)
     estimacion = models.FloatField(default=0, blank=True, null=False)
-    prioridad = models.CharField(max_length=50,default=BAJA, choices=PRIORIDAD_USERSTORY_CHOICES)
+    prioridad = models.IntegerField(default=BAJA, choices=PRIORIDAD_USERSTORY_CHOICES)
     estado_desarrollo = models.CharField(max_length=50,default=EN_PRODUCT_BACKLOG, choices=ESTADO_DESARROLLO_USERSTORY_CHOICES)
 
 

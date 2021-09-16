@@ -36,7 +36,7 @@ def msg(email1):
             for u in usuario:
                 msg = MIMEMultipart()
                 usuarios="http://127.0.0.1:8080/home/usuarios"
-                message = "El usuario con email " + email1 + " ha intentado ingresar al sistema" +" puede activarlo en el sector "+ usuarios
+                message = "El usuario con email " + email1 + " ha intentado ingresar al sistema" +", puede activarlo en el sector "+ usuarios
 
                 # setup the parameters of the message
                 password = 'sgp12345'
