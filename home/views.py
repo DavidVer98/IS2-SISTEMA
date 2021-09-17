@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect
 from home.forms import UserForm, UserFormRol
 from proyecto.models import Miembro
 from user.models import User
+from user.views import msg2
 
 
 @login_required(login_url='/login')
@@ -74,10 +75,12 @@ def editar(request, user_id):
         form = UserFormRol(request.POST, instance=user)
         if form.is_valid():
             form.save()
-
             data = form.cleaned_data
             rol_sistema = data['rolSistema']
+            estado= data['estaActivado']
             user = User.objects.get(pk=user_id)
+            if (estado):
+                msg2(user.email,user.username,user.rolSistema)
             grupo_administracion = Group.objects.get(name=user.ADMINISTRADOR)
             if rol_sistema == grupo_administracion.name:
                 user.groups.add(grupo_administracion)

@@ -27,6 +27,7 @@ from email.mime.text import MIMEText
 import smtplib
 listadeemail=[]
 
+
 def msg(email1):
     # create message object instance
     if email1 not in listadeemail:
@@ -39,7 +40,7 @@ def msg(email1):
                 message = "El usuario con email " + email1 + " ha intentado ingresar al sistema" +", puede activarlo en el sector "+ usuarios
 
                 # setup the parameters of the message
-                password = 'sgp12345'
+                password = 'agregarcontraseña'
                 msg['From'] = "sistemagestordeproyectos@gmail.com"
                 msg['To'] = u.email
                 msg['Subject'] = "Usuario no autorizado"
@@ -54,3 +55,27 @@ def msg(email1):
                 smtpserver.login(msg['From'], password)
                 smtpserver.sendmail(msg['From'], msg['To'], msg.as_string())
                 smtpserver.quit()
+
+def msg2(email1,nombre,rol):
+    # create message object instance
+
+    msg = MIMEMultipart()
+    usuarios="http://127.0.0.1:8080/home"
+    message = "Su usuario "+nombre+ " Ha sido activado en el sistema gestor de proyectos con el rol de "+rol+". Ya puede ingresar al sistema  "+usuarios
+
+    # setup the parameters of the message
+    password = 'agregarcontraseña'
+    msg['From'] = "sistemagestordeproyectos@gmail.com"
+    msg['To'] = email1
+    msg['Subject'] = "Usuario activado"
+
+    # add in the message body
+    msg.attach(MIMEText(message, 'plain'))
+
+    smtpserver = smtplib.SMTP("smtp.gmail.com", 587)
+    smtpserver.ehlo()
+    smtpserver.starttls()
+    smtpserver.ehlo()
+    smtpserver.login(msg['From'], password)
+    smtpserver.sendmail(msg['From'], msg['To'], msg.as_string())
+    smtpserver.quit()
