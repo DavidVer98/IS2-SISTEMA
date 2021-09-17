@@ -1,0 +1,17 @@
+/* Heart of the matter */
+@media (min-width: 768px) {
+  .ten-columns > .col-sm-2 {
+    width: 20%;
+  }
+}
+
+/* Decorations */
+.col-sm-2-t {
+  background: #f93;
+  color: #fff;
+  font-size: 28px;
+  font-weight: bold;
+  min-height: 150px;
+  padding-top: 6px;
+}
+.col-sm-2:nth-of-type(even) { background: #69c; }

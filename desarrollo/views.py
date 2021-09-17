@@ -1,4 +1,6 @@
 # from audioop import reverse
+import json
+
 from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.db.models import Sum
@@ -225,3 +227,14 @@ def sprintBacklog(request, proyecto_id):
     context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, "user_stories": user_stories}
 
     return render(request, "desarrollo/sprintBacklog.html", context)
+
+def estadoUS(request, proyecto_id):
+    if request.method == "POST":
+        received_json_data = json.loads(request.body)
+        estadoUS = received_json_data['estado']
+        userstory_pk = received_json_data['us_id']
+        user_story = UserStory.objects.get(pk = userstory_pk)
+        user_story.estado_sprint = estadoUS
+        user_story.save()
+
+    return render(request, 'home/index.html')

@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
 
-from desarrollo.views import desarrollo
+from desarrollo.views import desarrollo, estadoUS
 from home.views import home, listarUsuarios, eliminar, editar
 from oauth_app.views import login_views, logout_view
 from proyecto.views import listarProyectos, editarProyecto, crearProyecto, editarRol, eliminarRol, filtrarProyecto
@@ -41,7 +41,7 @@ urlpatterns = [
     path("proyecto/", include("proyecto.urls")),
     path("proyecto/", include("desarrollo.urls")),
     path("home/proyectos/<proyecto_estado>/", filtrarProyecto, name="filtrarProyecto"),
-
+    # path("desarrollo/sprintbacklog", estadoUS, name="estadoUS"),
 ]
 
 admin.site.site_header = 'home/'

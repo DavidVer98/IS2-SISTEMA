@@ -1,5 +1,6 @@
 {% extends "baseDesarrollo.html" %}
-
+{% load static %}
+<link href="{% static "css/kanban.css" %}" rel="stylesheet"/>
 {% block head_content %}
     <title>Home</title>
 {% endblock %}
@@ -10,32 +11,221 @@
             <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{% url 'desarrollo' proyecto_id %}">Desarrollo</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Sprint Backlog</li>
                 </ol>
             </nav>
             <div class="jumbotron" style="margin-top: 0px">
-                <div class="row">
-                    <div class="col-10 .col-md-10">
-                        <h1><i class="fa fa-bullhorn" aria-hidden="true"></i> Proyecto Iniciado!</h1>
-                    </div>
-
-                    <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
-                    <h2>Nombre del proyecto </h2>
-                    <li>{{ proyecto.nombre_proyecto }}</li>
-
-                    <h3>Roles del Proyecto iniciado</h3>
-                    {% for user_story in user_stories%}
-                        <li>
-                            {{ user_story.nombre }}
-                        </li>
-                    {% endfor %}
-
-
+            <div class="row">
+                <div class="col-md-8">
+                    <h1><i class="fa fa-th-list" aria-hidden="true"></i></i> Sprint Backlog</h1>
                 </div>
+            </div>
+                <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
 
+                <div class="row">
+                    {% csrf_token %}
+                    <div class="col-4 card">
+                        <div class="card-header">
+                            <h6 class="text-muted">TO DO</h6>
+                        </div>
+                        <div class="card-body" id="TO_DO">
+                            {% for us in user_stories %}
+                                {% if us.estado_sprint == 'TO DO' %}
+                                    <div class="card" style="margin-top: 5px" data-id="{{ us.pk }}">
+                                        <div class="card " style="border: 0px" data-id="{{ us.pk }}">
+                                            <div class="card-img-overlay" style="text-align: end">
+                                                <span class="badge badge-primary"> {{ us.miembro_asignado }}</span>
+                                                <span class="badge badge-secondary"> Prioridad: {{ us.prioridad }}</span>
+                                            </div>
+                                            <div class="card-body">
+                                                <h6 class="card-title">{{ us.nombre }}</h6>
+                                                <small class="text-muted cat">
+                                                    <i class="far fa-clock text-info"></i> {{ us.estimacion }}
+                                                    Estimación
+                                                    <i class="fas fa-users text-info"></i> 1 Miembro
+                                                </small>
+                                                <p class="card-text">{{ us.descripcion }}.</p>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer text-muted d-flex justify-content-between bg-transparent border-top-0">
+                                        </div>
+                                        <div class="container" style="padding: 10px; margin-top: -30px">
+                                            <a href="home" style="width: 30%; " class="btn btn-success btn-sm">Ver
+                                                más</a>
+                                        </div>
+                                    </div>
+
+                                    {#                                    <div class="card" data-id="{{ us.pk }}">#}
+                                    {#                                        <div class="card">#}
+                                    {#                                            <div class="card-header">#}
+                                    {#                                                {{ us.nombre }}#}
+                                    {#                                                <div style="text-align: end"><span#}
+                                    {#                                                        class="badge badge-primary">{{ us.miembro_asignado }}</span>#}
+                                    {#                                                </div>#}
+                                    {#                                            </div>#}
+                                    {#                                            <div class="card-body">#}
+                                    {#                                                <p>{{ us.descripcion }}</p>#}
+                                    {#                                                <p>{{ us.pk }}</p>#}
+                                    {#                                            </div>#}
+                                    {#                                            <div id="static" style="text-align: end">#}
+                                    {#                                                <button class="btn btn-secondary" style="width: 25%;" href="home">#}
+                                    {#                                                    Aceptar#}
+                                    {#                                                </button>#}
+                                    {#                                            </div>#}
+                                    {#                                        </div>#}
+                                    {##}
+                                    {#                                    </div>#}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+
+                    </div>
+                    <div class="col-4 card">
+                        <div class="card-header">
+                            <h6 class="text-muted">DOING</h6>
+                        </div>
+                        <div class="card-body" id="DOING">
+
+                            {% for us in user_stories %}
+                                {% if us.estado_sprint == 'DOING' %}
+                                    <div class="card" style="margin-top: 5px" data-id="{{ us.pk }}">
+                                        <div class="card" style="border: 0px" data-id="{{ us.pk }}">
+                                            <div class="card-img-overlay" style="text-align: end">
+                                                <span class="badge badge-primary"> {{ us.miembro_asignado }}</span>
+                                                <span class="badge badge-secondary"> Prioridad: {{ us.prioridad }}</span>
+                                            </div>
+                                            <div class="card-body">
+                                                <h6 class="card-title">{{ us.nombre }}</h6>
+                                                <small class="text-muted cat">
+                                                    <i class="far fa-clock text-info"></i> {{ us.estimacion }}
+                                                    Estimación
+                                                    <i class="fas fa-users text-info"></i> 1 Miembro
+                                                </small>
+                                                <p class="card-text">{{ us.descripcion }}.</p>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer text-muted d-flex justify-content-between bg-transparent border-top-0">
+                                        </div>
+                                        <div class="container" style="padding: 10px; margin-top: -30px ">
+                                            <a href="home" style="width: 30%; " class="btn btn-success btn-sm">Ver
+                                                más</a>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+
+                        </div>
+                    </div>
+                    <div class="col-4 card">
+                        <div class="card-header">
+                            <h6 class="text-muted">DONE</h6>
+                        </div>
+                        <div class="card-body" id="DONE">
+                            {% for us in user_stories %}
+                                {% if us.estado_sprint == 'DONE' %}
+                                    <div class="card" style="margin-top: 5px" data-id="{{ us.pk }}">
+                                        <div class="card " style="border: 0px" data-id="{{ us.pk }}">
+                                            <div class="card-img-overlay" style="text-align: end">
+                                                <span class="badge badge-primary"> {{ us.miembro_asignado }}</span>
+                                                <span class="badge badge-secondary"> Prioridad: {{ us.prioridad }}</span>
+                                            </div>
+                                            <div class="card-body">
+                                                <h6 class="card-title">{{ us.nombre }}</h6>
+                                                <small class="text-muted cat">
+                                                    <i class="far fa-clock text-info"></i> {{ us.estimacion }}
+                                                    Estimación
+                                                    <i class="fas fa-users text-info"></i> 1 Miembro
+                                                </small>
+                                                <p class="card-text">{{ us.descripcion }}.</p>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer text-muted d-flex justify-content-between bg-transparent border-top-0">
+                                        </div>
+                                        <div class="container" style="padding: 10px; margin-top: -30px">
+                                            <a href="home" style="width: 30%; " class="btn btn-success btn-sm">Ver
+                                                más</a>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% if request.user.rolSistema == "Administrador" %}
+                        <div class="col-3 card">
+                            <div class="card-header">
+                                <h6 class="text-muted">QA</h6>
+                            </div>
+                            <div class="card-body" id="DONE">
+                                {% for us in user_stories %}
+                                    {% if us.estado_sprint == 'DONE' %}
+                                        <div class="card" style="margin-top: 5px" data-id="{{ us.pk }}">
+                                            <div class="card" style="border: 0px" data-id="{{ us.pk }}">
+                                                <div class="card-img-overlay" style="text-align: end">
+                                                    <span class="badge badge-primary"> {{ us.miembro_asignado }}</span>
+                                                    <span class="badge badge-secondary"> Prioridad: {{ us.prioridad }}</span>
+                                                </div>
+                                                <div class="card-body">
+                                                    <h6 class="card-title">{{ us.nombre }}</h6>
+                                                    <small class="text-muted cat">
+                                                        <i class="far fa-clock text-info"></i> {{ us.estimacion }}
+                                                        Estimación
+                                                        <i class="fas fa-users text-info"></i> 1 Miembro
+                                                    </small>
+                                                    <p class="card-text">{{ us.descripcion }}.</p>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer text-muted d-flex justify-content-between bg-transparent border-top-0">
+                                            </div>
+                                            <div class="container" style="padding: 10px">
+                                                <a href="home" style="width: 30%; " class="btn btn-success btn-sm">Ver
+                                                    más</a>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+
+                        </div>
+                    {% endif %}
+                    {#                <div class="col-2 card" style="height: 500px;">#}
+                    {#                        <div class="card-header">#}
+                    {#                            <h6>QA</h6>#}
+                    {#                        </div>#}
+                    {#                        <div class="card-body" id="DONE">#}
+                    {#                            {% for us in user_stories %}#}
+                    {#                                {% if us.estado_sprint == 'DONE' %}#}
+                    {#                                    <div class="card" style="margin-top: 5px" data-id="{{ us.pk }}">#}
+                    {#                                        <div class="card container-fluid" style="border: 0px" data-id="{{ us.pk }}">#}
+                    {#                                            <div class="card-img-overlay" style="text-align: end">#}
+                    {#                                                <span class="badge badge-primary"> {{ us.miembro_asignado }}</span>#}
+                    {#                                            </div>#}
+                    {#                                            <div class="card-body">#}
+                    {#                                                <h4 class="card-title">{{ us.nombre }}</h4>#}
+                    {#                                                <small class="text-muted cat">#}
+                    {#                                                    <i class="far fa-clock text-info"></i> {{ us.estimacion }} Estimación#}
+                    {#                                                    <i class="fas fa-users text-info"></i> 1 Miembro#}
+                    {#                                                </small>#}
+                    {#                                                <p class="card-text">{{ us.descripcion }}.</p>#}
+                    {#                                            </div>#}
+                    {#                                        </div>#}
+                    {#                                        <div class="card-footer text-muted d-flex justify-content-between bg-transparent border-top-0">#}
+                    {#                                        </div>#}
+                    {#                                        <div class="container" style="padding: 10px">#}
+                    {#                                        <a href="home" style="width: 30%; " class="btn btn-success btn-sm">Ver más</a>#}
+                    {#                                        </div>#}
+                    {#                                    </div>#}
+                    {#                                {% endif %}#}
+                    {#                            {% endfor %}#}
+                    {#                        </div>#}
+                    {##}
+                    {#                    </div>#}
+                </div>
 
             </div>
 
         </div>
     </div>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script src="http://SortableJS.github.io/Sortable/Sortable.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
 {% endblock %}
