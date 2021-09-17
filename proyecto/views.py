@@ -93,6 +93,7 @@ def crearProyecto(request):
         Requiere que el usuario este logeado
 
     """
+    error = False
     if request.method == "POST":
         form = ProyectoCrearForms(request.POST)
         if form.is_valid():
@@ -109,14 +110,10 @@ def crearProyecto(request):
                 return redirect("listarProyectos")
             else:
                 error = True
-                context = {'error': error, 'form': form, 'proyectos': proyecto}
-                return render(request, "proyecto/crearProyecto.html", context)
 
-    else:
-        form = ProyectoCrearForms()
-        form.fields['scrum_master'].queryset= User.objects.all().exclude(groups__name='Administrador')
-
-    context = {'form': form}
+    form = ProyectoCrearForms()
+    form.fields['scrum_master'].queryset= User.objects.all().exclude(groups__name='Administrador')
+    context = {'error': error, 'form': form, 'proyectos': proyecto}
     return render(request, "proyecto/crearProyecto.html", context)
 
 
