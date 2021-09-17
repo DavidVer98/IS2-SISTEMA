@@ -36,7 +36,7 @@ class TestUrls(SimpleTestCase):
 
     def test_eliminarUserStory(self):
         url = reverse('eliminarUserStory',kwargs={"proyecto_id":1, "user_story_id":1})
-        self.assertEqual(resolve(url).func,editarUserStory,"No se utilizo el template de eliminarUserStory")
+        self.assertEqual(resolve(url).func,eliminarUserStory,"No se utilizo el template de eliminarUserStory")
 
     def test_sprintPlanningEstado(self):
         url = reverse('sprintPlanningEstado',kwargs={"proyecto_id":1, "user_story_id":1})
