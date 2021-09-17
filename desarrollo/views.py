@@ -31,10 +31,11 @@ def productBacklog(request, proyecto_id):
 @permission_required_or_403('CREAR_USER_STORY', (Proyecto, 'id', 'proyecto_id'))
 def crearUserStory(request, proyecto_id):
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
-
+    error=False
     form = UserStoryForms(request.POST or None)
     if request.method == "POST":
         if form.is_valid():
+
             data = form.cleaned_data
             nombre_user_story_form = data['nombre']
             nombre_user_story = UserStory.objects.filter(nombre=nombre_user_story_form)
@@ -46,13 +47,12 @@ def crearUserStory(request, proyecto_id):
                 return redirect(reverse('productBacklog', kwargs={'proyecto_id': proyecto_id}))
             else:
                 error = True
-                context = {"error": error, "proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form}
-                return render(request, 'desarrollo/userStory/crear.html', context)
 
-    else:
-        form = UserStoryForms()
+    form = UserStoryForms()
+    form.fields['prioridad'].choices.remove((4,'Superalta'))
+    form.fields['prioridad'].choices=form.fields['prioridad'].choices
 
-    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form}
+    context = {"error": error, "proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form}
     return render(request, "desarrollo/userStory/crear.html", context)
 
 

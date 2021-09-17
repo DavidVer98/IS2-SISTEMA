@@ -23,13 +23,17 @@ class UserStory(models.Model):
     BAJA = 1
     NORMAL = 2
     ALTA = 3
+    SUPERALTA=4
     PRIORIDAD_USERSTORY_CHOICES = (
         (BAJA, 'Baja'),
         (NORMAL, 'Normal'),
         (ALTA, 'Alta'),
+        (SUPERALTA, 'Superalta'),
     )
+
     class Meta:
         ordering = ["-prioridad"]
+
 
     EN_PRODUCT_BACKLOG = 'EN PRODUCT BACKLOG'
     EN_SPRINT_BACKLOG='EN SPRINT BACKLOG'
