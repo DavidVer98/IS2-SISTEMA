@@ -3,6 +3,8 @@ from allauth.socialaccount.models import SocialApp
 from django.contrib.sites.models import Site
 from user.models import User
 from django.contrib.auth.models import Group
+import os
+
 
 #se crea super usuario admin
 Admin = get_user_model();
@@ -22,8 +24,8 @@ site2 = Site.objects.get(name="example.com")
 social = SocialApp.objects.create(
         provider="google",
         name="API",
-        client_id="1031966865858-d98j99tg38vcdfh3ddch3rogvdohl1i8.apps.googleusercontent.com",
-        secret="frBsUXC5eA9b7HSqh-lcZc7o",
+        client_id=os.environ["client_id"],
+        secret=os.environ["secret"],
     )
 
 social.sites.add(site)
