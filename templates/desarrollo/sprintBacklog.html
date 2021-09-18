@@ -1,7 +1,9 @@
 {% extends "baseDesarrollo.html" %}
 {% load static %}
-<link href="{% static "css/kanban.css" %}" rel="stylesheet"/>
+
+
 {% block head_content %}
+    <link rel="stylesheet" href="{% static 'css/kanban.css' %}">
     <title>Home</title>
 {% endblock %}
 {% block container %}
@@ -24,18 +26,18 @@
 
                 <div class="row">
                     {% csrf_token %}
-                    <div class="col-4 card">
+                    <div class="col-sm-12 col-xl-4 card" >
                         <div class="card-header">
-                            <h6 class="text-muted">TO DO</h6>
+                            <h6 class="text-muted"><i class="fa bi bi-bookmark"></i> TO DO</h6>
                         </div>
                         <div class="card-body" id="TO_DO">
                             {% for us in user_stories %}
                                 {% if us.estado_sprint == 'TO DO' %}
-                                    <div class="card" style="margin-top: 5px" data-id="{{ us.pk }}">
+                                    <div class="card efecto {% if us.miembro_asignado.username != request.user.username %} divider{% endif %}" style="{% if us.miembro_asignado.username != request.user.username %} opacity: 0.7; {% endif %}" data-id="{{ us.pk }}">
                                         <div class="card " style="border: 0px" data-id="{{ us.pk }}">
                                             <div class="card-img-overlay" style="text-align: end">
                                                 <span class="badge badge-primary"> {{ us.miembro_asignado }}</span>
-                                                <span class="badge badge-secondary"> Prioridad: {{ us.prioridad }}</span>
+                                                <span class="badge badge-secondary  " > Prioridad:  {{ us.prioridad }}  </span>
                                             </div>
                                             <div class="card-body">
                                                 <h6 class="card-title">{{ us.nombre }}</h6>
@@ -49,9 +51,8 @@
                                         </div>
                                         <div class="card-footer text-muted d-flex justify-content-between bg-transparent border-top-0">
                                         </div>
-                                        <div class="container" style="padding: 10px; margin-top: -30px">
-                                            <a href="home" style="width: 30%; " class="btn btn-success btn-sm">Ver
-                                                más</a>
+                                        <div class="containe disabled" style="padding: 10px; margin-top: -30px;">
+                                            <a href="home" style="width: 30%; " class="btn btn-success btn-sm  {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %} ">Ver más</a>
                                         </div>
                                     </div>
 
@@ -80,15 +81,15 @@
                         </div>
 
                     </div>
-                    <div class="col-4 card">
+                    <div class="col-sm-12 col-xl-4 card">
                         <div class="card-header">
-                            <h6 class="text-muted">DOING</h6>
+                            <h6 class="text-muted"><i class="bi bi-bookmark-plus"></i> DOING</h6>
                         </div>
                         <div class="card-body" id="DOING">
 
                             {% for us in user_stories %}
                                 {% if us.estado_sprint == 'DOING' %}
-                                    <div class="card" style="margin-top: 5px" data-id="{{ us.pk }}">
+                                    <div class="card efecto   {% if us.miembro_asignado.username != request.user.username %} divider{% endif %}" style="{% if us.miembro_asignado.username != request.user.username %} opacity: 0.7; {% endif %} " data-id="{{ us.pk }}">
                                         <div class="card" style="border: 0px" data-id="{{ us.pk }}">
                                             <div class="card-img-overlay" style="text-align: end">
                                                 <span class="badge badge-primary"> {{ us.miembro_asignado }}</span>
@@ -107,8 +108,7 @@
                                         <div class="card-footer text-muted d-flex justify-content-between bg-transparent border-top-0">
                                         </div>
                                         <div class="container" style="padding: 10px; margin-top: -30px ">
-                                            <a href="home" style="width: 30%; " class="btn btn-success btn-sm">Ver
-                                                más</a>
+                                            <a href="home" style="width: 30%; " class="btn btn-success btn-sm  {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %} ">Ver más</a>
                                         </div>
                                     </div>
                                 {% endif %}
@@ -116,14 +116,14 @@
 
                         </div>
                     </div>
-                    <div class="col-4 card">
+                    <div class="col-sm-12 col-xl-4  card">
                         <div class="card-header">
-                            <h6 class="text-muted">DONE</h6>
+                            <h6 class="text-muted"> <i class="bi bi-bookmark-check"></i> DONE</h6>
                         </div>
                         <div class="card-body" id="DONE">
                             {% for us in user_stories %}
                                 {% if us.estado_sprint == 'DONE' %}
-                                    <div class="card" style="margin-top: 5px" data-id="{{ us.pk }}">
+                                    <div class="card efecto {% if us.miembro_asignado.username != request.user.username %} divider{% endif %}" style="{% if us.miembro_asignado.username != request.user.username %} opacity: 0.7; {% endif %}"  data-id="{{ us.pk }}">
                                         <div class="card " style="border: 0px" data-id="{{ us.pk }}">
                                             <div class="card-img-overlay" style="text-align: end">
                                                 <span class="badge badge-primary"> {{ us.miembro_asignado }}</span>
@@ -142,8 +142,15 @@
                                         <div class="card-footer text-muted d-flex justify-content-between bg-transparent border-top-0">
                                         </div>
                                         <div class="container" style="padding: 10px; margin-top: -30px">
-                                            <a href="home" style="width: 30%; " class="btn btn-success btn-sm">Ver
-                                                más</a>
+                                        <div class="row">
+                                            <div class="col-8">
+                                                <a href="home" style="width: 40%; " class="btn btn-success btn-sm  {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %} ">Ver más</a>
+                                            </div>
+                                            <div class="col-4" style="text-align: end">
+                                                <span class="badge badge-warning"> Verificar</span>
+                                            </div>
+                                        </div>
+
                                         </div>
                                     </div>
                                 {% endif %}
@@ -158,7 +165,7 @@
                             <div class="card-body" id="DONE">
                                 {% for us in user_stories %}
                                     {% if us.estado_sprint == 'DONE' %}
-                                        <div class="card" style="margin-top: 5px" data-id="{{ us.pk }}">
+                                        <div class="card" style="margin-top: 5px; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);transition:0.3s; margin-left: 20px; width: 90%    " data-id="{{ us.pk }}">
                                             <div class="card" style="border: 0px" data-id="{{ us.pk }}">
                                                 <div class="card-img-overlay" style="text-align: end">
                                                     <span class="badge badge-primary"> {{ us.miembro_asignado }}</span>

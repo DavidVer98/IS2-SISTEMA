@@ -17,7 +17,9 @@ from user.models import User
 def desarrollo(request, proyecto_id):
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     proyecto_actual.iniciar_proyecto()
-    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual}
+    miembro = Miembro.objects.get(miembro = request.user)
+    print(miembro.rol)
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'miembro':miembro}
     return render(request, "desarrollo/desarrollo.html", context)
 
 
@@ -26,7 +28,8 @@ def productBacklog(request, proyecto_id):
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     userStory = UserStory.objects.filter(proyecto=proyecto_id, estado_desarrollo=UserStory.EN_PRODUCT_BACKLOG)
     # userStory.order_by('-prioridad')
-    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'userStory': userStory}
+    miembro = Miembro.objects.get(miembro=request.user)
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'userStory': userStory, 'miembro':miembro}
     return render(request, "desarrollo/productBacklog.html", context)
 
 
@@ -53,8 +56,9 @@ def crearUserStory(request, proyecto_id):
     form = UserStoryForms()
     form.fields['prioridad'].choices.remove((4,'Superalta'))
     form.fields['prioridad'].choices=form.fields['prioridad'].choices
+    miembro = Miembro.objects.get(miembro=request.user)
 
-    context = {"error": error, "proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form}
+    context = {"error": error, "proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form, 'miembro':miembro}
     return render(request, "desarrollo/userStory/crear.html", context)
 
 
@@ -62,6 +66,7 @@ def crearUserStory(request, proyecto_id):
 def editarUserStory(request, proyecto_id, user_story_id):
     user_story = UserStory.objects.get(pk=user_story_id)
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+    miembro = Miembro.objects.get(miembro=request.user)
 
     if request.method == "POST":
         form = UserStoryForms(request.POST or None, instance=user_story)
@@ -77,12 +82,12 @@ def editarUserStory(request, proyecto_id, user_story_id):
                 return redirect(reverse('productBacklog', kwargs={'proyecto_id': proyecto_id}))
             else:
                 error = True
-                context = {"error": error, "proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form}
+                context = {"error": error, "proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form, 'miembro':miembro}
                 return render(request, 'desarrollo/userStory/editar.html', context)
     else:
         form = UserStoryForms(instance=user_story)
 
-    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form, 'user_story': user_story}
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form, 'user_story': user_story, 'miembro':miembro}
     return render(request, "desarrollo/userStory/editar.html", context)
 
 
@@ -98,6 +103,7 @@ def sprintPlanning(request, proyecto_id):
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     user_stories = UserStory.objects.filter(estado_desarrollo=UserStory.EN_SPRINT_PLANNING, proyecto=proyecto_id)
     estimacion_total = user_stories.aggregate(Sum("estimacion")).get('estimacion__sum')
+    miembro = Miembro.objects.get(miembro=request.user)
 
     miembros = Miembro.objects.filter(miembro_id__in=user_stories.values("miembro_asignado_id"),
                                       proyectos_id__exact=proyecto_id)
@@ -105,7 +111,7 @@ def sprintPlanning(request, proyecto_id):
     if capacidad_miembros is None: capacidad_miembros = 0
 
     context = {"proyecto_id": proyecto_id, 'userStory': user_stories, "proyecto": proyecto_actual,
-               "estimacion_total": estimacion_total, "capacidad_miembros": capacidad_miembros}
+               "estimacion_total": estimacion_total, "capacidad_miembros": capacidad_miembros , 'miembro':miembro}
     return render(request, "desarrollo/sprintPlanning.html", context)
 
 
@@ -137,6 +143,7 @@ def product_backlog_estado(request, proyecto_id, user_story_id):
 def asignarMiembroUS(request, proyecto_id, user_story_id):
     user_story_actual = UserStory.objects.get(pk=user_story_id)
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+    miembro = Miembro.objects.get(miembro=request.user)
     if request.method == "POST":
         form = UserStoryMiembroForms(request.POST or None, instance=user_story_actual)
         if form.is_valid():
@@ -151,7 +158,7 @@ def asignarMiembroUS(request, proyecto_id, user_story_id):
         form = UserStoryMiembroForms(instance=user_story_actual)
         form.fields['miembro_asignado'].queryset = User.objects.filter(miembro__proyectos=proyecto_actual).exclude(
             pk=proyecto_actual.scrum_master.pk)
-    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form, 'user_story': user_story_actual}
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form, 'user_story': user_story_actual, 'miembro':miembro}
     return render(request, "desarrollo/asignarMiembroUS.html", context)
 
 
@@ -159,6 +166,7 @@ def asignarMiembroUS(request, proyecto_id, user_story_id):
 def planningPoker(request, proyecto_id, user_story_id):
     user_story_actual = UserStory.objects.get(pk=user_story_id)
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+    miembro = Miembro.objects.get(miembro=request.user)
     if request.user == user_story_actual.miembro_asignado or proyecto_actual.scrum_master == request.user:
         estimacion = EstimacionPlanificada.objects.get(user_story=user_story_actual)
 
@@ -196,7 +204,7 @@ def planningPoker(request, proyecto_id, user_story_id):
                 form.fields['estimacion_scrum'].disabled = True
 
             context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form,
-                       'user_story': user_story_actual}
+                       'user_story': user_story_actual, 'miembro':miembro}
             return render(request, "desarrollo/planningPoker.html", context)
 
     return redirect(reverse('sprintPlanning', kwargs={'proyecto_id': proyecto_id}))
@@ -224,7 +232,8 @@ def iniciarSprint(request, proyecto_id):
 def sprintBacklog(request, proyecto_id):
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     user_stories = UserStory.objects.filter(proyecto=proyecto_actual, estado_desarrollo=UserStory.EN_SPRINT_BACKLOG)
-    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, "user_stories": user_stories}
+    miembro = Miembro.objects.get(miembro=request.user)
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, "user_stories": user_stories, 'miembro':miembro}
 
     return render(request, "desarrollo/sprintBacklog.html", context)
 

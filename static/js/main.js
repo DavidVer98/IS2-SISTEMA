@@ -9,8 +9,9 @@ Sortable.create(lista1, {
 
     },
     animation: 150,
-    sort: false, // To disable sorting: set sort to false
 
+    sort: false, // To disable sorting: set sort to false
+    filter: ".divider", //anular drop and drag
 
     store: {
         //Guardamos el orden de la lista
@@ -40,6 +41,8 @@ Sortable.create(lista1, {
         },
 
         animation: 150,
+        sort: false, // To disable sorting: set sort to false
+        filter: ".divider", //anular drop and drag
         store: {
             //Guardamos el orden de la lista
             set: (sortable) => {
@@ -64,6 +67,7 @@ Sortable.create(lista1, {
         },
 
         animation: 150,
+        filter: ".divider", //anular drop and drag
         store: {
             //Guardamos el orden de la lista
             set: (sortable) => {

@@ -55,6 +55,7 @@
                             </thead>
                             {% for userStory in userStory %}
                                 <tbody style="text-align: left; ">
+
                                 <tr>
                                 {% if proyecto.scrum_master ==  request.user or userStory.miembro_asignado == request.user %}
                                     <th scope="row">{{ userStory.id }}</th>
@@ -106,8 +107,15 @@
                             {% endfor %}
                             </tbody>
                         </table>
+                      {% if not userStory.count %}
+                          <p class="text-muted" style="text-align: center; margin-top: 30px"><i class="bi bi-exclamation-triangle"></i>
+                            No hay User Storys en el Sprint Planning</p>
+                      {% endif %}
                     </div>
+
+
                 </div>
+
                 <div class="col-sm-12 col-lg-2">
                     <div class="jumbotron" style="box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);transition:0.3s;">
                         <p class="text-muted" style="text-align: center; margin-top: -20px"><i class="bi bi-gear"></i>
@@ -126,7 +134,7 @@
             <div class="row">
                 <div class="col-sm-12 col-lg-10">
                     <div class="jumbotron" style="box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);transition:0.3s;">
-                         <p class="text-muted" style="text-align: center; margin-top: -20px"><i class="bi bi-gear"></i>
+                         <p class="text-muted" style="text-align: center; margin-top: -20px"><i class="bi bi-journal-text"></i>
                             Estado de planificacion</p>
                         <hr>
                         <div class="text-muted" style="margin-top: 20px"><i class="fa fa-check" aria-hidden="true"></i> Capacidad semanal de Miembros: {{ capacidad_miembros }} horas
