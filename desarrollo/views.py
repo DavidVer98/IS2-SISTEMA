@@ -15,6 +15,12 @@ from user.models import User
 
 @permission_required_or_403('VER_PROYECTO', (Proyecto, 'id', 'proyecto_id'))
 def desarrollo(request, proyecto_id):
+    """
+       Vista de Desarrollo:
+        19/09/2021
+        Vista en la cual se muestra el menu inicial del desarollo de
+        un proyecto.
+    """
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     proyecto_actual.iniciar_proyecto()
     miembro = Miembro.objects.get(miembro = request.user, proyectos=proyecto_actual)
@@ -25,6 +31,12 @@ def desarrollo(request, proyecto_id):
 
 @permission_required_or_403('VER_PRODUCT_BACKLOG', (Proyecto, 'id', 'proyecto_id'))
 def productBacklog(request, proyecto_id):
+    """
+               Vista del Product Backlog:
+                19/09/2021
+                Vista en la cual se despliega la lista de user stories que
+                se van a utilizar en un sprint
+    """
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     userStory = UserStory.objects.filter(proyecto=proyecto_id, estado_desarrollo=UserStory.EN_PRODUCT_BACKLOG)
     # userStory.order_by('-prioridad')
@@ -35,6 +47,12 @@ def productBacklog(request, proyecto_id):
 
 @permission_required_or_403('CREAR_USER_STORY', (Proyecto, 'id', 'proyecto_id'))
 def crearUserStory(request, proyecto_id):
+    """
+           Vista para crear User Stories:
+            19/09/2021
+            Vista en la cual se permite la creacion de user stories con
+            ciertos parametros definidos.
+    """
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     error=False
     form = UserStoryForms(request.POST or None)
@@ -64,6 +82,12 @@ def crearUserStory(request, proyecto_id):
 
 @permission_required_or_403('EDITAR_USER_STORY', (Proyecto, 'id', 'proyecto_id'))
 def editarUserStory(request, proyecto_id, user_story_id):
+    """
+           Vista para editar User Stories:
+            19/09/2021
+            Vista en la cual se permite la edicion de user stories con
+            ciertos parametros definidos.
+    """
     user_story = UserStory.objects.get(pk=user_story_id)
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
@@ -93,6 +117,11 @@ def editarUserStory(request, proyecto_id, user_story_id):
 
 @permission_required_or_403('ELIMINAR_USER_STORY', (Proyecto, 'id', 'proyecto_id'))
 def eliminarUserStory(request, proyecto_id, user_story_id):
+    """
+               Vista para eliminar User Stories:
+                19/09/2021
+                Vista en la cual se permite la eliminacion de user stories
+    """
     user_story = UserStory.objects.get(pk=user_story_id)
     user_story.delete()
     return redirect(reverse('productBacklog', kwargs={'proyecto_id': proyecto_id}))
@@ -100,6 +129,12 @@ def eliminarUserStory(request, proyecto_id, user_story_id):
 
 @permission_required_or_403('VER_SPRINT_PLANNING', (Proyecto, 'id', 'proyecto_id'))
 def sprintPlanning(request, proyecto_id):
+    """
+               Vista para la planeacion de un Sprint:
+                19/09/2021
+                Vista en la cual se lleva a cabo la planeacion de un sprint, asignando
+                cada user story a un miembro y estimando la duracion de este.
+    """
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     user_stories = UserStory.objects.filter(estado_desarrollo=UserStory.EN_SPRINT_PLANNING, proyecto=proyecto_id)
     estimacion_total = user_stories.aggregate(Sum("estimacion")).get('estimacion__sum')
@@ -117,6 +152,12 @@ def sprintPlanning(request, proyecto_id):
 
 @permission_required_or_403('PLANIFICAR_SPRINT', (Proyecto, 'id', 'proyecto_id'))
 def sprint_planning_estado(request, proyecto_id, user_story_id):
+    """
+              Metodo para gestion de user story:
+               19/09/2021
+               Metodo en el que se cambia el estado de un user story cuando
+               pasa al sprint planning
+    """
     user_story_actual = UserStory.objects.get(pk=user_story_id)
     user_story_actual.estado_desarrollo = UserStory.EN_SPRINT_PLANNING
     user_story_actual.save()
@@ -125,6 +166,12 @@ def sprint_planning_estado(request, proyecto_id, user_story_id):
 
 @permission_required_or_403('PLANIFICAR_SPRINT', (Proyecto, 'id', 'proyecto_id'))
 def product_backlog_estado(request, proyecto_id, user_story_id):
+    """
+               Metodo para gestion de user story:
+                19/09/2021
+                Metodo en el que se reinicia las configuraciones de un user stories
+                en caso de que se retire de un sprint
+    """
     # se reinician los valores del user story al pasarlo al product backlog
     user_story_actual = UserStory.objects.get(pk=user_story_id)
     user_story_actual.estado_desarrollo = UserStory.EN_PRODUCT_BACKLOG
@@ -141,6 +188,12 @@ def product_backlog_estado(request, proyecto_id, user_story_id):
 
 @permission_required_or_403('PLANIFICAR_SPRINT', (Proyecto, 'id', 'proyecto_id'))
 def asignarMiembroUS(request, proyecto_id, user_story_id):
+    """
+           Metodo para asignar un user story:
+            19/09/2021
+            Metodo en el que se asigna un user story a un miembro
+            dentro del proyecto
+    """
     user_story_actual = UserStory.objects.get(pk=user_story_id)
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
@@ -164,6 +217,13 @@ def asignarMiembroUS(request, proyecto_id, user_story_id):
 
 @permission_required_or_403('ESTIMAR_USER_STORY', (Proyecto, 'id', 'proyecto_id'))
 def planningPoker(request, proyecto_id, user_story_id):
+    """
+           Vista de planning poker:
+            19/09/2021
+            Vista en la cual se lleva a cabo el planning poker, primeramente el
+            scrum master realiza su estimacion en el sprint planning y luego el miembro asignado
+            realiza su estimacion.
+    """
     user_story_actual = UserStory.objects.get(pk=user_story_id)
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
@@ -211,6 +271,12 @@ def planningPoker(request, proyecto_id, user_story_id):
 
 
 def iniciarSprint(request, proyecto_id):
+    """
+           Vista para iniciar sprint:
+            19/09/2021
+            Vista en la cual se mueven los user stories al sprint backlog, cambiando
+            el estado de cada uno a 'EN SPRINT BACKLOG'
+    """
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     user_stories = UserStory.objects.filter(proyecto=proyecto_actual, estado_desarrollo=UserStory.EN_SPRINT_PLANNING)
 
@@ -230,6 +296,11 @@ def iniciarSprint(request, proyecto_id):
 
 
 def sprintBacklog(request, proyecto_id):
+    """
+           Vista de sprint backlog:
+            19/09/2021
+            Vista en la cual se listan los user stories que pertenencen al sprint activo.
+    """
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     user_stories = UserStory.objects.filter(proyecto=proyecto_actual, estado_desarrollo=UserStory.EN_SPRINT_BACKLOG)
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
@@ -238,6 +309,11 @@ def sprintBacklog(request, proyecto_id):
     return render(request, "desarrollo/sprintBacklog.html", context)
 
 def estadoUS(request, proyecto_id):
+    """
+           Metodo para la gestion de un user story:
+            19/09/2021
+            Metodo en el cual se permite el cambio de estado de un user story
+    """
     if request.method == "POST":
         received_json_data = json.loads(request.body)
         estadoUS = received_json_data['estado']

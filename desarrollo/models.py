@@ -6,7 +6,13 @@ from user.models import User
 
 
 class UserStory(models.Model):
+    """
+        **User Story:**
+        03/09/2021
+        Se define en la base de datos la clase de user story
+        con sus respectivos atributos.
 
+    """
     TO_DO='TO DO'
     DOING='DOING'
     DONE='DONE'
@@ -58,6 +64,13 @@ class UserStory(models.Model):
 
 
 class EstimacionPlanificada(models.Model):
+    """
+        **Estimacion:**
+        03/09/2021
+        Se define en la base de datos la clase de estimacion
+        para guardar la estimacion del scrum master como del miembro asignado.
+
+    """
     user_story = models.ForeignKey(UserStory, on_delete=models.CASCADE)
     estimacion_scrum = models.PositiveIntegerField(default=0,blank=True, null=True)
     estimacion_miembro = models.PositiveIntegerField(default=0, blank=True, null=True)
