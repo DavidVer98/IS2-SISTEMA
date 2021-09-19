@@ -349,12 +349,12 @@ def editar_rolmiembro(request, proyecto_id, miembro_id):
     return render(request, "proyecto/miembroEditar.html", context)
 
 
-@permission_required_or_403('ELIMINAR_PROYECTO', (Proyecto, 'id', 'proyecto_id'))
-def eliminarProyecto(request, proyecto_id):
+@permission_required_or_403('CANCELAR_PROYECTO', (Proyecto, 'id', 'proyecto_id'))
+def cancelarProyecto(request, proyecto_id):
     """
-       **Eliminar Proyecto:**
+       **Cancelar Proyecto:**
         03/09/2021
-        Vista utilizada para elimiar un proyecto.
+        Vista utilizada para cancelar un proyecto.
         Solicita el id del proyecto
     """
     print(proyecto_id)

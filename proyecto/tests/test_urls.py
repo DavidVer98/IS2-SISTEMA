@@ -1,7 +1,7 @@
 from django.test import SimpleTestCase, TestCase
 from django.urls import reverse, resolve
 from proyecto.views import proyecto, getMiembros, setMiembros, crearGrupo, listarRol, editarRol, eliminarRol, \
-    eliminarmiembro, editar_rolmiembro, eliminarProyecto
+    eliminarmiembro, editar_rolmiembro, cancelarProyecto
 
 
 class TestUrls(SimpleTestCase):
@@ -42,6 +42,6 @@ class TestUrls(SimpleTestCase):
         url = reverse('editarmiembro-proyecto', kwargs={"proyecto_id": 1, "miembro_id": 2})
         self.assertEqual(resolve(url).func, editar_rolmiembro)
 
-    def test_eliminarproyecto_url(self):
-        url = reverse('eliminarProyecto', kwargs={"proyecto_id": 1})
-        self.assertEqual(resolve(url).func, eliminarProyecto)
+    def test_cancelarproyecto_url(self):
+        url = reverse('cancelarProyecto', kwargs={"proyecto_id": 1})
+        self.assertEqual(resolve(url).func, cancelarProyecto)

@@ -162,9 +162,8 @@ class Proyecto(models.Model):
         default_permissions = ()
         permissions = [
             ("VER_PROYECTO", "Puede visualizar el proyecto en la lista de proyectos"),
-            ("EDITAR_PROYECTO", "Puede editar configuraciones basicas del proyecto"),
             ("INICIAR_PROYECTO", "Puede iniciar la ejecucion de un proyecto"),
-            ("ELIMINAR_PROYECTO", "Puede eliminar el proyecto"),
+            ("CANCELAR_PROYECTO", "Puede eliminar el proyecto"),
 
             ("VER_MIEMBRO", "Puede ver la lista de miembros del proyecto"),
             ("AGREGAR_MIEMBRO", "Puede agregar miembros al proyecto"),
