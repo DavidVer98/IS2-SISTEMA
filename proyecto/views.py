@@ -323,8 +323,9 @@ def editar_rolmiembro(request, proyecto_id, miembro_id):
 
     if request.method == "POST":
         form = editar_rolmiembro_form(request.POST or None, instance=miembro)
-        form.fields["rol"].queryset = Proyecto.objects.get(pk=proyecto_id).roles
+        # form.fields["rol"].queryset = Proyecto.objects.get(pk=proyecto_id).roles
         if form.is_valid():
+            miembro = Miembro.objects.get(pk=miembro_id)
             data = form.cleaned_data
             rol = data['rol']
             usuario = miembro.miembro

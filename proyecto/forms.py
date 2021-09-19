@@ -5,33 +5,33 @@ from django.forms import ModelForm
 from django.contrib.auth.models import Group, Permission
 from proyecto.models import Proyecto, Miembro
 
-
-
 permissions = [
-            ("VER_PROYECTO", "Puede visualizar el proyecto en la lista de proyectos"),
-            ("EDITAR_PROYECTO", "Puede editar configuraciones basicas del proyecto"),
-            ("INICIAR_PROYECTO", "Puede iniciar la ejecucion de un proyecto"),
-            ("ELIMINAR_PROYECTO", "Puede eliminar el proyecto"),
+    ("VER_PROYECTO", "Puede visualizar el proyecto en la lista de proyectos"),
+    ("EDITAR_PROYECTO", "Puede editar configuraciones basicas del proyecto"),
+    ("INICIAR_PROYECTO", "Puede iniciar la ejecucion de un proyecto"),
+    ("ELIMINAR_PROYECTO", "Puede eliminar el proyecto"),
 
-            ("VER_MIEMBRO", "Puede ver la lista de miembros del proyecto"),
-            ("AGREGAR_MIEMBRO", "Puede agregar miembros al proyecto"),
-            ("EDITAR_MIEMBRO", "Puede editar roles de miembros del proyecto"),
-            ("ELIMINAR_MIEMBRO", "Puede eliminar miembros del proyecto"),
+    ("VER_MIEMBRO", "Puede ver la lista de miembros del proyecto"),
+    ("AGREGAR_MIEMBRO", "Puede agregar miembros al proyecto"),
+    ("EDITAR_MIEMBRO", "Puede editar roles de miembros del proyecto"),
+    ("ELIMINAR_MIEMBRO", "Puede eliminar miembros del proyecto"),
 
-            ("VER_ROL", "Puede ver lista de roles del proyecto"),
-            ("CREAR_ROL", "Puede crear roles del proyecto"),
-            ("EDITAR_ROL", "Puede editar roles del proyecto"),
-            ("ELIMINAR_ROL", "Puede eliminar roles del proyecto"),
+    ("VER_ROL", "Puede ver lista de roles del proyecto"),
+    ("CREAR_ROL", "Puede crear roles del proyecto"),
+    ("EDITAR_ROL", "Puede editar roles del proyecto"),
+    ("ELIMINAR_ROL", "Puede eliminar roles del proyecto"),
 
-            ("VER_PRODUCT_BACKLOG", "Puede visualizar la seccion de product backlog"),
-            ("CREAR_USER_STORY", "Puede crear user stories"),
-            ("EDITAR_USER_STORY", "Puede crear user stories"),
-            ("ELIMINAR_USER_STORY", "Puede crear user stories"),
+    ("VER_PRODUCT_BACKLOG", "Puede visualizar la seccion de product backlog"),
+    ("CREAR_USER_STORY", "Puede crear user stories"),
+    ("EDITAR_USER_STORY", "Puede editar user stories"),
+    ("ELIMINAR_USER_STORY", "Puede eliminar user stories"),
 
-            ("VER_SPRINT_PLANNING", "Puede ver la seccion de planificacion de sprint"),
-            ("PLANIFICAR_SPRINT", "Puede planificar el siguiente sprint"),
-            ("ESTIMAR_USER_STORY", "Puede estimar los user stories en la planificacion"),
-        ]
+    ("VER_SPRINT_PLANNING", "Puede ver la seccion de planificacion de sprint"),
+    ("PLANIFICAR_SPRINT", "Puede planificar el siguiente sprint"),
+    ("ESTIMAR_USER_STORY", "Puede estimar los user stories en la planificacion"),
+
+    ("VER_SPRINT_BACKLOG", "Puede ver la seccion de sprint backlog"),
+]
 
 
 

@@ -184,6 +184,8 @@ class Proyecto(models.Model):
             ("VER_SPRINT_PLANNING", "Puede ver la seccion de planificacion de sprint"),
             ("PLANIFICAR_SPRINT", "Puede planificar el siguiente sprint"),
             ("ESTIMAR_USER_STORY", "Puede estimar los user stories en la planificacion"),
+
+            ("VER_SPRINT_BACKLOG", "Puede ver la seccion de sprint backlog"),
         ]
 
 

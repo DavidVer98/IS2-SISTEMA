@@ -31,12 +31,12 @@
                             </div>
 
                             <div class="col-md-3" style="text-align: end">
-{#                                {% if "CREAR_USER_STORY" in proyecto_perms %}#}
+                                {% if "PLANIFICAR_SPRINT" in proyecto_perms %}
                                     <button type="button" class="btn btn-secondary"
                                             onclick="location.href='{% url 'iniciarSprint' proyecto_id=proyecto_id %}'"
                                     >Iniciar Sprint <i class="fa fa-check-square-o" aria-hidden="true"></i>
                                     </button>
-{#                                {% endif %}#}
+                                {% endif %}
                             </div>
 
                             <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
@@ -109,7 +109,7 @@
                         </table>
                       {% if not userStory.count %}
                           <p class="text-muted" style="text-align: center; margin-top: 30px"><i class="bi bi-exclamation-triangle"></i>
-                            No hay User Storys en el Sprint Planning</p>
+                            No hay User Stories en el Sprint Planning</p>
                       {% endif %}
                     </div>
 
