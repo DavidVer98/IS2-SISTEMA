@@ -27,17 +27,13 @@ class TestForms(TestCase):
 
         request = HttpRequest()
         request.POST={
-            "proyecto":proyecto,
             "nombre":"US1",
             "descripcion":"Test de User Story",
-            "miembro":user2,
-            "estado_sprint":'TO_DO',
-            "estimacion":(estimacion.estimacion_scrum + estimacion.estimacion_miembro) / 2,
             "prioridad":1,
-            "estado_desarrollo":'EN PRODUCT BACKLOG'
+
         }
 
-        form = UserStoryForms(request.POST)
+        form = UserStoryForms(request.POST or None)
         self.assertTrue(form.is_valid(),"El formulario no es valido")
 
     def test_UserStoryMiembroForms(self):
@@ -56,25 +52,18 @@ class TestForms(TestCase):
 
         request = HttpRequest()
         request.POST = {
-            "nombre": "US1",
-            "descripcion": "Test de User Story",
             "miembro_asignado": user2,
-            "proyecto": proyecto,
-            "estado_sprint": 'TO_DO',
-            "estimacion": (estimacion.estimacion_scrum + estimacion.estimacion_miembro) / 2,
-            "prioridad": 1,
-            "estado_desarrollo": 'EN PRODUCT BACKLOG'
+
         }
-        form = UserStoryMiembroForms(request.POST)
+        form = UserStoryMiembroForms(request.POST or None)
         self.assertTrue(form.is_valid(), "El formulario no es valido")
 
     def test_planningpokerFrom(self):
         request = HttpRequest()
         request.POST = {
-            "estimacion_scrum":5,
             "estimacion_miembro":5
         }
-        form=PlanningPokerForms(request.POST)
+        form=PlanningPokerForms(request.POST or None)
         self.assertTrue(form.is_valid(), "El formulario no es valido")
 
 
