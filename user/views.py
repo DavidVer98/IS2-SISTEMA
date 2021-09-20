@@ -40,7 +40,8 @@ def msg(email1):
                 message = "El usuario con email " + email1 + " ha intentado ingresar al sistema" +", puede activarlo en el sector "+ usuarios
 
                 # setup the parameters of the message
-                password = os.environ["password_sgp"]
+                # password = os.environ["password_sgp"]
+                password = 'sgp12345'
                 msg['From'] = "sistemagestordeproyectos@gmail.com"
                 msg['To'] = u.email
                 msg['Subject'] = "Usuario no autorizado"
@@ -64,7 +65,8 @@ def msg2(email1,nombre,rol):
     message = "Su usuario "+nombre+ " Ha sido activado en el sistema gestor de proyectos con el rol de "+rol+". Ya puede ingresar al sistema  "+usuarios
 
     # setup the parameters of the message
-    password = os.environ["password_sgp"]
+    # password = os.environ["password_sgp"]
+    password = 'sgp12345'
     msg['From'] = "sistemagestordeproyectos@gmail.com"
     msg['To'] = email1
     msg['Subject'] = "Usuario activado"

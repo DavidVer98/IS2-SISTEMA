@@ -148,7 +148,7 @@ STATICFILES_DIRS = (
 )
 # <<<<<<< HEAD:sgp/settings.py
 #
-# # STATIC_ROOT =  os.path.join(BASE_DIR, 'static')
+# STATIC_ROOT =  os.path.join(BASE_DIR, 'static')
 #
 # =======
 # # STATIC_ROOT = os.path.join(BASE_DIR, 'static')
