@@ -79,3 +79,10 @@ def msg2(email1,nombre,rol):
     smtpserver.login(msg['From'], password)
     smtpserver.sendmail(msg['From'], msg['To'], msg.as_string())
     smtpserver.quit()
+
+
+def error_404(request,exception):
+    return render(request, 'error/404.html')
+
+def error_403(request,exception):
+    return render(request, 'error/403.html')

@@ -304,7 +304,8 @@ def sprintBacklog(request, proyecto_id):
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     user_stories = UserStory.objects.filter(proyecto=proyecto_actual, estado_desarrollo=UserStory.EN_SPRINT_BACKLOG)
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
-    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, "user_stories": user_stories, 'miembro':miembro}
+    estimacion_total = user_stories.aggregate(Sum("estimacion")).get('estimacion__sum')
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, "user_stories": user_stories, 'miembro':miembro, 'estimacion_total':estimacion_total}
 
     return render(request, "desarrollo/sprintBacklog.html", context)
 
