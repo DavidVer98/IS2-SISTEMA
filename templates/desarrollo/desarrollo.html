@@ -4,6 +4,9 @@
     <title>Home</title>
 {% endblock %}
 {% block container %}
+    <style>
+
+    </style>
 
     <div class="content-container">
         <div class="container-fluid" style="margin-top: 50px">
@@ -12,17 +15,18 @@
                     <li class="breadcrumb-item"><a href="{% url 'desarrollo' proyecto_id %}">Desarrollo</a></li>
                 </ol>
             </nav>
-            <div class="jumbotron" style="margin-top: 0px">
+            <div class="jumbotron" style="background-color:transparent;margin-top: 0px">
                 <div class="row">
                     <div class="col-10 .col-md-10">
                         <h1><i class="fa fa-bullhorn" aria-hidden="true"></i> Módulo de Desarrollo</h1>
                     </div>
-
                     <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
-                    <h2>Proyecto {{ proyecto.nombre_proyecto }}</h2>
+                    <h4>Nombre del Proyecto: <span class="text-muted"> {{ proyecto.nombre_proyecto }}</span></h4>
 
                     {% load static %}
-                    <img src="{% static 'img/bob_gangster___bob_cholo_hd_by_ikouzhy_de8043k-fullview.png' %}" style="width: 45%;  display: block;margin-left: auto;margin-right: auto;" alt="">
+                    {#                    <img src="{% static 'img/bob_gangster___bob_cholo_hd_by_ikouzhy_de8043k-fullview.png' %}" style="width: 45%;  display: block;margin-left: auto;margin-right: auto;" alt="">#}
+                    <img src="{% static 'img/To-do list.svg' %}"
+                         style="width: 40%;  display: block;margin-left: auto;margin-right: auto;" alt="">
 
 
                 </div>
@@ -32,5 +36,9 @@
 
         </div>
     </div>
-
+ <div class="text-center text-white p-2  fixed-bottom" style="background-color:#383c44">
+        © 2021 Copyright:
+        <img src="{% static 'img/logo1.png' %}" width="45" height="40">
+        <a class="text-white   " href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">SGP.com</a>
+    </div>
 {% endblock %}
