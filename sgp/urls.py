@@ -45,3 +45,5 @@ urlpatterns = [
 ]
 
 admin.site.site_header = 'home/'
+
+handler404 = "user.views.error_404"
