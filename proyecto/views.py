@@ -332,7 +332,7 @@ def editar_rolmiembro(request, proyecto_id, miembro_id):
             rol_anterior = miembro.rol.group
             usuario.groups.remove(rol_anterior)
             usuario.groups.add(rol.group)
-            form.instance.save()
+            form.save()
             return redirect(reverse('miembros_proyecto', kwargs={'proyecto_id': proyecto_id}))
 
     else:

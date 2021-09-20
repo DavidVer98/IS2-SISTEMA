@@ -15,19 +15,14 @@
             <div class="jumbotron" style="margin-top: 0px">
                 <div class="row">
                     <div class="col-10 .col-md-10">
-                        <h1><i class="fa fa-bullhorn" aria-hidden="true"></i> Proyecto Iniciado!</h1>
+                        <h1><i class="fa fa-bullhorn" aria-hidden="true"></i> Módulo de Desarrollo</h1>
                     </div>
 
                     <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
-                    <h2>Nombre del proyecto </h2>
-                    <li>{{ proyecto.nombre_proyecto }}</li>
+                    <h2>Proyecto {{ proyecto.nombre_proyecto }}</h2>
 
-                    <h3>Roles del Proyecto iniciado</h3>
-                    {% for rol in proyecto.roles.all %}
-                        <li>
-                            {{ rol }}
-                        </li>
-                    {% endfor %}
+                    {% load static %}
+                    <img src="{% static 'img/bob_gangster___bob_cholo_hd_by_ikouzhy_de8043k-fullview.png' %}" style="width: 45%;  display: block;margin-left: auto;margin-right: auto;" alt="">
 
 
                 </div>

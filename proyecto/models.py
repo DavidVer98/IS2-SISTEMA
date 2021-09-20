@@ -120,7 +120,8 @@ class Proyecto(models.Model):
     fecha_inicio = models.DateField()
     roles = models.ManyToManyField(Rol)
     descripcion = models.TextField(max_length=800)
-
+    duracion_semanal_sprint= models.PositiveIntegerField(default=2)
+    duracion_semanal_sprint_actual = models.FloatField(default=2.0)
     def iniciar_proyecto(self):
         self.estado = self.ACTIVO
         self.save()
