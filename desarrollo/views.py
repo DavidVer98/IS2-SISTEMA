@@ -75,7 +75,7 @@ def crearUserStory(request, proyecto_id):
                 error = True
 
     form = UserStoryForms()
-    form.fields['prioridad'].choices.remove((4, 'Superalta'))
+    form.fields['prioridad'].choices.remove((4, 'Super Alta'))
     form.fields['prioridad'].choices = form.fields['prioridad'].choices
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
 
@@ -112,7 +112,7 @@ def editarUserStory(request, proyecto_id, user_story_id):
                 error = True
 
     form = UserStoryForms(instance=user_story)
-    form.fields['prioridad'].choices.remove((4, 'Superalta'))
+    form.fields['prioridad'].choices.remove((4, 'Super Alta'))
     form.fields['prioridad'].choices = form.fields['prioridad'].choices
     context = {"error": error, "proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form,
                'miembro': miembro, 'user_story': user_story}

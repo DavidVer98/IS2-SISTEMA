@@ -2,8 +2,7 @@ from django.urls import path
 
 from desarrollo.views import desarrollo, productBacklog, crearUserStory, editarUserStory, eliminarUserStory, \
     sprintPlanning, sprint_planning_estado, product_backlog_estado, asignarMiembroUS, planningPoker, sprintBacklog, \
-    iniciarSprint, estadoUS, registrarUS, registroUSActual
-    iniciarSprint, estadoUS, terminarSprint
+    iniciarSprint, estadoUS, registrarUS, registroUSActual, terminarSprint
 
 urlpatterns = [
 

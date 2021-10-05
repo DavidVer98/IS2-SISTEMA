@@ -61,7 +61,7 @@
                                         </div>
                                         <div class="containe disabled card-footer text-muted" style="padding: 10px; margin-top: -40px;color: gray; padding: 20px 20px 10px;">
                                             <a href="{% url 'registroUS' proyecto_id us.pk %}" style="" class="btn btn-light btn-sm {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %} "><i class="bi bi-folder-plus"></i> </a>
-                                            | <a href="{% url 'registroUSActual' proyecto_id us.pk %}" class="" style=""><i class="btn btn-light btn-sm  bi bi-bookmarks" style=""></i> </a>
+                                            | <a href="{% url 'registroUSActual' proyecto_id us.pk %}" class="btn btn-light btn-sm  {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %}" style=""><i class=" bi bi-bookmarks" style=""></i> </a>
                                         </div>
                                     </div>
 
@@ -118,8 +118,7 @@
                                         </div>
                                         <div class="containe disabled card-footer text-muted" style="padding: 10px; margin-top: -40px;color: gray; padding: 20px 20px 10px;">
                                             <a href="{% url 'registroUS' proyecto_id us.pk %}" style="" class="btn btn-light btn-sm {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %} "><i class="bi bi-folder-plus"></i> </a>
-                                            | <a href="{% url 'registroUSActual' proyecto_id us.pk %}" class="" style=""><i class="btn btn-light btn-sm  bi bi-bookmarks" style=""></i> </a>
-                                        </div>
+                                            | <a href="{% url 'registroUSActual' proyecto_id us.pk %}" class="btn btn-light btn-sm  {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %}" style=""><i class=" bi bi-bookmarks" style=""></i> </a>                                        </div>
                                     </div>
                                 {% endif %}
                             {% endfor %}
@@ -153,8 +152,7 @@
                                         </div>
                                           <div class="containe disabled card-footer text-muted" style="padding: 10px; margin-top: -40px;color: gray; padding: 20px 20px 10px;">
                                             <a href="{% url 'registroUS' proyecto_id us.pk %}" style="" class="btn btn-light btn-sm {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %} "><i class="bi bi-folder-plus"></i> </a>
-                                            | <a href="{% url 'registroUSActual' proyecto_id us.pk %}" class="" style=""><i class="btn btn-light btn-sm  bi bi-bookmarks" style=""></i> </a>
-                                        </div>
+                                            | <a href="{% url 'registroUSActual' proyecto_id us.pk %}" class="btn btn-light btn-sm  {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %}" style=""><i class=" bi bi-bookmarks" style=""></i> </a>                                        </div>
 
 {#                                        <div class="containe disabled card-footer text-muted row">#}
 {#                                            <div class="col-8">#}
@@ -188,7 +186,7 @@
                                                     <span class="badge badge-primary"> {{ us.miembro_asignado }}</span>
                                                     <span class="badge badge-secondary"> Prioridad: {{ us.prioridad }}</span>
                                                 </div>
-                                                <div class="card-body">
+                                                <div class="card-body">4
                                                     <h6 class="card-title">{{ us.nombre }}</h6>
                                                     <small class="text-muted cat">
                                                         <i class="far fa-clock text-info"></i> {{ us.estimacion }}
