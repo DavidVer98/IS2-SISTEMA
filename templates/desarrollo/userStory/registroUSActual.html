@@ -1,0 +1,86 @@
+{% extends "baseDesarrollo.html" %}
+{% load static %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+
+{% block head_content %}
+    <link rel="stylesheet" href="{% static 'css/kanban.css' %}">
+    <title>Registro US</title>
+{% endblock %}
+{% block container %}
+
+    <div class="content-container">
+        <div class="container-fluid" style="margin-top: 50px">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'desarrollo' proyecto_id %}">Desarrollo</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'sprintBacklog' proyecto_id %}">Sprint Backlog</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Registro del User Story</li>
+                </ol>
+            </nav>
+            <div class="jumbotron" style="margin-top: 0px">
+                <div class="row">
+                    <div class="col-md-9">
+                        <h1><i class="bi bi-journals"></i> Registro del User Story <span class="text-muted"> @{{ user_story.nombre }} </span></h1>
+                    </div>
+                    <div class="col-md-3">
+                        <h6 class="text-muted" style="text-align: center; margin-top: 30px">
+                            Horas totales trabajadas: <i class="bi bi-stopwatch"></i>{{ registro.last.horas_totales }}hs </h6>
+                    </div>
+                </div>
+                <hr style="width:96%; margin-left:1%; !important; margin-right:1% !important;"/>
+                                    <table class="overflow-auto table table-striped table-dark container">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col"><i class="fa fa-user" aria-hidden="true"></i> Usuario</th>
+                            <th scope="col"> Detalles</th>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Horas trabajadas</th>
+                        </tr>
+                        </thead>
+                        {% for registro in registro %}
+                            <tbody style="text-align: left; ">
+                            <tr>
+                                <th scope="row">{{ registro.contador_registro }}</th>
+                                <td>@{{ registro.user_story.miembro_asignado }}</td>
+                                <td>
+                                    {{ registro.detalles }}
+                                </td>
+                                <td>
+                                    {{ registro.fecha }}
+                                </td>
+                                <td>
+                                    {{ registro.horas_trabajadas }}hs
+                                </td>
+{#                                <td>#}
+{#                                    {% if miembro.rol.nombre != 'Scrum Master' %}#}
+{#                                        {% if "EDITAR_MIEMBRO" in proyecto_perms %}#}
+{##}
+{#                                            <button type="button" class="btn btn-secondary"#}
+{#                                                    onclick="location.href='{% url 'editarmiembro-proyecto' proyecto_id miembro.id %}'">#}
+{#                                                Editar#}
+{#                                            </button>#}
+{#                                        {% endif %}#}
+{#                                        {% if "ELIMINAR_MIEMBRO" in proyecto_perms %}#}
+{##}
+{#                                            <button type="button" class="btn btn-danger"#}
+{#                                                    onclick="eliminarMiembro({{ proyecto_id }},{{ miembro.id }}, {{ miembro.miembro.username.split   }})">#}
+{##}
+{#                                                Borrar#}
+{#                                            </button>#}
+{##}
+{#                                        {% endif %}#}
+{#                                    {% endif %}#}
+{#                                </td>#}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "baseDesarrollo.html" %}
+{% load static %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+
+{% block head_content %}
+    <link rel="stylesheet" href="{% static 'css/kanban.css' %}">
+    <title>Registro US</title>
+{% endblock %}
+{% block container %}
+
+    <div class="content-container">
+        <div class="container-fluid" style="margin-top: 50px">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'desarrollo' proyecto_id %}">Desarrollo</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'sprintBacklog' proyecto_id %}">Sprint Backlog</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Registrar User Story</li>
+                </ol>
+            </nav>
+            <div class="jumbotron" style="margin-top: 0px">
+                <div class="row">
+                    <div class="col-md-9">
+                        <h1><i class="bi bi-journal-bookmark"></i> Registrar User Story <span class="text-muted"> @{{ user_story.nombre }} </span></h1>
+                    </div>
+                    <div class="col-md-3">
+                        <h6 class="text-muted" style="text-align: center; margin-top: 30px">
+                            <i class="bi bi-receipt"></i>
+                            Registro  #{{ form.instance.contador_registro }} |  <i class="bi bi-stopwatch"></i>{{ form.instance.horas_totales }}hs </h6>
+                    </div>
+                </div>
+                <hr style="width:96%; margin-left:1%; !important; margin-right:1% !important;"/>
+                <form method="POST">
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    <button class="btn btn-primary" style="margin-left: 10px">Aceptar <i class="fa fa-check" aria-hidden="true"></i>
+                    </button>
+                    <a class="btn btn-danger " style="margin-left: 10px; color:white"
+                       onclick="location.href='{% url 'sprintBacklog' proyecto_id=proyecto_id %}'">Cancelar <i
+                            class="fa fa-times" aria-hidden="true"></i></a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
