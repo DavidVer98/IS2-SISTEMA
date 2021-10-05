@@ -1,4 +1,4 @@
-from desarrollo.models import UserStory, EstimacionPlanificada
+from desarrollo.models import UserStory, EstimacionPlanificada, RegistroUserStory
 from django import forms
 
 from proyecto.models import Proyecto, Miembro
@@ -31,3 +31,9 @@ class PlanningPokerForms(forms.ModelForm):
     class Meta:
         model= EstimacionPlanificada
         fields = ['estimacion_scrum','estimacion_miembro']
+
+class UserStoryRegistroForms(forms.ModelForm):
+    class Meta:
+        model = RegistroUserStory
+        fields = ['user_story', 'detalles','fecha' ,'horas_trabajadas', 'horas_totales']
+        exclude = ['user_story', 'fecha', 'horas_totales']

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 
 # Create your models here.
@@ -75,6 +77,17 @@ class EstimacionPlanificada(models.Model):
     estimacion_scrum = models.PositiveIntegerField(default=0,blank=True, null=True)
     estimacion_miembro = models.PositiveIntegerField(default=0, blank=True, null=True)
 
+
+class RegistroUserStory(models.Model):
+    user_story = models.ForeignKey(UserStory, on_delete=models.CASCADE)
+    detalles = models.TextField(max_length=50)
+    fecha = models.DateField(default=datetime.now, blank=True)
+    horas_trabajadas = models.PositiveIntegerField(default=0,blank=True, null=True)
+    horas_totales = models.PositiveIntegerField(default=0, blank=True, null=True)
+    contador_registro = models.PositiveIntegerField(default=0, blank=True, null=True)
+
+    def __str__(self):
+        return self.user_story.nombre
 
 # class ProductBacklog(models.Model):
 #     userStories = models.ManyToManyField(UserStory)

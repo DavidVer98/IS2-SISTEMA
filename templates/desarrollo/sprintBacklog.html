@@ -4,7 +4,7 @@
 
 {% block head_content %}
     <link rel="stylesheet" href="{% static 'css/kanban.css' %}">
-    <title>Home</title>
+    <title>Sprint Backlog</title>
 {% endblock %}
 {% block container %}
 
@@ -56,8 +56,9 @@
                                         </div>
                                         <div class="card-footer text-muted d-flex justify-content-between bg-transparent border-top-0">
                                         </div>
-                                        <div class="containe disabled" style="padding: 10px; margin-top: -30px;">
-                                            <a href="home" style="width: 30%; " class="btn btn-success btn-sm  {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %} ">Ver más</a>
+                                        <div class="containe disabled card-footer text-muted" style="padding: 10px; margin-top: -40px;color: gray; padding: 20px 20px 10px;">
+                                            <a href="{% url 'registroUS' proyecto_id us.pk %}" style="" class="btn btn-light btn-sm {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %} "><i class="bi bi-folder-plus"></i> </a>
+                                            | <a href="{% url 'registroUSActual' proyecto_id us.pk %}" class="" style=""><i class="btn btn-light btn-sm  bi bi-bookmarks" style=""></i> </a>
                                         </div>
                                     </div>
 
@@ -112,8 +113,9 @@
                                         </div>
                                         <div class="card-footer text-muted d-flex justify-content-between bg-transparent border-top-0">
                                         </div>
-                                        <div class="container" style="padding: 10px; margin-top: -30px ">
-                                            <a href="home" style="width: 30%; " class="btn btn-success btn-sm  {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %} ">Ver más</a>
+                                        <div class="containe disabled card-footer text-muted" style="padding: 10px; margin-top: -40px;color: gray; padding: 20px 20px 10px;">
+                                            <a href="{% url 'registroUS' proyecto_id us.pk %}" style="" class="btn btn-light btn-sm {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %} "><i class="bi bi-folder-plus"></i> </a>
+                                            | <a href="{% url 'registroUSActual' proyecto_id us.pk %}" class="" style=""><i class="btn btn-light btn-sm  bi bi-bookmarks" style=""></i> </a>
                                         </div>
                                     </div>
                                 {% endif %}
@@ -146,17 +148,24 @@
                                         </div>
                                         <div class="card-footer text-muted d-flex justify-content-between bg-transparent border-top-0">
                                         </div>
-                                        <div class="container" style="padding: 10px; margin-top: -30px">
-                                        <div class="row">
-                                            <div class="col-8">
-                                                <a href="home" style="width: 40%; " class="btn btn-success btn-sm  {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %} ">Ver más</a>
-                                            </div>
-                                            <div class="col-4" style="text-align: end">
-                                                <span class="badge badge-warning"> Verificar</span>
-                                            </div>
+                                          <div class="containe disabled card-footer text-muted" style="padding: 10px; margin-top: -40px;color: gray; padding: 20px 20px 10px;">
+                                            <a href="{% url 'registroUS' proyecto_id us.pk %}" style="" class="btn btn-light btn-sm {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %} "><i class="bi bi-folder-plus"></i> </a>
+                                            | <a href="{% url 'registroUSActual' proyecto_id us.pk %}" class="" style=""><i class="btn btn-light btn-sm  bi bi-bookmarks" style=""></i> </a>
                                         </div>
 
-                                        </div>
+{#                                        <div class="containe disabled card-footer text-muted row">#}
+{#                                            <div class="col-8">#}
+{#                                                <div class="containe disabled card-footer text-muted" style="padding: 10px; margin-top: -40px;color: gray; padding: 20px 20px 10px;">#}
+{#                                            <a href="{% url 'registroUS' proyecto_id us.pk %}" style="" class="btn btn-light btn-sm {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %} "><i class="bi bi-folder-plus"></i> </a>#}
+{#                                            | <a href="{% url 'registroUSActual' proyecto_id us.pk %}" class="" style=""><i class="btn btn-light btn-sm  bi bi-bookmarks" style=""></i> </a>#}
+{#                                        </div>#}
+{#                                            </div>#}
+{#                                            <div class="col-4" style="text-align: end">#}
+{#                                                <span class="badge badge-warning"> Verificar</span>#}
+{#                                            </div>#}
+{#                                        </div>#}
+
+
                                     </div>
                                 {% endif %}
                             {% endfor %}
