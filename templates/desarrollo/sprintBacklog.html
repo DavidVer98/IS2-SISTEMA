@@ -27,6 +27,9 @@
                          Duración del Sprint : {{ estimacion_total }} semana/s {{ dias }} dia/s</h6>
                 </div>
             </div>
+            <button type="button" class="btn btn-secondary" onclick="location.href='{% url 'terminarSprint' proyecto_id=proyecto_id %}'"
+                >Terminar Sprint <i class="fa fa-check-square-o" aria-hidden="true"></i>
+            </button>
                 <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
 
                 <div class="row">
