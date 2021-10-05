@@ -1,12 +1,13 @@
 # from audioop import reverse
 import json
+from datetime import datetime
 
 from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.db.models import Sum
 # Create your views here.
 from desarrollo.forms import UserStoryForms, UserStoryMiembroForms, PlanningPokerForms
-from desarrollo.models import UserStory, EstimacionPlanificada
+from desarrollo.models import UserStory, EstimacionPlanificada, Sprint
 from proyecto.models import Proyecto, Miembro
 from guardian.decorators import permission_required_or_403
 
@@ -300,11 +301,43 @@ def iniciarSprint(request, proyecto_id):
                 error = True
 
         if not error:
+            sprint = Sprint.objects.create(nombre=str(datetime.now), proyecto=proyecto_actual)
             for user_story in user_stories:
+                sprint.user_stories.add(user_story)
                 user_story.estado_desarrollo = UserStory.EN_SPRINT_BACKLOG
                 user_story.save()
+
+
             return redirect(reverse('sprintBacklog', kwargs={'proyecto_id': proyecto_id}))
     return redirect(reverse('sprintPlanning', kwargs={'proyecto_id': proyecto_id}))
+
+
+def terminarSprint(request, proyecto_id):
+
+    proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+    sprint_actual = Sprint.objects.get(proyecto=proyecto_actual, estado=Sprint.ACTIVO)
+    sprint_actual.estado = Sprint.FINALIZADO
+    sprint_actual.fecha_fin = datetime.now()
+    proyecto_actual.duracion_semanal_sprint_actual = 0
+
+    for user_story in sprint_actual.user_stories.all():
+
+        if user_story.estado_sprint != UserStory.RELASE:
+            user_story.estado_desarrollo=UserStory.EN_PRODUCT_BACKLOG
+            user_story.prioridad=UserStory.SUPERALTA
+            user_story.estado_sprint=UserStory.TO_DO
+            user_story.estimacion = 0
+            user_story.miembro_asignado = None
+            user_story.save()
+
+            estimacion = EstimacionPlanificada.objects.get(user_story=user_story)
+            estimacion.estimacion_miembro = 0
+            estimacion.estimacion_scrum = 0
+            estimacion.save()
+
+    proyecto_actual.save()
+    sprint_actual.save()
+    return redirect(reverse('sprintBacklog', kwargs={'proyecto_id': proyecto_id}))
 
 
 def sprintBacklog(request, proyecto_id):

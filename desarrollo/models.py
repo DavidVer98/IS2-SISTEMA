@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 
 # Create your models here.
@@ -34,7 +36,7 @@ class UserStory(models.Model):
         (BAJA, 'Baja'),
         (NORMAL, 'Normal'),
         (ALTA, 'Alta'),
-        (SUPERALTA, 'Superalta'),
+        (SUPERALTA, 'Super Alta'),
     )
 
     class Meta:
@@ -86,7 +88,19 @@ class EstimacionPlanificada(models.Model):
 #
 
 
+class Sprint(models.Model):
 
+    ACTIVO = 'Activo'
+    FINALIZADO = 'Finalizado'
 
-
+    ESTADO_CHOICES = [
+        ( ACTIVO, 'Activo'),
+        ( FINALIZADO, 'Finalizado'),
+    ]
+    nombre = models.CharField(max_length=50)
+    proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE)
+    estado = models.CharField(max_length=50, choices=ESTADO_CHOICES, default=ACTIVO)
+    fecha_inicio = models.DateField(default=datetime.now, blank=True)
+    fecha_fin = models.DateField(blank=True, null=True)
+    user_stories = models.ManyToManyField(UserStory)
 
