@@ -364,6 +364,22 @@ def cancelarProyecto(request, proyecto_id):
         proyecto.save()
     return redirect("/home/proyectos/")
 
+@permission_required_or_403('CANCELAR_PROYECTO', (Proyecto, 'id', 'proyecto_id'))
+
+def BorrarProyecto(request, proyecto_id):
+    """
+       **Cancelar Proyecto:**
+        03/09/2021
+        Vista utilizada para cancelar un proyecto.
+        Solicita el id del proyecto
+    """
+
+    proyecto = Proyecto.objects.get(id=proyecto_id)
+    if proyecto.estado == proyecto.PENDIENTE:
+        proyecto.delete()
+
+    return redirect("/home/proyectos/")
+
 
 @permission_required_or_403('INICIAR_PROYECTO', (Proyecto, 'id', 'proyecto_id'))
 def iniciar_proyecto(request, proyecto_id):

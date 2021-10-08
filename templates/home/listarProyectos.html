@@ -79,6 +79,12 @@
                                     </button>
                                     {% endif %}
 
+                                    {% if perms.user.BORRAR_PROYECTO and proyecto.estado == 'PENDIENTE' %}
+                                    <button type="button" class="btn btn-secondary" style="background: #ff0500"
+                                            onclick="location.href='{% url 'BorrarProyecto' proyecto.id %}'"
+                                    >Borrar
+                                    </button>
+                                    {% endif %}
 
                                     {% if "CANCELAR_PROYECTO" in proyecto_perms %}
                                     <button type="button" class="btn btn-danger"

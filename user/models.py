@@ -19,7 +19,8 @@ class User(AbstractUser):
             ("EDITAR_USUARIO", "Puede editar las opciones de sistema de los usuarios"),
             ("ELIMINAR_USUARIO", "Puede eliminar el registro de usuarios"),
             ("VER_USUARIOS", "Puede ver la lista de usuarios en el sistema"),
-            ("EDITAR_PROYECTOS", "Puede editar las opciones de los proyecto")
+            ("EDITAR_PROYECTOS", "Puede editar las opciones de los proyecto"),
+            ("BORRAR_PROYECTO", "Puede eliminar el proyecto"),
 
         ]
     # def save(self, args, kwargs):
