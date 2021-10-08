@@ -78,8 +78,26 @@ class EstimacionPlanificada(models.Model):
     estimacion_miembro = models.PositiveIntegerField(default=0, blank=True, null=True)
 
 
+class Sprint(models.Model):
+
+    ACTIVO = 'Activo'
+    FINALIZADO = 'Finalizado'
+
+    ESTADO_CHOICES = [
+        ( ACTIVO, 'Activo'),
+        ( FINALIZADO, 'Finalizado'),
+    ]
+    nombre = models.CharField(max_length=50)
+    proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE)
+    estado = models.CharField(max_length=50, choices=ESTADO_CHOICES, default=ACTIVO)
+    fecha_inicio = models.DateField(default=datetime.now, blank=True)
+    fecha_fin = models.DateField(blank=True, null=True)
+    user_stories = models.ManyToManyField(UserStory)
+
+
 class RegistroUserStory(models.Model):
     user_story = models.ForeignKey(UserStory, on_delete=models.CASCADE)
+    sprint = models.ForeignKey(Sprint, on_delete=models.CASCADE)
     usuario = models.CharField(max_length=200, blank=True, null=True)
     detalles = models.TextField(max_length=300)
     fecha = models.DateField(default=datetime.now, blank=True)
@@ -99,20 +117,4 @@ class RegistroUserStory(models.Model):
 #     miembros = models.ManyToManyField(Miembro)
 #
 
-
-class Sprint(models.Model):
-
-    ACTIVO = 'Activo'
-    FINALIZADO = 'Finalizado'
-
-    ESTADO_CHOICES = [
-        ( ACTIVO, 'Activo'),
-        ( FINALIZADO, 'Finalizado'),
-    ]
-    nombre = models.CharField(max_length=50)
-    proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE)
-    estado = models.CharField(max_length=50, choices=ESTADO_CHOICES, default=ACTIVO)
-    fecha_inicio = models.DateField(default=datetime.now, blank=True)
-    fecha_fin = models.DateField(blank=True, null=True)
-    user_stories = models.ManyToManyField(UserStory)
 

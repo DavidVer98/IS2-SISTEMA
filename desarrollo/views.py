@@ -327,13 +327,15 @@ def iniciarSprint(request, proyecto_id):
                 error = True
 
         if not error:
-            sprint = Sprint.objects.create(nombre=str(datetime.now), proyecto=proyecto_actual)
+            fecha=proyecto_actual.nombre_proyecto+" Sprint "+datetime.today().strftime('%Y-%m-%d')
+            sprint = Sprint.objects.create(nombre=fecha, proyecto=proyecto_actual)
+
             for user_story in user_stories:
                 sprint.user_stories.add(user_story)
                 user_story.estado_desarrollo = UserStory.EN_SPRINT_BACKLOG
                 user_story.save()
 
-
+            sprint.save()
             return redirect(reverse('sprintBacklog', kwargs={'proyecto_id': proyecto_id}))
     return redirect(reverse('sprintPlanning', kwargs={'proyecto_id': proyecto_id}))
 
@@ -420,7 +422,10 @@ def registrarUS(request, proyecto_id, user_story_id):
     if request.method == "POST":
         form = UserStoryRegistroForms(request.POST or None)
         if form.is_valid():
+            proyecto_actual=Proyecto.objects.get(pk=proyecto_id)
+            sprint=Sprint.objects.get(estado=Sprint.ACTIVO, proyecto=proyecto_actual)
             form.instance.user_story = user_story
+            form.instance.sprint = sprint
             if horas_totales and contador_registro:
                 form.instance.horas_totales = form.instance.horas_trabajadas + horas_totales
                 form.instance.contador_registro = contador_registro + 1
@@ -456,3 +461,25 @@ def registroUSActual(request, proyecto_id, user_story_id):
     context = {"proyecto_id": proyecto_id, 'user_story':user_story,"proyecto": proyecto_actual ,'registro':registro, 'miembro':miembro}
 
     return render(request, "desarrollo/userStory/registroUSActual.html", context)
+
+
+def registroSprints(request, proyecto_id):
+    proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+    miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
+    sprints = Sprint.objects.filter(proyecto=proyecto_actual)
+
+    nombre='Sprint ' + datetime.today().strftime('%Y-%m-%d')
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, "miembro":miembro, "sprints":sprints}
+    return render(request, "desarrollo/registroSprints.html", context)
+
+
+def registroUserStories(request, proyecto_id, sprint_id):
+    proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+    miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
+    registros = RegistroUserStory.objects.filter(sprint__id__exact=sprint_id)
+    suma_hora_registros=0
+    for registro in registros:
+        suma_hora_registros+=registro.horas_trabajadas
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, "miembro": miembro, "registros":registros,
+               "suma_hora_registros":suma_hora_registros}
+    return render(request, "desarrollo/registroUserStories.html", context)
