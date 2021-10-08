@@ -317,28 +317,34 @@ def iniciarSprint(request, proyecto_id):
 def terminarSprint(request, proyecto_id):
 
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
-    sprint_actual = Sprint.objects.get(proyecto=proyecto_actual, estado=Sprint.ACTIVO)
-    sprint_actual.estado = Sprint.FINALIZADO
-    sprint_actual.fecha_fin = datetime.now()
-    proyecto_actual.duracion_semanal_sprint_actual = 0
+    try:
+        sprint_actual = Sprint.objects.get(proyecto=proyecto_actual, estado=Sprint.ACTIVO)
+    except Sprint.DoesNotExist:
+        sprint_actual = None
 
-    for user_story in sprint_actual.user_stories.all():
+    if sprint_actual is not None:
 
-        if user_story.estado_sprint != UserStory.RELASE:
-            user_story.estado_desarrollo=UserStory.EN_PRODUCT_BACKLOG
-            user_story.prioridad=UserStory.SUPERALTA
-            user_story.estado_sprint=UserStory.TO_DO
-            user_story.estimacion = 0
-            user_story.miembro_asignado = None
-            user_story.save()
+        sprint_actual.estado = Sprint.FINALIZADO
+        sprint_actual.fecha_fin = datetime.now()
+        proyecto_actual.duracion_semanal_sprint_actual = 0
 
-            estimacion = EstimacionPlanificada.objects.get(user_story=user_story)
-            estimacion.estimacion_miembro = 0
-            estimacion.estimacion_scrum = 0
-            estimacion.save()
+        for user_story in sprint_actual.user_stories.all():
 
-    proyecto_actual.save()
-    sprint_actual.save()
+            if user_story.estado_sprint != UserStory.RELASE:
+                user_story.estado_desarrollo=UserStory.EN_PRODUCT_BACKLOG
+                user_story.prioridad=UserStory.SUPERALTA
+                user_story.estado_sprint=UserStory.TO_DO
+                user_story.estimacion = 0
+                user_story.miembro_asignado = None
+                user_story.save()
+
+                estimacion = EstimacionPlanificada.objects.get(user_story=user_story)
+                estimacion.estimacion_miembro = 0
+                estimacion.estimacion_scrum = 0
+                estimacion.save()
+
+        proyecto_actual.save()
+        sprint_actual.save()
     return redirect(reverse('sprintBacklog', kwargs={'proyecto_id': proyecto_id}))
 
 
