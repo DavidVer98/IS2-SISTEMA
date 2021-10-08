@@ -228,11 +228,11 @@
                     </div>
                     <div class="col-5 card" style=" {% if request.user != proyecto.scrum_master %} display: none {% endif %}">
                         <div class="card-header">
-                            <h6 class="text-muted">RELASE</h6>
+                            <h6 class="text-muted">RELEASE</h6>
                         </div>
-                        <div class="card-body hide-scroll" id="RELASE" style="height: 560px">
+                        <div class="card-body hide-scroll" id="RELEASE" style="height: 560px">
                             {% for us in user_stories %}
-                                {% if us.estado_sprint == 'RELASE' %}
+                                {% if us.estado_sprint == 'RELEASE' %}
                                     <div class="card" data-id="{{ us.pk }}">
                                         <div class="card " style="border: 0px" data-id="{{ us.pk }}">
                                             <div class="card-img-overlay" style="text-align: end">

@@ -2,7 +2,7 @@ const lista1 = document.getElementById('TO_DO');
 const lista2 = document.getElementById('DOING');
 const lista3 = document.getElementById('DONE');
 const lista4 = document.getElementById('QA');
-const lista5 = document.getElementById('RELASE');
+const lista5 = document.getElementById('RELEASE');
 
 Sortable.create(lista1, {
 
@@ -131,18 +131,18 @@ Sortable.create(lista1, {
             //Guardamos el orden de la lista
             set: (sortable) => {
                 const orden = sortable.toArray();
-                localStorage.setItem('relase', orden.join('|'));
+                localStorage.setItem('release', orden.join('|'));
                 //console.log(orden);
             },
             get: (sortable) => {
-                const orden = localStorage.getItem('relase');
+                const orden = localStorage.getItem('release');
                 // console.log("get", orden ? orden.split('|') : [])
                 return orden ? orden.split('|') : [];
             }
 
         },
         onAdd: function (/**Event*/evt) {
-            estado(evt, 'RELASE');
+            estado(evt, 'RELEASE');
         }
 
 
