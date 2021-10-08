@@ -230,6 +230,30 @@ def asignarMiembroUS(request, proyecto_id, user_story_id):
     return render(request, "desarrollo/asignarMiembroUS.html", context)
 
 
+def reasignarMiembroUS(request, proyecto_id, user_story_id):
+    """
+           Metodo para asignar un user story:
+            19/09/2021
+            Metodo en el que se asigna un user story a un miembro
+            dentro del proyecto
+    """
+    user_story_actual = UserStory.objects.get(pk=user_story_id)
+    proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+    miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
+    if request.method == "POST":
+        form = UserStoryMiembroForms(request.POST or None, instance=user_story_actual)
+        if form.is_valid():
+            form.instance.save()
+            return redirect(reverse('sprintBacklog', kwargs={'proyecto_id': proyecto_id}))
+    else:
+        form = UserStoryMiembroForms(instance=user_story_actual)
+        form.fields['miembro_asignado'].queryset = User.objects.filter(miembro__proyectos=proyecto_actual).exclude(
+            pk=proyecto_actual.scrum_master.pk)
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'form': form, 'user_story': user_story_actual,
+               'miembro': miembro}
+    return render(request, "desarrollo/reasignarMiembroUS.html", context)
+
+
 @permission_required_or_403('ESTIMAR_USER_STORY', (Proyecto, 'id', 'proyecto_id'))
 def planningPoker(request, proyecto_id, user_story_id):
     """
@@ -400,9 +424,11 @@ def registrarUS(request, proyecto_id, user_story_id):
             if horas_totales and contador_registro:
                 form.instance.horas_totales = form.instance.horas_trabajadas + horas_totales
                 form.instance.contador_registro = contador_registro + 1
+                form.instance.usuario = user_story.miembro_asignado.username
             else:
                 form.instance.horas_totales = form.instance.horas_trabajadas
                 form.instance.contador_registro = 1
+                form.instance.usuario = user_story.miembro_asignado.username
             form.save()
             return redirect(reverse('sprintBacklog', kwargs={'proyecto_id': proyecto_id}))
             print("horas totales",form.instance.horas_totales)

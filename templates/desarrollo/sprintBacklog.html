@@ -10,12 +10,15 @@
     <style>
     .hide-scroll{
     overflow: scroll;
+          -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 .hide-scroll::-webkit-scrollbar {
     background: transparent; /* make scrollbar transparent */
     width: 0px;
 }
+
     </style>
     <div class="content-container">
         <div class="container-fluid" style="margin-top: 50px">
@@ -80,6 +83,9 @@
                                             | <a href="{% url 'registroUSActual' proyecto_id us.pk %}"
                                                  class="btn btn-light btn-sm  {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %}"
                                                  style=""><i class=" bi bi-bookmarks" style=""></i> </a>
+                                            | <a href="{% url 'reasignarMiembroUS' proyecto_id us.pk  %}"
+                                                 class="btn btn-light btn-sm  {% if request.user != proyecto.scrum_master %} disabled{% endif %}"
+                                                 style=""><i class="bi bi-pencil"></i> </a>
                                         </div>
                                     </div>
                                 {% endif %}
@@ -123,7 +129,11 @@
                                                     class="bi bi-folder-plus"></i> </a>
                                             | <a href="{% url 'registroUSActual' proyecto_id us.pk %}"
                                                  class="btn btn-light btn-sm  {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %}"
-                                                 style=""><i class=" bi bi-bookmarks" style=""></i> </a></div>
+                                                 style=""><i class=" bi bi-bookmarks" style=""></i> </a>
+                                            | <a href="{% url 'reasignarMiembroUS' proyecto_id us.pk  %}"
+                                                 class="btn btn-light btn-sm  {% if request.user != proyecto.scrum_master %} disabled{% endif %}"
+                                                 style=""><i class="bi bi-pencil"></i> </a>
+                                        </div>
                                     </div>
                                 {% endif %}
                             {% endfor %}
@@ -164,7 +174,12 @@
                                                     class="bi bi-folder-plus"></i> </a>
                                             | <a href="{% url 'registroUSActual' proyecto_id us.pk %}"
                                                  class="btn btn-light btn-sm  {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %}"
-                                                 style=""><i class=" bi bi-bookmarks" style=""></i> </a></div>
+                                                 style=""><i class=" bi bi-bookmarks" style=""></i> </a>
+                                            | <a href="{% url 'reasignarMiembroUS' proyecto_id us.pk  %}"
+                                                 class="btn btn-light btn-sm  {% if request.user != proyecto.scrum_master %} disabled{% endif %}"
+                                                 style=""><i class="bi bi-pencil"></i> </a>
+                                        </div>
+
 
                                         {#                                        <div class="containe disabled card-footer text-muted row">#}
                                         {#                                            <div class="col-8">#}
@@ -220,7 +235,11 @@
                                                     class="bi bi-folder-plus"></i> </a>
                                             | <a href="{% url 'registroUSActual' proyecto_id us.pk %}"
                                                  class="btn btn-light btn-sm "
-                                                 style=""><i class=" bi bi-bookmarks" style=""></i> </a></div>
+                                                 style=""><i class=" bi bi-bookmarks" style=""></i> </a>
+                                            | <a href="{% url 'reasignarMiembroUS' proyecto_id us.pk  %}"
+                                                 class="btn btn-light btn-sm  {% if request.user != proyecto.scrum_master %} disabled{% endif %}"
+                                                 style=""><i class="bi bi-pencil"></i> </a>
+                                        </div>
                                     </div>
                                 {% endif %}
                             {% endfor %}
@@ -258,7 +277,11 @@
                                                     class="bi bi-folder-plus"></i> </a>
                                             | <a href="{% url 'registroUSActual' proyecto_id us.pk %}"
                                                  class="btn btn-light btn-sm "
-                                                 style=""><i class=" bi bi-bookmarks" style=""></i> </a></div>
+                                                 style=""><i class=" bi bi-bookmarks" style=""></i> </a>
+                                            | <a href="{% url 'reasignarMiembroUS' proyecto_id us.pk  %}"
+                                                 class="btn btn-light btn-sm  {% if request.user != proyecto.scrum_master %} disabled{% endif %}"
+                                                 style=""><i class="bi bi-pencil"></i> </a>
+                                        </div>
                                     </div>
                                 {% endif %}
                             {% endfor %}

@@ -80,7 +80,8 @@ class EstimacionPlanificada(models.Model):
 
 class RegistroUserStory(models.Model):
     user_story = models.ForeignKey(UserStory, on_delete=models.CASCADE)
-    detalles = models.TextField(max_length=50)
+    usuario = models.CharField(max_length=200, blank=True, null=True)
+    detalles = models.TextField(max_length=300)
     fecha = models.DateField(default=datetime.now, blank=True)
     horas_trabajadas = models.PositiveIntegerField(default=0,blank=True, null=True)
     horas_totales = models.PositiveIntegerField(default=0, blank=True, null=True)
