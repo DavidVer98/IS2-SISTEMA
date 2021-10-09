@@ -1,7 +1,7 @@
 from django.http import HttpRequest
 from django.test import TestCase
 from django.contrib.auth.models import Group
-from desarrollo.forms import UserStoryForms,UserStoryMiembroForms,PlanningPokerForms
+from desarrollo.forms import UserStoryForms,UserStoryMiembroForms,PlanningPokerForms,UserStoryRegistroForms
 from desarrollo.models import UserStory, EstimacionPlanificada
 from proyecto.models import Proyecto, Miembro, Rol
 #from user.models import User
@@ -64,6 +64,17 @@ class TestForms(TestCase):
             "estimacion_miembro":5
         }
         form=PlanningPokerForms(request.POST or None)
+        self.assertTrue(form.is_valid(), "El formulario no es valido")
+
+    """Para iteracion 4"""
+
+    def test_registroforms(self):
+        request = HttpRequest()
+        request.POST = {
+            "detalles": "Se registra el trabajo realizado",
+
+        }
+        form = UserStoryRegistroForms(request.POST or None)
         self.assertTrue(form.is_valid(), "El formulario no es valido")
 
 
