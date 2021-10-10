@@ -29,7 +29,16 @@ permissions = [
     ("PLANIFICAR_SPRINT", "Puede planificar el siguiente sprint"),
     ("ESTIMAR_USER_STORY", "Puede estimar los user stories en la planificacion"),
 
+    ("INICIAR_SPRINT", "Puede iniciar un sprint "),
+    ("TERMINAR_SPRINT", "Puede terminar un sprint "),
+
     ("VER_SPRINT_BACKLOG", "Puede ver la seccion de sprint backlog"),
+    ("REASIGNAR_MIEMBRO", "Puede reasignar miembros en el sprint backlog"),
+    ("VER_REGISTRO_US", "Puede ver los registros sobre un user story"),
+    ("CREAR_REGISTRO_US", "Puede crear registros de user story"),
+    ("CAMBIO_ESTADO_US", "Puede cambiar los estados de us en la tabla kanban"),
+
+    ("VER_REGISTROS", "Puede ver todos los registros creados en un proyecto"),
 ]
 
 

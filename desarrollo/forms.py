@@ -35,5 +35,5 @@ class PlanningPokerForms(forms.ModelForm):
 class UserStoryRegistroForms(forms.ModelForm):
     class Meta:
         model = RegistroUserStory
-        fields = ['user_story', 'detalles','fecha' ,'horas_trabajadas', 'horas_totales']
-        exclude = ['user_story', 'fecha', 'horas_totales']
+        fields = ['user_story', 'detalles','fecha' ,'horas_trabajadas', 'horas_totales', 'nombre_user_story']
+        exclude = ['user_story', 'fecha', 'horas_totales', 'nombre_user_story']

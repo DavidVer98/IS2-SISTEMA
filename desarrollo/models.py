@@ -96,8 +96,9 @@ class Sprint(models.Model):
 
 
 class RegistroUserStory(models.Model):
-    user_story = models.ForeignKey(UserStory, on_delete=models.CASCADE)
+    user_story = models.ForeignKey(UserStory, null=True, on_delete=models.SET_NULL)
     sprint = models.ForeignKey(Sprint, on_delete=models.CASCADE)
+    nombre_user_story = models.CharField(max_length=200, blank=True, null=True)
     usuario = models.CharField(max_length=200, blank=True, null=True)
     detalles = models.TextField(max_length=300)
     fecha = models.DateField(default=datetime.now, blank=True)
@@ -106,7 +107,7 @@ class RegistroUserStory(models.Model):
     contador_registro = models.PositiveIntegerField(default=0, blank=True, null=True)
 
     def __str__(self):
-        return self.user_story.nombre
+        return self.nombre_user_story
 
 # class ProductBacklog(models.Model):
 #     userStories = models.ManyToManyField(UserStory)

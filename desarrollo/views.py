@@ -229,14 +229,8 @@ def asignarMiembroUS(request, proyecto_id, user_story_id):
                'miembro': miembro}
     return render(request, "desarrollo/asignarMiembroUS.html", context)
 
-
+@permission_required_or_403('REASIGNAR_MIEMBRO', (Proyecto, 'id', 'proyecto_id'))
 def reasignarMiembroUS(request, proyecto_id, user_story_id):
-    """
-           Metodo para asignar un user story:
-            19/09/2021
-            Metodo en el que se asigna un user story a un miembro
-            dentro del proyecto
-    """
     user_story_actual = UserStory.objects.get(pk=user_story_id)
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
@@ -310,6 +304,7 @@ def planningPoker(request, proyecto_id, user_story_id):
     return redirect(reverse('sprintPlanning', kwargs={'proyecto_id': proyecto_id}))
 
 
+@permission_required_or_403('INICIAR_SPRINT', (Proyecto, 'id', 'proyecto_id'))
 def iniciarSprint(request, proyecto_id):
     """
            Vista para iniciar sprint:
@@ -340,6 +335,7 @@ def iniciarSprint(request, proyecto_id):
     return redirect(reverse('sprintPlanning', kwargs={'proyecto_id': proyecto_id}))
 
 
+@permission_required_or_403('TERMINAR_SPRINT', (Proyecto, 'id', 'proyecto_id'))
 def terminarSprint(request, proyecto_id):
 
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
@@ -374,7 +370,7 @@ def terminarSprint(request, proyecto_id):
         sprint_actual.save()
     return redirect(reverse('sprintBacklog', kwargs={'proyecto_id': proyecto_id}))
 
-
+@permission_required_or_403('VER_SPRINT_BACKLOG', (Proyecto, 'id', 'proyecto_id'))
 def sprintBacklog(request, proyecto_id):
     """
            Vista de sprint backlog:
@@ -393,7 +389,7 @@ def sprintBacklog(request, proyecto_id):
 
     return render(request, "desarrollo/sprintBacklog.html", context)
 
-
+@permission_required_or_403('CAMBIO_ESTADO_US', (Proyecto, 'id', 'proyecto_id'))
 def estadoUS(request, proyecto_id):
     """
            Metodo para la gestion de un user story:
@@ -409,6 +405,8 @@ def estadoUS(request, proyecto_id):
         user_story.save()
     return render(request, 'home/index.html')
 
+
+@permission_required_or_403('CREAR_REGISTRO_US', (Proyecto, 'id', 'proyecto_id'))
 def registrarUS(request, proyecto_id, user_story_id):
     user_story = UserStory.objects.get(pk = user_story_id)
     registro = RegistroUserStory.objects.filter(user_story = user_story)
@@ -425,6 +423,7 @@ def registrarUS(request, proyecto_id, user_story_id):
             proyecto_actual=Proyecto.objects.get(pk=proyecto_id)
             sprint=Sprint.objects.get(estado=Sprint.ACTIVO, proyecto=proyecto_actual)
             form.instance.user_story = user_story
+            form.instance.nombre_user_story = user_story.nombre
             form.instance.sprint = sprint
             if horas_totales and contador_registro:
                 form.instance.horas_totales = form.instance.horas_trabajadas + horas_totales
@@ -445,6 +444,7 @@ def registrarUS(request, proyecto_id, user_story_id):
     return render(request, "desarrollo/userStory/registro.html", context)
 
 
+@permission_required_or_403('VER_REGISTRO_US', (Proyecto, 'id', 'proyecto_id'))
 def registroUSActual(request, proyecto_id, user_story_id):
     user_story = UserStory.objects.get(pk = user_story_id)
     registro = RegistroUserStory.objects.filter(user_story = user_story)
@@ -455,6 +455,7 @@ def registroUSActual(request, proyecto_id, user_story_id):
     return render(request, "desarrollo/userStory/registroUSActual.html", context)
 
 
+@permission_required_or_403('VER_REGISTROS', (Proyecto, 'id', 'proyecto_id'))
 def registroSprints(request, proyecto_id):
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
@@ -464,7 +465,7 @@ def registroSprints(request, proyecto_id):
     context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, "miembro":miembro, "sprints":sprints}
     return render(request, "desarrollo/registroSprints.html", context)
 
-
+@permission_required_or_403('VER_REGISTROS', (Proyecto, 'id', 'proyecto_id'))
 def registroUserStories(request, proyecto_id, sprint_id):
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
