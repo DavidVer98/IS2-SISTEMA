@@ -19,7 +19,7 @@ class UserStory(models.Model):
     DOING='DOING'
     DONE='DONE'
     QA = 'QA'
-    RELASE = 'RELASE'
+    RELEASE = 'RELEASE'
 
     ESTADO_USERSTORY_CHOICES = [
         ('TO DO', 'TO DO'),

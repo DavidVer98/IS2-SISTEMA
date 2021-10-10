@@ -355,8 +355,7 @@ def terminarSprint(request, proyecto_id):
         proyecto_actual.duracion_semanal_sprint_actual = 0
 
         for user_story in sprint_actual.user_stories.all():
-
-            if user_story.estado_sprint != UserStory.RELASE:
+            if user_story.estado_sprint != UserStory.RELEASE:
                 user_story.estado_desarrollo=UserStory.EN_PRODUCT_BACKLOG
                 user_story.prioridad=UserStory.SUPERALTA
                 user_story.estado_sprint=UserStory.TO_DO
@@ -368,6 +367,8 @@ def terminarSprint(request, proyecto_id):
                 estimacion.estimacion_miembro = 0
                 estimacion.estimacion_scrum = 0
                 estimacion.save()
+            else:
+                user_story.delete()
 
         proyecto_actual.save()
         sprint_actual.save()
@@ -406,7 +407,6 @@ def estadoUS(request, proyecto_id):
         user_story = UserStory.objects.get(pk=userstory_pk)
         user_story.estado_sprint = estadoUS
         user_story.save()
-
     return render(request, 'home/index.html')
 
 def registrarUS(request, proyecto_id, user_story_id):
@@ -429,29 +429,21 @@ def registrarUS(request, proyecto_id, user_story_id):
             if horas_totales and contador_registro:
                 form.instance.horas_totales = form.instance.horas_trabajadas + horas_totales
                 form.instance.contador_registro = contador_registro + 1
-                form.instance.usuario = user_story.miembro_asignado.username
+                form.instance.usuario = user_story.miembro_asignado.email
             else:
                 form.instance.horas_totales = form.instance.horas_trabajadas
                 form.instance.contador_registro = 1
-                form.instance.usuario = user_story.miembro_asignado.username
-            form.save()
+                form.instance.usuario = user_story.miembro_asignado.email
+            if(form.instance.usuario==request.user.email):
+                form.save()
             return redirect(reverse('sprintBacklog', kwargs={'proyecto_id': proyecto_id}))
-            print("horas totales",form.instance.horas_totales)
     else:
-        print("numero de registro",contador_registro)
-        if(contador_registro):
-            registro1 = RegistroUserStory.objects.get(user_story=user_story , contador_registro = contador_registro)
-            form = UserStoryRegistroForms(instance=registro1)
-        else:
-            form = UserStoryRegistroForms()
-
-
+        form = UserStoryRegistroForms()
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     miembro = Miembro.objects.get(miembro = request.user, proyectos=proyecto_actual)
-    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'miembro':miembro,"form":form,"user_story":user_story}
-
-
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'miembro':miembro,"form":form,"user_story":user_story, "contador_registro":contador_registro, "horas_totales":horas_totales}
     return render(request, "desarrollo/userStory/registro.html", context)
+
 
 def registroUSActual(request, proyecto_id, user_story_id):
     user_story = UserStory.objects.get(pk = user_story_id)
