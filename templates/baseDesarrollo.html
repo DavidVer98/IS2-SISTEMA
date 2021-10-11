@@ -101,11 +101,13 @@
         {% endif %}
         <li class="header">Registro</li>
 
+        {% if "VER_REGISTROS" in proyecto_perms %}
         <li>
             <a href="{% url 'registroSprints' proyecto_id=proyecto_id %}">
                 <i class="fa fas fa-archive" aria-hidden="true"></i>Registros de Sprints
             </a>
         </li>
+        {% endif %}
         <li>
             <a href="{% url 'productBacklog' proyecto_id=proyecto_id %}">
                 <i class="fa fa-area-chart" aria-hidden="true"></i>Gráficos

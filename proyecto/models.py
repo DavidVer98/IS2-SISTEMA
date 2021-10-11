@@ -24,6 +24,8 @@ class Rol(models.Model):
         ("VER_SPRINT_BACKLOG"),
         ("CREAR_REGISTRO_US"),
         ("CAMBIO_ESTADO_US"),
+        ("VER_REGISTRO_US"),
+
     ]
     productowner_perm = [
         ("VER_PROYECTO"),

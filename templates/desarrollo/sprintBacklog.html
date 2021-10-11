@@ -1,12 +1,14 @@
 {% extends "baseDesarrollo.html" %}
 {% load static %}
-
+{% load guardian_tags %}
+{% get_obj_perms request.user for proyecto as "proyecto_perms" %}
 
 {% block head_content %}
     <link rel="stylesheet" href="{% static 'css/kanban.css' %}">
     <title>Sprint Backlog</title>
 {% endblock %}
 {% block container %}
+
     <style>
     .hide-scroll{
     overflow: scroll;
@@ -39,10 +41,12 @@
                             Duración del Sprint : {{ estimacion_total }} semana/s {{ dias }} dia/s</h6>
                     </div>
                 </div>
+                {% if "TERMINAR_SPRINT" in proyecto_perms %}
                 <button type="button" class="btn btn-secondary"
                         onclick="location.href='{% url 'terminarSprint' proyecto_id=proyecto_id %}'"
                 >Terminar Sprint <i class="fa fa-check-square-o" aria-hidden="true"></i>
                 </button>
+                {% endif %}
                 <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
 
                 <div class="row" >
