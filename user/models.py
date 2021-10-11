@@ -3,6 +3,12 @@ from django.db import models
 
 # Create your models here.
 class User(AbstractUser):
+    """
+           **User:**
+            11/10/2021
+            Se utilizada para los parametros de un user dentro de la base
+            de datos.
+    """
     USUARIO= 'Usuario'
     ADMINISTRADOR = 'Administrador'
     ROL_SISTEMA_CHOICES = [

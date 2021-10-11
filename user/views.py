@@ -29,6 +29,9 @@ listadeemail=[]
 
 
 def msg(email1):
+    """
+            Metodo para el avisar a los administradores sobre intento de acceso al sistema  11/10/21
+    """
     # create message object instance
     if email1 not in listadeemail:
         usuario = User.objects.filter(rolSistema="Administrador")
@@ -59,7 +62,9 @@ def msg(email1):
 
 def msg2(email1,nombre,rol):
     # create message object instance
-
+    """
+                Metodo de confirmacion de acceso  11/10/21
+    """
     msg = MIMEMultipart()
     usuarios="http://127.0.0.1:8080/home"
     message = "Su usuario "+nombre+ " Ha sido activado en el sistema gestor de proyectos con el rol de "+rol+". Ya puede ingresar al sistema  "+usuarios

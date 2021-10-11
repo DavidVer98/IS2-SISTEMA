@@ -231,6 +231,13 @@ def asignarMiembroUS(request, proyecto_id, user_story_id):
 
 @permission_required_or_403('REASIGNAR_MIEMBRO', (Proyecto, 'id', 'proyecto_id'))
 def reasignarMiembroUS(request, proyecto_id, user_story_id):
+    """
+              **reasignarMiembroUS:**
+              11/10/2021
+              Metodo en el que se reasigna un miembro a un user story
+            dentro del sprint
+
+    """
     user_story_actual = UserStory.objects.get(pk=user_story_id)
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
@@ -337,6 +344,12 @@ def iniciarSprint(request, proyecto_id):
 
 @permission_required_or_403('TERMINAR_SPRINT', (Proyecto, 'id', 'proyecto_id'))
 def terminarSprint(request, proyecto_id):
+    """
+                Metodo para la gestion de un sprint
+                  11/10/2021
+                  Metodo en el que se da por finalizado un sprint
+
+    """
 
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     try:
@@ -408,6 +421,12 @@ def estadoUS(request, proyecto_id):
 
 @permission_required_or_403('CREAR_REGISTRO_US', (Proyecto, 'id', 'proyecto_id'))
 def registrarUS(request, proyecto_id, user_story_id):
+    """
+              Metodo para la gestion de un user story:
+               11/10/2021
+               Metodo que se utiliza para el registro de user storys nuevos o desechados de anteriores
+               sprints
+       """
     user_story = UserStory.objects.get(pk = user_story_id)
     registro = RegistroUserStory.objects.filter(user_story = user_story)
     horas_totales = registro.aggregate(Sum("horas_trabajadas")).get('horas_trabajadas__sum')
@@ -446,6 +465,13 @@ def registrarUS(request, proyecto_id, user_story_id):
 
 @permission_required_or_403('VER_REGISTRO_US', (Proyecto, 'id', 'proyecto_id'))
 def registroUSActual(request, proyecto_id, user_story_id):
+    """
+                  Metodo para la gestion de un user story:
+                  11/10/2021
+                  Metodo en el que se utiliza para obtener el registro actual de actividades de un
+                  User Story dentro de un sprint
+
+    """
     user_story = UserStory.objects.get(pk = user_story_id)
     registro = RegistroUserStory.objects.filter(user_story = user_story)
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
@@ -457,6 +483,13 @@ def registroUSActual(request, proyecto_id, user_story_id):
 
 @permission_required_or_403('VER_REGISTROS', (Proyecto, 'id', 'proyecto_id'))
 def registroSprints(request, proyecto_id):
+    """
+                      Metodo para la gestion de sprints:
+                      11/10/2021
+                      Metodo que se utiliza para listar los sprints, tanto activos como culminados
+
+    """
+
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
     sprints = Sprint.objects.filter(proyecto=proyecto_actual)
@@ -467,6 +500,14 @@ def registroSprints(request, proyecto_id):
 
 @permission_required_or_403('VER_REGISTROS', (Proyecto, 'id', 'proyecto_id'))
 def registroUserStories(request, proyecto_id, sprint_id):
+    """
+                          Metodo para la gestion de user stories:
+                          11/10/2021
+                          Metodo que se ultiliza para visualizar la carga horaria y la descripcion de un User Story
+                          en desarrrollo
+
+    """
+
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
     registros = RegistroUserStory.objects.filter(sprint__id__exact=sprint_id)

@@ -79,6 +79,13 @@ class EstimacionPlanificada(models.Model):
 
 
 class Sprint(models.Model):
+    """
+           **Sprint:**
+           11/10/2021
+           Se define en la base de datos la clase de Sprint
+           para guardar los estados del mismo asi como sus datos principales (fecha de inicio y fin, nombre y proyecto al cual fue asignado.
+
+    """
 
     ACTIVO = 'Activo'
     FINALIZADO = 'Finalizado'
@@ -96,6 +103,13 @@ class Sprint(models.Model):
 
 
 class RegistroUserStory(models.Model):
+    """
+             **RegistroUserStory:**
+             11/10/2021
+             Se define en la base de datos la clase de RegistroUserStory
+             para poder registrar los avances en ese UserStory que se encuentra en desarrollo.
+
+    """
     user_story = models.ForeignKey(UserStory, null=True, on_delete=models.SET_NULL)
     sprint = models.ForeignKey(Sprint, on_delete=models.CASCADE)
     nombre_user_story = models.CharField(max_length=200, blank=True, null=True)
