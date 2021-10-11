@@ -1,97 +1,140 @@
 {% extends "baseProyecto.html" %}
+{% load guardian_tags %}
 {% block head_content %}
     <title>Lista de Roles</title>
 {% endblock %}
 
 {% block container %}
-    <div class="sidebar-container">
+    {% get_obj_perms request.user for proyecto as "proyecto_perms" %}
+    <div class="sidebar-container" style="margin-top: 57px">
+
         {#    <div class="sidebar-logo">#}
-        <div class="container-fluid" style="margin: auto">
+        <div class="container-fluid" style="margin: 5px">
             <img src="/static/img/default-profile.png" class="rounded-circle" height="50" style="width: 50px;"/>
             {{ request.user.username }}
+
         </div>
         {#    </div>#}
         <ul class="sidebar-navigation">
+
             <li class="header">{{ proyecto.nombre_proyecto }} <i class="fa fa-briefcase" aria-hidden="true"></i></li>
             <li>
                 <a href="/home">
-                    <i class="fa fa-home" aria-hidden="true"></i> Home
+                    <i class="fa fa-home" aria-hidden="true"></i> Inicio
                 </a>
             </li>
             <li>
-                <a href="#">
-                    <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
+                <a href="{% url 'proyecto' proyecto_id=proyecto_id %}">
+                    <i class="fa fa-briefcase" aria-hidden="true"></i>Proyecto
                 </a>
             </li>
-            <li class="header">Another Menu</li>
-            <li>
-                <a href='{% url 'roles_proyecto' proyecto_id=proyecto_id %}'>
-                    <i class="fa fa-users" aria-hidden="true"></i> Roles
-                </a>
-            </li>
-            <li>
-                <a href='{% url 'miembros_proyecto' proyecto_id=proyecto_id %}'>
-                    <i class="fa fa-cog" aria-hidden="true"></i> Miembros
-                </a>
-            </li>
-            <li>
-                <a href="{% url 'listaRol' proyecto_id=proyecto_id %}">
-                    <i class="fa fa-user" aria-hidden="true"></i>Listar Roles
-                </a>
-            </li>
+            {% if proyecto.estado == 'ACTIVO' %}
+                <li>
+                    <a href="{% url 'desarrollo' proyecto_id=proyecto_id %}">
+                        <i class="fa fa-align-right" aria-hidden="true"></i>Desarrollo
+                    </a>
+                </li>
+            {% endif %}
+            <li class="header">Gestión</li>
+            {% if "VER_MIEMBRO" in proyecto_perms %}
+                <li>
+                    <a href='{% url 'miembros_proyecto' proyecto_id=proyecto.id %}'>
+                        <i class="fa fa-cog" aria-hidden="true"></i> Miembros
+                    </a>
+                </li>
+            {% endif %}
+
             {#            <li>#}
             {#                <a href='{% url 'listaUsuarios' %}'>#}
             {#                    <i class="fa fa-users" aria-hidden="true"></i> Configurar#}
             {#                </a>#}
             {#            </li>#}
+            {% if "VER_ROL" in proyecto_perms %}
+                <li>
+                <a href="{% url 'listaRol' proyecto_id=proyecto_id %}">
+                    <i class="fa fa-user" aria-hidden="true"></i>Roles
+                </a>
+            {% endif %}
+
+            </li>
+
         </ul>
     </div>
     <div class="content-container">
 
-        <div class="container-fluid" style="margin-top: 45px">
+        <div class="container-fluid" style="margin-top: 50px">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'proyecto' proyecto_id %}">Proyecto</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Lista de roles</li>
+                </ol>
+            </nav>
             <div class="jumbotron">
-                         {% if error %}
-                            <div class="alert alert-danger" role="alert">
-                                Existe un usuario asignado a este Rol !
-                            </div>
-                         {% endif %}
+                <div class="row">
+                    {% if error %}
+                        <div class="alert alert-danger" role="alert">
+                            Existe un usuario asignado a este Rol !
+                        </div>
+                    {% endif %}
+                    <div class="col-md-8">
                         <h1><i class="fa fa-thumb-tack" aria-hidden="true"></i> Lista de Roles {{ error }} </h1>
-                         <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;" />
+                    </div>
+                    <div class="col-md-4" style="text-align: end">
+                        {% if "CREAR_ROL" in proyecto_perms %}
+                            <button type="button" class="btn btn-secondary"
+                                    onclick="location.href='{% url 'roles_proyecto' proyecto_id %}'"
+                            >Crear Rol <i class="fa fa-th-list" aria-hidden="true"></i>
+                            </button>
+                        {% endif %}
+                    </div>
+                    <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
 
-                <table class="overflow-auto table table-striped table-dark container">
-                    <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Opciones</th>
-                    </tr>
-                    </thead>
-                    {% for i in rol %}
-                        <tbody style="text-align: left; ">
+                    <table class="overflow-auto table table-striped table-dark container">
+
+                        <thead>
                         <tr>
-                            <th scope="row">{{ i.pk }}</th>
-                            <td>@{{ i.nombre }}</td>
-
-
-
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-secondary"
-                                        onclick="editarRol({{ i.pk }},{{ proyecto_id }})">Editar
-                                </button>
-                                <button type="button" class="btn btn-danger"
-                                        onclick="eliminarRol({{ i.pk }},{{ proyecto_id }})">Borrar
-                                </button>
-                            </td>
+                            <th scope="col">#</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Opciones</th>
                         </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        {% for i in rol %}
+                            <tbody style="text-align: left; ">
+                            <tr>
+                                <th scope="row">{{ i.pk }}</th>
+                                <td>@{{ i.nombre }}</td>
+
+
+                                </td>
+                                <td>
+
+                                    <button type="button" class="btn btn-info"
+                                            onclick="location.href='{% url 'permisosRol' proyecto_id i.pk %}'">Permisos
+                                    </button>
+                                    {% if "EDITAR_ROL" in proyecto_perms and i.nombre != 'Scrum Master' %}
+                                        <button type="button" class="btn btn-secondary"
+                                                onclick="location.href='{% url 'editarRol' proyecto_id i.pk %}'">
+                                            Editar
+                                        </button>
+                                    {% endif %}
+                                    {% if "ELIMINAR_ROL" in proyecto_perms  and i.nombre != 'Scrum Master' %}
+                                        <button type="button" class="btn btn-danger"
+                                                onclick="eliminarRol({{ i.pk }},{{ proyecto_id }}, {{ i.nombre.split }})">
+                                            Borrar
+                                        </button>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-        <script type="text/javascript">
-            function editarRol(id, proyecto_id) {
+
+    <script type="text/javascript">
+        function editarRol(id, proyecto_id) {
             console.log(id)
             Swal.fire({
                 'title': '¿Estas seguro?',
@@ -101,12 +144,30 @@
             })
                 .then(function (result) {
                     if (result.isConfirmed) {
-                        window.location.href =  id + "/editar";
+                        window.location.href = id + "/editar";
                     }
                 })
         }
 
-        function eliminarRol(id, proyecto_id) {
+        function eliminarRol(id, proyecto_id, nombre) {
+            console.log(id, nombre)
+            Swal.fire({
+                'title': '¿Estas seguro?',
+                'text': `Se eliminara el rol de "${nombre}" del proyecto`,
+                'icon': 'error',
+                'showCancelButton': true,
+                'cancelButtonColor': '#d33',
+                'confirmButtonText': 'Confirmar',
+                'cancelButtonText': 'Cancelar'
+            })
+                .then(function (result) {
+                    if (result.isConfirmed) {
+                        window.location.href = id + "/eliminar";
+                    }
+                })
+        }
+
+        function permisosRol(id, proyecto_id) {
             console.log(id)
             Swal.fire({
                 'title': '¿Estas seguro?',
@@ -116,9 +177,11 @@
             })
                 .then(function (result) {
                     if (result.isConfirmed) {
-                        window.location.href = id + "/eliminar";
+                        window.location.href = id + "/permisos";
                     }
                 })
         }
+
+
     </script>
 {% endblock %}

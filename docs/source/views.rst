@@ -19,6 +19,12 @@ user
    :members:
    :show-inheritance:
 
+desarrollo
+--------
+.. automodule:: desarrollo.views
+   :members:
+   :show-inheritance:
+
 #appname
 #--------
 #.. automodule:: appname.views

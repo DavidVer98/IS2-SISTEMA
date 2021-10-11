@@ -4,9 +4,14 @@
 {% endblock %}
 
 {% block container %}
-    <div class="content-container">
+     <div class="content-container" style="margin-top: 50px">
+        <div class="container-fluid">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item active" aria-current="page">Lista de Usuarios</li>
+                </ol>
+            </nav>
 
-        <div class="container-fluid" style="margin-top: 45px">
             <div class="jumbotron">
 
                         <h1><i class="fa fa-thumb-tack" aria-hidden="true"></i> Lista de Usuarios</h1>
@@ -53,10 +58,10 @@
                             </td>
                             <td>
                                 <button type="button" class="btn btn-secondary"
-                                        onclick="editarUser({{ user.id }})">Editar
+                                       onclick="location.href='{% url 'editar' user.id %}'">Editar
                                 </button>
                                 <button type="button" class="btn btn-danger"
-                                        onclick="eliminarUser({{ user.id }})">Borrar
+                                        onclick="eliminarUser({{ user.id }},{{ user.username.split}})">Borrar
                                 </button>
                             </td>
                         </tr>
@@ -69,13 +74,16 @@
     </div>
     </div>
     <script type="text/javascript">
-        function eliminarUser(id) {
+        function eliminarUser(id,nombre) {
             console.log(id)
             Swal.fire({
                 'title': '¿Estas seguro?',
-                'text': 'esta acción no se pude deshacer',
-                'icon': 'warning',
-                'showCancelButton': true
+                'text': `Se eliminara el usuario de "${nombre}" del sistema`,
+                'icon': 'error',
+                'showCancelButton': true,
+                'cancelButtonColor': '#d33',
+                'confirmButtonText': 'Confirmar',
+                'cancelButtonText': 'Cancelar'
             })
                 .then(function (result) {
                     if (result.isConfirmed) {
@@ -84,19 +92,5 @@
                 })
         }
 
-        function editarUser(id) {
-            console.log(id)
-            Swal.fire({
-                'title': '¿Estas seguro?',
-                {#'text': 'esta acción no se pude deshacer',#}
-                'icon': 'question',
-                'showCancelButton': true
-            })
-                .then(function (result) {
-                    if (result.isConfirmed) {
-                        window.location.href = "/editar/" + id + "/";
-                    }
-                })
-        }
     </script>
 {% endblock %}

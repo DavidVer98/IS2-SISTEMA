@@ -1,10 +1,9 @@
 from django.shortcuts import redirect
 from django.urls import reverse
 
-import user
-
 
 class VerificarUsuario:
+
     def __init__(self,get_response):
         """Middleware initialization """
         self.get_response = get_response
@@ -20,6 +19,8 @@ class VerificarUsuario:
                         #print("hola??")
                         if request.path not in [reverse('login'), reverse('logout'), reverse('activar')]:
                             #print("entro?")
+
                             return redirect('activar')
+
         response = self.get_response(request)
         return response

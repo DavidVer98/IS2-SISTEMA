@@ -1,0 +1,304 @@
+{% extends "baseDesarrollo.html" %}
+{% load static %}
+{% load guardian_tags %}
+{% get_obj_perms request.user for proyecto as "proyecto_perms" %}
+
+{% block head_content %}
+    <link rel="stylesheet" href="{% static 'css/kanban.css' %}">
+    <title>Sprint Backlog</title>
+{% endblock %}
+{% block container %}
+
+    <style>
+    .hide-scroll{
+    overflow: scroll;
+          -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.hide-scroll::-webkit-scrollbar {
+    background: transparent; /* make scrollbar transparent */
+    width: 0px;
+}
+
+    </style>
+    <div class="content-container">
+        <div class="container-fluid" style="margin-top: 50px">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'desarrollo' proyecto_id %}">Desarrollo</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Sprint Backlog</li>
+                </ol>
+            </nav>
+            <div class="jumbotron" style="margin-top: 0px">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h1><i class="fa fa-th-list" aria-hidden="true"></i></i> Sprint Backlog</h1>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="text-muted" style="text-align: center; margin-top: 30px">
+                            <i class="bi bi-alarm"></i>
+                            Duración del Sprint : {{ estimacion_total }} semana/s {{ dias }} dia/s</h6>
+                    </div>
+                </div>
+                {% if "TERMINAR_SPRINT" in proyecto_perms %}
+                <button type="button" class="btn btn-secondary"
+                        onclick="location.href='{% url 'terminarSprint' proyecto_id=proyecto_id %}'"
+                >Terminar Sprint <i class="fa fa-check-square-o" aria-hidden="true"></i>
+                </button>
+                {% endif %}
+                <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
+
+                <div class="row" >
+                    {% csrf_token %}
+                    <div class="col-sm-12 col-xl-4 card"  style="height: 620px">
+                        <div class="card-header">
+                            <h6 class="text-muted"><i class="fa bi bi-bookmark"></i> TO DO</h6>
+                        </div>
+{#                    <div style="overflow-y: scroll; height: 600px">#}
+                        <div class="card-body hide-scroll" id="TO_DO" style=" height: 630px">
+                            {% for us in user_stories %}
+                                {% if us.estado_sprint == 'TO DO' %}
+                                    <div class="card efecto {% if us.miembro_asignado.username != request.user.username %} divider{% endif %}"
+                                         style="{% if us.miembro_asignado.username != request.user.username %} opacity: 0.7; {% endif %}"
+                                         data-id="{{ us.pk }}">
+                                        <div class="card " style="border: 0px" data-id="{{ us.pk }}">
+                                            <div class="card-img-overlay" style="text-align: end">
+                                                <span class="badge badge-primary"> {{ us.miembro_asignado }}</span>
+                                                <span class="badge badge-secondary  "> Prioridad:  {{ us.prioridad }}  </span>
+                                            </div>
+                                            <div class="card-body">
+                                                <h6 class="card-title">{{ us.nombre }}</h6>
+                                                <small class="text-muted cat">
+                                                    <i class="far fa-clock text-info"></i> {{ us.estimacion }}
+                                                    Estimación
+                                                    <i class="fas fa-users text-info"></i> 1 Miembro
+                                                </small>
+                                                <p class="card-text">{{ us.descripcion }}.</p>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer text-muted d-flex justify-content-between bg-transparent border-top-0">
+                                        </div>
+                                        <div class="containe disabled card-footer text-muted"
+                                             style="padding: 10px; margin-top: -40px;color: gray; padding: 20px 20px 10px;">
+                                            <a href="{% url 'registroUS' proyecto_id us.pk %}" style=""
+                                               class="btn btn-light btn-sm {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %} "><i
+                                                    class="bi bi-folder-plus"></i> </a>
+                                            | <a href="{% url 'registroUSActual' proyecto_id us.pk %}"
+                                                 class="btn btn-light btn-sm  {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %}"
+                                                 style=""><i class=" bi bi-bookmarks" style=""></i> </a>
+                                            | <a href="{% url 'reasignarMiembroUS' proyecto_id us.pk  %}"
+                                                 class="btn btn-light btn-sm  {% if request.user != proyecto.scrum_master %} disabled{% endif %}"
+                                                 style=""><i class="bi bi-pencil"></i> </a>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+{#                    </div>#}
+
+                    </div>
+                    <div class="col-sm-12 col-xl-4 card">
+                        <div class="card-header">
+                            <h6 class="text-muted"><i class="bi bi-bookmark-plus"></i> DOING</h6>
+                        </div>
+                        <div class="card-body hide-scroll" id="DOING" style=" height: 560px">
+
+                            {% for us in user_stories %}
+                                {% if us.estado_sprint == 'DOING' %}
+                                    <div class="card efecto   {% if us.miembro_asignado.username != request.user.username %} divider{% endif %}"
+                                         style="{% if us.miembro_asignado.username != request.user.username %} opacity: 0.7; {% endif %} "
+                                         data-id="{{ us.pk }}">
+                                        <div class="card" style="border: 0px" data-id="{{ us.pk }}">
+                                            <div class="card-img-overlay" style="text-align: end">
+                                                <span class="badge badge-primary"> {{ us.miembro_asignado }}</span>
+                                                <span class="badge badge-secondary"> Prioridad: {{ us.prioridad }}</span>
+                                            </div>
+                                            <div class="card-body">
+                                                <h6 class="card-title">{{ us.nombre }}</h6>
+                                                <small class="text-muted cat">
+                                                    <i class="far fa-clock text-info"></i> {{ us.estimacion }}
+                                                    Estimación
+                                                    <i class="fas fa-users text-info"></i> 1 Miembro
+                                                </small>
+                                                <p class="card-text">{{ us.descripcion }}.</p>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer text-muted d-flex justify-content-between bg-transparent border-top-0">
+                                        </div>
+                                        <div class="containe disabled card-footer text-muted"
+                                             style="padding: 10px; margin-top: -40px;color: gray; padding: 20px 20px 10px;">
+                                            <a href="{% url 'registroUS' proyecto_id us.pk %}" style=""
+                                               class="btn btn-light btn-sm {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %} "><i
+                                                    class="bi bi-folder-plus"></i> </a>
+                                            | <a href="{% url 'registroUSActual' proyecto_id us.pk %}"
+                                                 class="btn btn-light btn-sm  {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %}"
+                                                 style=""><i class=" bi bi-bookmarks" style=""></i> </a>
+                                            | <a href="{% url 'reasignarMiembroUS' proyecto_id us.pk  %}"
+                                                 class="btn btn-light btn-sm  {% if request.user != proyecto.scrum_master %} disabled{% endif %}"
+                                                 style=""><i class="bi bi-pencil"></i> </a>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-xl-4  card">
+                        <div class="card-header">
+                            <h6 class="text-muted"><i class="bi bi-bookmark-check"></i> DONE</h6>
+                        </div>
+                        <div class="card-body hide-scroll" id="DONE" style=" height: 560px">
+                            {% for us in user_stories %}
+                                {% if us.estado_sprint == 'DONE' %}
+                                    <div class="card efecto {% if us.miembro_asignado.username != request.user.username %} divider{% endif %}"
+                                         style="{% if us.miembro_asignado.username != request.user.username %} opacity: 0.7; {% endif %}"
+                                         data-id="{{ us.pk }}">
+                                        <div class="card " style="border: 0px" data-id="{{ us.pk }}">
+                                            <div class="card-img-overlay" style="text-align: end">
+                                                <span class="badge badge-primary"> {{ us.miembro_asignado }}</span>
+                                                <span class="badge badge-secondary"> Prioridad: {{ us.prioridad }}</span>
+                                            </div>
+                                            <div class="card-body">
+                                                <h6 class="card-title">{{ us.nombre }}</h6>
+                                                <small class="text-muted cat">
+                                                    <i class="far fa-clock text-info"></i> {{ us.estimacion }}
+                                                    Estimación
+                                                    <i class="fas fa-users text-info"></i> 1 Miembro
+                                                </small>
+                                                <p class="card-text">{{ us.descripcion }}.</p>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer text-muted d-flex justify-content-between bg-transparent border-top-0">
+                                        </div>
+                                        <div class="containe disabled card-footer text-muted"
+                                             style="padding: 10px; margin-top: -40px;color: gray; padding: 20px 20px 10px;">
+                                            <a href="{% url 'registroUS' proyecto_id us.pk %}" style=""
+                                               class="btn btn-light btn-sm {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %} "><i
+                                                    class="bi bi-folder-plus"></i> </a>
+                                            | <a href="{% url 'registroUSActual' proyecto_id us.pk %}"
+                                                 class="btn btn-light btn-sm  {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %}"
+                                                 style=""><i class=" bi bi-bookmarks" style=""></i> </a>
+                                            | <a href="{% url 'reasignarMiembroUS' proyecto_id us.pk  %}"
+                                                 class="btn btn-light btn-sm  {% if request.user != proyecto.scrum_master %} disabled{% endif %}"
+                                                 style=""><i class="bi bi-pencil"></i> </a>
+                                        </div>
+
+
+                                        {#                                        <div class="containe disabled card-footer text-muted row">#}
+                                        {#                                            <div class="col-8">#}
+                                        {#                                                <div class="containe disabled card-footer text-muted" style="padding: 10px; margin-top: -40px;color: gray; padding: 20px 20px 10px;">#}
+                                        {#                                            <a href="{% url 'registroUS' proyecto_id us.pk %}" style="" class="btn btn-light btn-sm {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %} "><i class="bi bi-folder-plus"></i> </a>#}
+                                        {#                                            | <a href="{% url 'registroUSActual' proyecto_id us.pk %}" class="" style=""><i class="btn btn-light btn-sm  bi bi-bookmarks" style=""></i> </a>#}
+                                        {#                                        </div>#}
+                                        {#                                            </div>#}
+                                        {#                                            <div class="col-4" style="text-align: end">#}
+                                        {#                                                <span class="badge badge-warning"> Verificar</span>#}
+                                        {#                                            </div>#}
+                                        {#                                        </div>#}
+
+
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+{#                </div>#}
+
+                {#                    {% if request.user.username == proyecto.scrum_master %}#}
+                <div class="row justify-content-center" style="margin-top: 20px; ">
+                    <div class="col-5 card  " style=" {% if request.user != proyecto.scrum_master %} display: none {% endif %}">
+                        <div class="card-header">
+                            <h6 class="text-muted">QA </h6>
+                        </div>
+                        <div class="card-body hide-scroll {% if request.user.username == proyecto.scrum_master %} divider{% endif %}" id="QA" style=" height: 560px">
+                            {% for us in user_stories %}
+                                {% if us.estado_sprint == 'DONE' or us.estado_sprint == 'QA'  %}
+                                    <div class="card" data-id="{{ us.pk }}">
+                                        <div class="card " style="border: 0px" data-id="{{ us.pk }}">
+                                            <div class="card-img-overlay" style="text-align: end">
+                                                <span class="badge badge-primary"> {{ us.miembro_asignado }}</span>
+                                                <span class="badge badge-secondary"> Prioridad: {{ us.prioridad }}</span>
+                                            </div>
+                                            <div class="card-body">
+                                                <h6 class="card-title">{{ us.nombre }}</h6>
+                                                <small class="text-muted cat">
+                                                    <i class="far fa-clock text-info"></i> {{ us.estimacion }}
+                                                    Estimación
+                                                    <i class="fas fa-users text-info"></i> 1 Miembro
+                                                </small>
+                                                <p class="card-text">{{ us.descripcion }}.</p>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer text-muted d-flex justify-content-between bg-transparent border-top-0">
+                                        </div>
+                                        <div class="containe disabled card-footer text-muted"
+                                             style="padding: 10px; margin-top: -40px;color: gray; padding: 20px 20px 10px;">
+                                            <a href="{% url 'registroUS' proyecto_id us.pk %}" style=""
+                                               class="btn btn-light btn-sm {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %} "><i
+                                                    class="bi bi-folder-plus"></i> </a>
+                                            | <a href="{% url 'registroUSActual' proyecto_id us.pk %}"
+                                                 class="btn btn-light btn-sm "
+                                                 style=""><i class=" bi bi-bookmarks" style=""></i> </a>
+                                            | <a href="{% url 'reasignarMiembroUS' proyecto_id us.pk  %}"
+                                                 class="btn btn-light btn-sm  {% if request.user != proyecto.scrum_master %} disabled{% endif %}"
+                                                 style=""><i class="bi bi-pencil"></i> </a>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-5 card" style=" {% if request.user != proyecto.scrum_master %} display: none {% endif %}">
+                        <div class="card-header">
+                            <h6 class="text-muted">RELEASE</h6>
+                        </div>
+                        <div class="card-body hide-scroll" id="RELEASE" style="height: 560px">
+                            {% for us in user_stories %}
+                                {% if us.estado_sprint == 'RELEASE' %}
+                                    <div class="card" data-id="{{ us.pk }}">
+                                        <div class="card " style="border: 0px" data-id="{{ us.pk }}">
+                                            <div class="card-img-overlay" style="text-align: end">
+                                                <span class="badge badge-primary"> {{ us.miembro_asignado }}</span>
+                                                <span class="badge badge-secondary"> Prioridad: {{ us.prioridad }}</span>
+                                            </div>
+                                            <div class="card-body">
+                                                <h6 class="card-title">{{ us.nombre }}</h6>
+                                                <small class="text-muted cat">
+                                                    <i class="far fa-clock text-info"></i> {{ us.estimacion }}
+                                                    Estimación
+                                                    <i class="fas fa-users text-info"></i> 1 Miembro
+                                                </small>
+                                                <p class="card-text">{{ us.descripcion }}.</p>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer text-muted d-flex justify-content-between bg-transparent border-top-0">
+                                        </div>
+                                        <div class="containe disabled card-footer text-muted"
+                                             style="padding: 10px; margin-top: -40px;color: gray; padding: 20px 20px 10px;">
+                                            <a href="{% url 'registroUS' proyecto_id us.pk %}" style=""
+                                               class="btn btn-light btn-sm {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %} "><i
+                                                    class="bi bi-folder-plus"></i> </a>
+                                            | <a href="{% url 'registroUSActual' proyecto_id us.pk %}"
+                                                 class="btn btn-light btn-sm "
+                                                 style=""><i class=" bi bi-bookmarks" style=""></i> </a>
+                                            | <a href="{% url 'reasignarMiembroUS' proyecto_id us.pk  %}"
+                                                 class="btn btn-light btn-sm  {% if request.user != proyecto.scrum_master %} disabled{% endif %}"
+                                                 style=""><i class="bi bi-pencil"></i> </a>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {#                     {% endif %}#}
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script src="http://SortableJS.github.io/Sortable/Sortable.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+{% endblock %}

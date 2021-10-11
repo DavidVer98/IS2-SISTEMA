@@ -1,83 +1,166 @@
 {% extends "baseProyecto.html" %}
+{% load guardian_tags %}
 
 {% block head_content %}
-    <title>Home</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/proyecto.css' %}">
+    <title>Proyecto</title>
 {% endblock %}
 {% block container %}
 
-    <div class="sidebar-container">
-        {#    <div class="sidebar-logo">#}
-        <div class="container-fluid" style="margin: auto">
+    <div class="sidebar-container" style="margin-top: 57px">
+        <div class="container-fluid" style="margin: 5px">
             <img src="/static/img/default-profile.png" class="rounded-circle" height="50" style="width: 50px;"/>
             {{ request.user.username }}
 
         </div>
-        {#    </div>#}
         <ul class="sidebar-navigation">
+            {% get_obj_perms request.user for proyecto as "proyecto_perms" %}
             <li class="header">{{ proyecto.nombre_proyecto }} <i class="fa fa-briefcase" aria-hidden="true"></i></li>
             <li>
                 <a href="/home">
-                    <i class="fa fa-home" aria-hidden="true"></i> Home
+                    <i class="fa fa-home" aria-hidden="true"></i> Inicio
                 </a>
             </li>
             <li>
-                <a href="#">
-                    <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
+                <a href="{% url 'proyecto' proyecto_id=proyecto_id %}">
+                    <i class="fa fa-briefcase" aria-hidden="true"></i>Proyecto
                 </a>
             </li>
-            <li class="header">Another Menu</li>
-            <li>
-                <a a href='{% url 'roles_proyecto' proyecto_id=proyecto_id %}'>
-                    <i class="fa fa-users" aria-hidden="true"></i> Roles
-                </a>
-            </li>
-            <li>
-                <a href='{% url 'miembros_proyecto' proyecto_id=proyecto.id %}'>
-                    <i class="fa fa-cog" aria-hidden="true"></i> Miembros
-                </a>
-            </li>
-
-            {#            <li>#}
-            {#                <a href='{% url 'listaUsuarios' %}'>#}
-            {#                    <i class="fa fa-users" aria-hidden="true"></i> Configurar#}
-            {#                </a>#}
-            {#            </li>#}
-
-            <li>
-                <a href="{% url 'listaRol' proyecto_id=proyecto_id %}">
-                    <i class="fa fa-user" aria-hidden="true"></i>Listar Roles
-                </a>
-
-
-            </li>
-
+            {% if proyecto.estado == 'ACTIVO' %}
+                <li>
+                    <a href="{% url 'desarrollo' proyecto_id=proyecto_id %}">
+                        <i class="fa fa-align-right" aria-hidden="true"></i>Desarrollo
+                    </a>
+                </li>
+            {% endif %}
+            <li class="header">Gestión</li>
+            {% if "VER_MIEMBRO" in proyecto_perms %}
+                <li>
+                    <a href='{% url 'miembros_proyecto' proyecto_id=proyecto.id %}'>
+                        <i class="fa fa-cog" aria-hidden="true"></i> Miembros
+                    </a>
+                </li>
+            {% endif %}
+            {% if "VER_ROL" in proyecto_perms %}
+                <li>
+                    <a href="{% url 'listaRol' proyecto_id=proyecto_id %}">
+                        <i class="fa fa-user" aria-hidden="true"></i>Roles
+                    </a>
+                </li>
+            {% endif %}
         </ul>
     </div>
-
     <div class="content-container">
-        <div class="container-fluid">
-            <div class="jumbotron" style="margin-top: 45px">
+        <div class="container-fluid" style="margin-top: 50px">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'proyecto' proyecto_id %}">Proyecto</a></li>
+                </ol>
+            </nav>
+            <div class="jumbotron" style="margin-top: 0px">
                 <div class="row">
-                    <div class="col-10 .col-md-10">
-                          <h1><i class="fa fa-bullhorn" aria-hidden="true"></i> Bienvenido al proyecto!</h1>
-                {#                <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>#}
+                     <div class="col-md-8">
+                        <div>
+                            <h1 id="element1"><i class="fa fa-book"
+                                                 aria-hidden="true"></i> {{ proyecto.nombre_proyecto }}</h1>
+                            {#                <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>#}
+                            {% if proyecto.estado == 'PENDIENTE' %}
+                                <a id="element2" href="" class="badge badge-warning">{{ proyecto.estado }}</a>
+                            {% endif %}
+                            {% if proyecto.estado == 'ACTIVO' %}
+                                <a id="element2" href="" class="badge badge-primary">{{ proyecto.estado }}</a>
+                            {% endif %}
+                            {% if proyecto.estado == 'CANCELADO' %}
+                                <a id="element2" href="" class="badge badge-danger">{{ proyecto.estado }}</a>
+                            {% endif %}
+                        </div>
 
                     </div>
-                    <div class="col-2 .col-md-2">
-                         {% if es_scrum  %}
-                            <button type="button" class="btn btn-secondary"  onclick="location.href='{% url 'iniciarProyecto' proyecto_id=proyecto_id %}'"
-                            >Iniciar Proyecto  <i class="fa fa-folder-open-o" aria-hidden="true"></i>
+                     <div class="col-md-4" style="text-align: end">
+
+                        {% if "INICIAR_PROYECTO" in proyecto_perms and proyecto.estado == proyecto.PENDIENTE %}
+                            <button type="button" class="btn btn-secondary"
+                                    onclick="location.href='{% url 'iniciarProyecto' proyecto_id=proyecto_id %}'"
+                            >Iniciar Proyecto <i class="fa fa-folder-open-o" aria-hidden="true"></i>
                             </button>
-                         {% endif  %}
+                        {% else %}
+                            <button type="button" class="btn btn-secondary" disabled
+                                    onclick="location.href='{% url 'iniciarProyecto' proyecto_id=proyecto_id %}'"
+                            >Iniciar Proyecto <i class="fa fa-folder-open-o" aria-hidden="true"></i>
+                            </button>
+                        {% endif %}
                     </div>
-                    <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;" />
-                    <h2>Nombre del proyecto - {{ proyecto.nombre_proyecto }}</h2>
+                    <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
+                    {#                    <h4 style="width: 75%; margin-top: 10px"><span>Descripción:</span>{{ proyecto.descripcion }}</h4>#}
                 </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card card-margin"
+                             style="height: 100%;  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);transition:0.3s;">
+                            <div class="card-header no-border">
+                                <h5 class="card-title">Descripción</h5>
+                            </div>
+                            <div class="card-body pt-0">
+                                <div class="widget-49">
+                                    <div class="widget-49-title-wrapper">
+                                    </div>
+                                    <p class="text-muted">{{ proyecto.descripcion }}</p>
 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 ">
+                        <div class="card card-margin"
+                             style="height: 100%;box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);transition:0.3s;">
+                            <div class="card-header no-border">
+                                <h5 class="card-title" style="position: absolute">Miembros</h5>
+                            </div>
+                            <div class="card-body pt-0">
+                                <div class="card" style="height: 90%; display: flex; overflow-y: scroll">
+                                    <div class="widget-49">
+                                        <div class="widget-49-title-wrapper">
 
+                                            <div class="widget-49-meeting-info">
+                                            </div>
+                                        </div>
+                                        <ol class="widget-49-meeting-points">
+                                            {% for i in miembros %}
+                                                <li class="widget-49-meeting-item"><span>{{ i }}</span></li>
+                                            {% endfor %}
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                 <div class="col-lg-3 ">
+                        <div class="card card-margin"
+                             style="height: 100%;box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);transition:0.3s;">
+                            <div class="card-header no-border">
+                                <h5 class="card-title" style="position: absolute">Roles</h5>
+                            </div>
+                            <div class="card-body pt-0">
+                                <div class="card " style="height: 90%; display: flex; overflow-y: scroll;">
+                                    <div class="widget-49">
+                                        <div class="widget-49-title-wrapper">
+
+                                            <div class="widget-49-meeting-info">
+                                            </div>
+                                        </div>
+                                        <ol class="widget-49-meeting-points">
+                                            {% for i in proyecto.roles.all %}
+                                                <li class="widget-49-meeting-item"><span>{{ i.nombre }}</span></li>
+                                            {% endfor %}
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-
         </div>
-    </div>
 
 {% endblock %}

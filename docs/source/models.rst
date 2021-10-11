@@ -19,6 +19,11 @@ user
    :members:
    :show-inheritance:
 
+desarrollo
+--------
+.. automodule:: desarrollo.models
+   :members:
+   :show-inheritance:
 #appname
 #--------
 #.. automodule:: appname.models

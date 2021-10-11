@@ -17,10 +17,13 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
 
+from desarrollo.views import desarrollo, estadoUS
 from home.views import home, listarUsuarios, eliminar, editar
 from oauth_app.views import login_views, logout_view
-from proyecto.views import listarProyectos, editarProyecto, crearProyecto, editarRol, eliminarRol
+from proyecto.views import listarProyectos, editarProyecto, crearProyecto, editarRol, eliminarRol, filtrarProyecto, \
+    BorrarProyecto
 from user.views import activar
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,8 +37,15 @@ urlpatterns = [
     path("editar/<int:user_id>/", editar, name="editar"),
     path("home/proyectos/", listarProyectos, name="listarProyectos"),
     path("home/proyectos/editar/<int:proyecto_id>/", editarProyecto, name="editarProyecto"),
+    path("home/proyectos/Borrar/<int:proyecto_id>/", BorrarProyecto, name="BorrarProyecto"),
     path("home/proyectos/crear", crearProyecto, name="crearProyecto"),
-    path("user/activar/",activar,name="activar"),
-    path("proyecto/",include("proyecto.urls")),
-
+    path("user/activar/", activar, name="activar"),
+    path("proyecto/", include("proyecto.urls")),
+    path("proyecto/", include("desarrollo.urls")),
+    path("home/proyectos/<proyecto_estado>/", filtrarProyecto, name="filtrarProyecto"),
+    # path("desarrollo/sprintbacklog", estadoUS, name="estadoUS"),
 ]
+
+admin.site.site_header = 'home/'
+
+handler404 = "user.views.error_404"

@@ -1,0 +1,124 @@
+{% extends "baseDesarrollo.html" %}
+{% load guardian_tags %}
+
+{% block head_content %}
+    <title>Home</title>
+{% endblock %}
+{% block container %}
+    {% get_obj_perms request.user for proyecto as "proyecto_perms" %}
+    <div class="content-container">
+        <div class="container-fluid" style="margin-top: 50px">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'desarrollo' proyecto_id %}">Desarrollo</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Product Backlog</li>
+                </ol>
+
+            </nav>
+            <div class="row">
+                <div class="col-sm-12 col-lg-9">
+                    <div class="jumbotron" style="margin-top: 0px">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h1><i class="fa fa-list-alt" aria-hidden="true"></i></i> Product Backlog</h1>
+                            </div>
+
+                            <div class="col-md-3" style="text-align: end">
+                                {% if "CREAR_USER_STORY" in proyecto_perms %}
+                                    <button type="button" class="btn btn-secondary"
+                                            onclick="location.href='{% url 'crearUserStory' proyecto_id=proyecto_id %}'"
+                                    >Crear User Story <i class="fa fa-file" aria-hidden="true"></i>
+                                    </button>
+                                {% endif %}
+                            </div>
+
+                            <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
+
+                        </div>
+                        <table class="overflow-auto table table-striped table-dark container">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Prioridad</th>
+                                <th scope="col">Opciones</th>
+                            </tr>
+                            </thead>
+                            {% for userStory in userStory %}
+                                <tbody style="text-align: left; ">
+                                <tr>
+                                    <th scope="row">{{ userStory.id }}</th>
+                                    <td>{{ userStory.nombre }}</td>
+                                    <td>
+                                        {{ userStory.get_prioridad_display }}
+                                    </td>
+                                    <td>
+                                        {% if "PLANIFICAR_SPRINT" in proyecto_perms %}
+                                        <button class="btn btn-success"
+                                                onclick="location.href='{% url 'sprintPlanningEstado' proyecto_id userStory.id %}'">
+                                            <i class="bi bi-clock-history"></i></button>
+                                        {% endif %}
+                                        {% if "EDITAR_USER_STORY" in proyecto_perms %}
+                                        <button type="button" class="btn btn-secondary"
+                                                onclick="location.href='{% url 'editarUserStory' proyecto_id userStory.id %}'"
+                                        ><i class="bi bi-pencil"></i>
+                                        </button>
+                                        {% endif %}
+                                        {% if "ELIMINAR_USER_STORY" in proyecto_perms %}
+                                        <button type="button" class="btn btn-danger"
+                                                 onclick="eliminarUS({{ userStory.nombre.split }},{{ userStory.id }})">
+                                        <i class="bi bi-trash"></i>
+                                        </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        {% if not userStory.count %}
+                          <p class="text-muted" style="text-align: center; margin-top: 30px"><i class="bi bi-exclamation-triangle"></i>
+                            No hay User Stories en el Product Backlog</p>
+                      {% endif %}
+
+                    </div>
+                </div>
+              <div class="col-sm-12 col-lg-3">
+                    <div class="jumbotron" style="box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);transition:0.3s; margin-left: 20px; width: 90%">
+                        <p class="text-muted" style="text-align: center; margin-top: -20px"><i class="bi bi-gear"></i> Opciones</p>
+                        <hr>
+                        <div style="margin-left:-10px ">
+                        <div class="text-muted" style="margin-top: 20px"><i class="bi bi-clock-history"></i> Añadir a Sprint Planning</div>
+                        <div class="text-muted" style="margin-top: 10px"><i class="bi bi-pencil"></i> Editar </div>
+                        <div class="text-muted" style="margin-top: 10px"><i class="bi bi-trash"></i>  Eliminar</div>
+                            </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script type="text/javascript">
+
+        function eliminarUS(nombre, userStory_id) {
+            Swal.fire({
+                'title': '¿Estas seguro?',
+                'text': `Se eliminara el User Story "${nombre}" del proyecto`,
+                'icon': 'error',
+                'showCancelButton': true,
+                'cancelButtonColor': '#d33',
+                'confirmButtonText': 'Confirmar',
+                'cancelButtonText': 'Cancelar'
+            })
+                .then(function (result) {
+                    if (result.isConfirmed) {
+                        window.location.href = "productbacklog/" + userStory_id + "/eliminar";
+
+                    }
+                })
+        }
+
+
+    </script>
+
+{% endblock %}

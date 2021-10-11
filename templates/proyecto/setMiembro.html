@@ -1,13 +1,17 @@
 {% extends "baseProyecto.html" %}
-
+{% load guardian_tags %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
 
 {% block head_content %}
     <title>Miembros</title>
 {% endblock %}
 {% block container %}
-    <div class="sidebar-container">
+    {% get_obj_perms request.user for proyecto as "proyecto_perms" %}
+    <div class="sidebar-container" style="margin-top: 57px">
         {#    <div class="sidebar-logo">#}
-        <div class="container-fluid" style="margin: auto">
+        <div class="container-fluid" style="margin: 5px">
             <img src="/static/img/default-profile.png" class="rounded-circle" height="50" style="width: 50px;"/>
             {{ request.user.username }}
         </div>
@@ -16,49 +20,67 @@
             <li class="header">{{ proyecto.nombre_proyecto }} <i class="fa fa-briefcase" aria-hidden="true"></i></li>
             <li>
                 <a href="/home">
-                    <i class="fa fa-home" aria-hidden="true"></i> Home
+                    <i class="fa fa-home" aria-hidden="true"></i> Inicio
                 </a>
             </li>
-            <li>
-                <a href="#">
-                    <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
-                </a>
-            </li>
-            <li class="header">Another Menu</li>
-            <li>
-                <a href='{% url 'roles_proyecto' proyecto_id=proyecto_id %}'>
-                    <i class="fa fa-users" aria-hidden="true"></i> Roles
-                </a>
-            </li>
-            <li>
-                <a href='{% url 'miembros_proyecto' proyecto_id=proyecto_id %}'>
-                    <i class="fa fa-cog" aria-hidden="true"></i> Miembros
-                </a>
-            </li>
-            <li>
-                <a href="{% url 'listaRol' proyecto_id=proyecto_id %}">
-                    <i class="fa fa-user" aria-hidden="true"></i>Listar Roles
-                </a>
-            </li>
-            {#            <li>#}
-            {#                <a href='{% url 'listaUsuarios' %}'>#}
-            {#                    <i class="fa fa-users" aria-hidden="true"></i> Configurar#}
-            {#                </a>#}
-            {#            </li>#}
+        <li>
+            <a href="{% url 'proyecto' proyecto_id=proyecto_id %}">
+                <i class="fa fa-briefcase" aria-hidden="true"></i>Proyecto
+            </a>
+        </li>
+            {% if proyecto.estado == 'ACTIVO' %}
+                <li>
+                    <a href="{% url 'desarrollo' proyecto_id=proyecto_id %}">
+                        <i class="fa fa-align-right" aria-hidden="true"></i>Desarrollo
+                    </a>
+                </li>
+            {% endif %}
+            <li class="header">Gestión</li>
+            {% if "EDITAR_MIEMBRO" in proyecto_perms %}
+                <li>
+                    <a href='{% url 'miembros_proyecto' proyecto_id=proyecto_id %}'>
+                        <i class="fa fa-cog" aria-hidden="true"></i> Miembros
+                    </a>
+                </li>
+            {% endif %}
+            {% if "VER_ROL" in proyecto_perms %}
+                <li>
+                    <a href="{% url 'listaRol' proyecto_id=proyecto_id %}">
+                        <i class="fa fa-user" aria-hidden="true"></i>Roles
+                    </a>
+                </li>
+            {% endif %}
         </ul>
     </div>
 
     <div class="content-container">
-        <div class="container-fluid">
-            <div class="jumbotron" style="margin-top: 45px">
-                <h1>Añadir Miembro al proyecto</h1>
-                <form method="POST">
-                    {% csrf_token %}
-                    {{ form }}
-                    <button class="btn btn-primary" style="margin-left: 10px">Editar</button>
-                </form>
-            </div>
+        <div class="container-fluid" style="margin-top: 50px">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'proyecto' proyecto_id %}">Proyecto</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'miembros_proyecto' proyecto_id %}">Miembros</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Añadir Miembro</li>
+                </ol>
+            </nav>
+            <div class="jumbotron" style="margin-top: 0px">
+                <div class="container-fluid">
+                    <h1><i class="fa fa-plus" aria-hidden="true"></i> Añadir Miembros</h1>
+                    <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
 
+                    <form method="POST">
+                        {% csrf_token %}
+                        {#                    {{ form }}#}
+                        {{ form.media }}
+                        {% bootstrap_form form %}
+                        <button class="btn btn-primary" style="margin-left: 10px">Aceptar <i class="fa fa-check"
+                                                                                             aria-hidden="true"></i>
+                        </button>
+                        <a class="btn btn-danger " style="margin-left: 10px; color:white"
+                           onclick="location.href='{% url 'miembros_proyecto' proyecto_id=proyecto_id %}'">Cancelar
+                            <i class="fa fa-times" aria-hidden="true"></i></a>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 

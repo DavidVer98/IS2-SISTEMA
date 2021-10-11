@@ -1,0 +1,27 @@
+{% extends "baseProyecto.html" %}
+{% block head_content %}
+    <title>404</title>
+{% endblock %}
+
+{% block container %}
+
+    <div class="align-content-center" style="background-color:transparent; margin-top: 100px">
+        <h1 style="text-align: center; margin-top: 300px"> Página no encontrada <i class="bi bi-exclamation-circle"></i></h1>
+        <hr style="width:50%; margin-left:25% !important; margin-right:1% !important;"/>
+        <h2 class="text-muted" style="text-align: center"> Error 404.</h2>
+        {% load static %}
+
+
+
+    </div>
+    <!-- Copyright -->
+    <div class="text-center text-white p-2  fixed-bottom" style="background-color:#383c44">
+        © 2021 Copyright:
+        <img src="{% static 'img/logo1.png' %}" width="45" height="40">
+        <a class="text-white   " href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">SGP.com</a>
+    </div>
+    <!-- Copyright -->
+
+
+
+{% endblock %}

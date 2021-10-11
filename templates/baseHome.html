@@ -20,10 +20,15 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" crossorigin="anonymous"/>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     {#    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">#}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
 </head>
 <body>
 <!-- NavBar -->
-<nav class="navbar fixed-top  navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <a class="navbar-brand" href="#"><img src="{% static 'img/logo1.png' %}" width="30" height="30"> </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02"
             aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,74 +36,48 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-{#            <li class="nav-item active">#}
-{#                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>#}
-{#            </li>#}
-{#            <li class="nav-item">#}
-{#                <a class="nav-link" href="#">Link</a>#}
-{#            </li>#}
-{#            <li class="nav-item">#}
-{#                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>#}
-{#            </li>#}
-        </ul>
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0"></ul>
         <form class="form-inline my-2 my-lg-0">
             <button type="button" class="btn btn-danger" onclick="location.href= '{% url 'logout' %}'"><i
-                    class="fa fa-sign-out" aria-hidden="true"></i> Cerrar Session
+                    class="fa fa-sign-out" aria-hidden="true"></i> Cerrar Sesión
             </button>
-            {#            <input class="form-control mr-sm-2" type="search" placeholder="Search">#}
-            {#            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>#}
         </form>
     </div>
 </nav>
 
 <!-- SideBar -->
 
-<div class="sidebar-container">
-    <div class="sidebar-logo">
-        Project Name
-    </div>
-    <ul class="sidebar-navigation" style="margin-top: 10px">
-        <div class="container-fluid" style="margin: auto">
-            <img src="/static/img/default-profile.png" class="rounded-circle" height="50" style="width: 50px;"/>
-            {{ request.user.username }}
-        </div>
+<div class="sidebar-container" style="margin-top: 6px">
+    {#    <div class="sidebar-logo">#}
+    <div class="container-fluid" style="margin: 5px">
+        <img src="/static/img/default-profile.png" class="rounded-circle" height="50" style="width: 50px;"/>
+        {{ request.user.username }}
 
-        <li class="header" style="margin-top: 10px">Navegacion</li>
+    </div>
+    <ul class="sidebar-navigation">
+        <li class="header" style="margin-top: 0px">Navegación</li>
         <li>
             <a href="/home">
-                <i class="fa fa-home" aria-hidden="true"></i> Home
-            </a>
-        </li>
-        <li>
-            <a href="#">
-                <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
+                <i class="fa fa-home" aria-hidden="true"></i> Inicio
             </a>
         </li>
         <li class="header">Opciones</li>
         <li>
             <a a href='{% url 'listarProyectos' %}'>
-                <i class="fa fa-users" aria-hidden="true"></i> Proyectos
+                <i class="fa fa-files-o" aria-hidden="true"></i> Proyectos
             </a>
         </li>
-{#        <li>#}
-{#            <a href="#">#}
-{#                <i class="fa fa-cog" aria-hidden="true"></i> Configuraciones#}
-{#            </a>#}
-{#        </li>#}
+
         {% if request.user.rolSistema == "Administrador" %}
             <li>
             <a href='{% url 'listaUsuarios' %}'>
                 <i class="fa fa-users" aria-hidden="true"></i> Usuarios
             </a>
         {% endif %}
-{#        <li>#}
-{#            <a href="#">#}
-{#                <i class="fa fa-user" aria-hidden="true"></i>Perfil#}
-{#            </a>#}
-{#        </li>#}
     </ul>
 </div>
+
+
 
 {% block container %}
 
