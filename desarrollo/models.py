@@ -5,6 +5,7 @@ from django.db import models
 # Create your models here.
 from proyecto.models import Proyecto, Miembro
 from user.models import User
+from django.utils.timezone import now
 
 
 class UserStory(models.Model):
@@ -97,9 +98,11 @@ class Sprint(models.Model):
     nombre = models.CharField(max_length=50)
     proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE)
     estado = models.CharField(max_length=50, choices=ESTADO_CHOICES, default=ACTIVO)
-    fecha_inicio = models.DateField(default=datetime.now, blank=True)
+    fecha_inicio = models.DateField(default=now, blank=True)
     fecha_fin = models.DateField(blank=True, null=True)
     user_stories = models.ManyToManyField(UserStory)
+    duracion_estimada_sprint = models.FloatField(default=0,blank=True, null=True)
+    estimacion_total_us = models.FloatField(default=0,blank=True, null=True)
 
 
 class RegistroUserStory(models.Model):
