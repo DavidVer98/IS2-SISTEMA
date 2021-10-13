@@ -331,6 +331,9 @@ def iniciarSprint(request, proyecto_id):
         if not error:
             fecha=proyecto_actual.nombre_proyecto+" Sprint "+datetime.today().strftime('%Y-%m-%d')
             sprint = Sprint.objects.create(nombre=fecha, proyecto=proyecto_actual)
+            sprint.estimacion_total_us = user_stories.aggregate(Sum("estimacion")).get('estimacion__sum')
+            sprint.duracion_estimada_sprint = proyecto_actual.duracion_semanal_sprint_actual
+
 
             for user_story in user_stories:
                 sprint.user_stories.add(user_story)
@@ -338,6 +341,7 @@ def iniciarSprint(request, proyecto_id):
                 user_story.save()
 
             sprint.save()
+            print("fecha",sprint.fecha_inicio)
             return redirect(reverse('sprintBacklog', kwargs={'proyecto_id': proyecto_id}))
     return redirect(reverse('sprintPlanning', kwargs={'proyecto_id': proyecto_id}))
 
@@ -381,6 +385,7 @@ def terminarSprint(request, proyecto_id):
 
         proyecto_actual.save()
         sprint_actual.save()
+        print("fecha fin", sprint_actual.fecha_fin)
     return redirect(reverse('sprintBacklog', kwargs={'proyecto_id': proyecto_id}))
 
 @permission_required_or_403('VER_SPRINT_BACKLOG', (Proyecto, 'id', 'proyecto_id'))
@@ -517,3 +522,13 @@ def registroUserStories(request, proyecto_id, sprint_id):
     context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, "miembro": miembro, "registros":registros,
                "suma_hora_registros":suma_hora_registros}
     return render(request, "desarrollo/registroUserStories.html", context)
+
+
+def burndown_chart(request,proyecto_id):
+
+    proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+    # proyecto_actual.iniciar_proyecto()
+    miembro = Miembro.objects.get(miembro = request.user, proyectos=proyecto_actual)
+    print(miembro.rol)
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'miembro':miembro}
+    return render(request, "desarrollo/graficos/burndown_chart.html", context)

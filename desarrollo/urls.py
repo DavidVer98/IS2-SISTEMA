@@ -3,7 +3,7 @@ from django.urls import path
 from desarrollo.views import desarrollo, productBacklog, crearUserStory, editarUserStory, eliminarUserStory, \
     sprintPlanning, sprint_planning_estado, product_backlog_estado, asignarMiembroUS, planningPoker, sprintBacklog, \
     iniciarSprint, estadoUS, registrarUS, registroUSActual, terminarSprint, reasignarMiembroUS, registroUserStories, \
-    registroSprints
+    registroSprints, burndown_chart
 
 urlpatterns = [
 
@@ -16,7 +16,7 @@ urlpatterns = [
     path('<int:proyecto_id>/desarrollo/sprintbacklog/estadous', estadoUS, name="estadoUS"),
     path('<int:proyecto_id>/desarrollo/sprintplanning', sprintPlanning, name="sprintPlanning"),
     path('<int:proyecto_id>/desarrollo/sprintplanning/<int:user_story_id>/asignarmiembro', asignarMiembroUS, name="asignarMiembroUS"),
-path('<int:proyecto_id>/desarrollo/sprintplanning/<int:user_story_id>/reasignarmiembro', reasignarMiembroUS, name="reasignarMiembroUS"),
+    path('<int:proyecto_id>/desarrollo/sprintplanning/<int:user_story_id>/reasignarmiembro', reasignarMiembroUS, name="reasignarMiembroUS"),
     path('<int:proyecto_id>/desarrollo/sprintplanning/<int:user_story_id>/planningpoker', planningPoker, name="planningPoker"),
     path('<int:proyecto_id>/desarrollo/productbacklog', productBacklog, name="productBacklog"),
     path('<int:proyecto_id>/desarrollo/productbacklog/crearUS', crearUserStory, name="crearUserStory"),
@@ -26,6 +26,7 @@ path('<int:proyecto_id>/desarrollo/sprintplanning/<int:user_story_id>/reasignarm
     path('<int:proyecto_id>/desarrollo/productbacklog/<int:user_story_id>/seleccionar/productbacklog', product_backlog_estado, name="product_backlog_estado"),
     path('<int:proyecto_id>/desarrollo/registros', registroSprints, name="registroSprints"),
     path('<int:proyecto_id>/desarrollo/registros/<int:sprint_id>', registroUserStories, name="registroUserStories"),
+    path('<int:proyecto_id>/desarrollo/chart', burndown_chart, name="burndown_chart"),
 ]
 
 
