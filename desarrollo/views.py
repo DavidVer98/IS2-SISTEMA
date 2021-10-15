@@ -1,7 +1,7 @@
 # from audioop import reverse
 import json
-from datetime import datetime
 
+from datetime import datetime, timedelta
 from django.urls import reverse
 from django.shortcuts import render, redirect
 from django.db.models import Sum
@@ -527,8 +527,26 @@ def registroUserStories(request, proyecto_id, sprint_id):
 def burndown_chart(request,proyecto_id):
 
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
-    # proyecto_actual.iniciar_proyecto()
+    sprint_actual = Sprint.objects.get(proyecto=proyecto_actual)
     miembro = Miembro.objects.get(miembro = request.user, proyectos=proyecto_actual)
-    print(miembro.rol)
+
+    registros= RegistroUserStory.objects.filter(sprint= sprint_actual).values('fecha').order_by('fecha').annotate(sum=Sum('horas_trabajadas'))
+
+    fecha_inicio= sprint_actual.fecha_inicio
+    fecha_actual= datetime.now().date()
+    cantidad= abs(fecha_actual-fecha_inicio).days +1
+
+    base = datetime.now().date()
+    date_list = [base - timedelta(days=x) for x in range(cantidad)]
+    diccionario = {}
+
+    for i in date_list:
+        diccionario[i]=0
+
+    for date in date_list:
+        for registro in registros.all():
+            if registro["fecha"]==date:
+                diccionario[date]+=registro["sum"]
+
     context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'miembro':miembro}
     return render(request, "desarrollo/graficos/burndown_chart.html", context)
