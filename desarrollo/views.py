@@ -1,5 +1,6 @@
 # from audioop import reverse
 import json
+from datetime import datetime
 
 from datetime import datetime, timedelta
 from django.urls import reverse
@@ -12,6 +13,8 @@ from desarrollo.forms import UserStoryForms, UserStoryMiembroForms, PlanningPoke
 from desarrollo.models import UserStory, EstimacionPlanificada, Sprint
 from proyecto.models import Proyecto, Miembro
 from guardian.decorators import permission_required_or_403
+
+from django.http import JsonResponse, HttpResponse
 
 from user.models import User
 
@@ -524,10 +527,13 @@ def registroUserStories(request, proyecto_id, sprint_id):
     return render(request, "desarrollo/registroUserStories.html", context)
 
 
-def burndown_chart(request,proyecto_id):
+def burndown_chart(request,proyecto_id,sprint_id ):
+    RegistroUS = RegistroUserStory.objects.filter(sprint= sprint_id)
 
+
+    sprint_actual = Sprint.objects.get(id = sprint_id)
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
-    sprint_actual = Sprint.objects.get(proyecto=proyecto_actual)
+
     miembro = Miembro.objects.get(miembro = request.user, proyectos=proyecto_actual)
 
     registros= RegistroUserStory.objects.filter(sprint= sprint_actual).values('fecha').order_by('fecha').annotate(sum=Sum('horas_trabajadas'))
@@ -535,7 +541,7 @@ def burndown_chart(request,proyecto_id):
     fecha_inicio= sprint_actual.fecha_inicio
     fecha_actual= datetime.now().date()
     cantidad= abs(fecha_actual-fecha_inicio).days +1
-
+    print(cantidad)
     base = datetime.now().date()
     date_list = [base - timedelta(days=x) for x in range(cantidad)]
     diccionario = {}
@@ -548,5 +554,14 @@ def burndown_chart(request,proyecto_id):
             if registro["fecha"]==date:
                 diccionario[date]+=registro["sum"]
 
-    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'miembro':miembro}
+    print("print ",diccionario)
+    array_horas_trabajadas = list(diccionario.values())
+    print(array_horas_trabajadas.reverse())
+    array_horas_trabajadas[0] = sprint_actual.estimacion_total_us - array_horas_trabajadas[0]
+    # array_horas_trabajadas[0] = sprint_actual.estimacion_total_us
+    for i,index in enumerate(array_horas_trabajadas,start=1):
+        if i < len(array_horas_trabajadas):
+            array_horas_trabajadas[i] = array_horas_trabajadas[i-1] - array_horas_trabajadas[i]
+    print(array_horas_trabajadas)
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'miembro': miembro, "sprint": sprint_actual, 'array_horas_trabajadas':array_horas_trabajadas}
     return render(request, "desarrollo/graficos/burndown_chart.html", context)

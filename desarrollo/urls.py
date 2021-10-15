@@ -26,7 +26,8 @@ urlpatterns = [
     path('<int:proyecto_id>/desarrollo/productbacklog/<int:user_story_id>/seleccionar/productbacklog', product_backlog_estado, name="product_backlog_estado"),
     path('<int:proyecto_id>/desarrollo/registros', registroSprints, name="registroSprints"),
     path('<int:proyecto_id>/desarrollo/registros/<int:sprint_id>', registroUserStories, name="registroUserStories"),
-    path('<int:proyecto_id>/desarrollo/chart', burndown_chart, name="burndown_chart"),
+    path('<int:proyecto_id>/desarrollo/chart/<int:sprint_id>', burndown_chart, name="burndown_chart"),
+
 ]
 
 

@@ -5,6 +5,7 @@
 
 {% block head_content %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>Grafico</title>
 {% endblock %}
 {% block container %}
@@ -14,30 +15,31 @@
             <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{% url 'desarrollo' proyecto_id %}">Desarrollo</a></li>
-                    <li class="breadcrumb-item"><a href="{% url 'productBacklog' proyecto_id %}">Product Backlog</a>
+                    <li class="breadcrumb-item"><a href="{% url 'registroSprints' proyecto_id %}">Registro de Sprint</a>
                     </li>
-                    <li class="breadcrumb-item active" aria-current="page">Crear User Story</li>
+                    <li class="breadcrumb-item active" aria-current="page">Gráfico</li>
                 </ol>
 
             </nav>
             <div class="jumbotron" style="margin-top: 0px">
-                 <div class="col-10 .col-md-10" style="margin-top: -10px">
-                        <h1><i class="fa fa-pie-chart" style="color: gray " aria-hidden="true"></i> Burndown Chart</h1>
-                    </div>
-                    <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
+                <div class="col-10 .col-md-10" style="margin-top: -10px">
+                    <h1><i class="fa fa-pie-chart" style="color: gray " aria-hidden="true"></i> Burndown Chart</h1>
+                </div>
+                <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
 
-{#                <div class="card" style="width:400px; padding: initial">#}
-{#                    <div style="width:400px;">#}
-{#                        <canvas id="myChart" width="400" height="400"></canvas>#}
-{#                    </div>#}
-{#                </div>#}
+                {#                <div class="card" style="width:400px; padding: initial">#}
+                {#                    <div style="width:400px;">#}
+                {#                        <canvas id="myChart" width="400" height="400"></canvas>#}
+                {#                    </div>#}
+                {#                </div>#}
                 <div class="d-flex justify-content-center">
 
                     <!-- Card -->
-                    <div class="card" style="width: 60%; box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);">
+                    <div class="card"
+                         style="width: 60%; box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);">
 
                         <div class="card-body">
-{#                            <p class="text-uppercase small mb-2"><strong>Burndown Chart</strong></p>#}
+                            {#                            <p class="text-uppercase small mb-2"><strong>Burndown Chart</strong></p>#}
                             <h5 class="font-weight-bold mb-0"> Sprint Actual </h5>
                         </div>
 
@@ -51,19 +53,42 @@
                     <!-- Card -->
 
                 </div>
-                </div>
             </div>
         </div>
     </div>
+    </div>
     <script>
+       window.onload = function () {
+            console.log("pk sprint actual ->{{ sprint.pk|safe }} ");
+            console.log("estimacion total us ->{{ sprint.estimacion_total_us |safe }} ");
+            var estimacion_total_us = [];
+            var duracion_sprint = [''];
+            var horas_trabajadas = {{ array_horas_trabajadas | safe }}
+                horas_trabajadas.unshift({{ sprint.estimacion_total_us |safe }})
+            estimacion_total_us.push( {{ sprint.estimacion_total_us |safe }} )
+            dias_totales_sprint = parseInt( Math.round({{ sprint.duracion_estimada_sprint|safe }} * 5 ));
+            promedio = (estimacion_total_us/dias_totales_sprint)
+           console.log(dias_totales_sprint)
+           console.log(promedio)
+            for (var i = 1; i <= dias_totales_sprint; i++) {
+                duracion_sprint.push("Día "+i)
+                recta_ideal = estimacion_total_us[i-1] -  promedio
+                estimacion_total_us.push(recta_ideal)
+
+            }
+            estimacion_total_us.push(0)
+           console.log(estimacion_total_us)
+           console.log(duracion_sprint);
+            {#console.log(horas_trabajadas.reverse());#}
+
         var ctx = document.getElementById('myChart');
         var myChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ["2021/10/12", "2021/10/12", 3, 4, 5, 6],
+                labels: duracion_sprint,
                 datasets: [{
                     label: 'Ideal',
-                    data: [25, 20, 15, 10, 5, 0],
+                    data: estimacion_total_us,
                     borderColor: "#EE6868",
                     backgroundColor: "#EE6868",
                     lineTension: 0,
@@ -71,11 +96,11 @@
                 },
                     {
                         label: 'Actual',
-                        data: [25, 10,10,9,8,8,8,8,8],
+                        data: horas_trabajadas,
                         borderColor: "#03048e",
                         backgroundColor: "#03048e",
                         lineTension: 0,
-                        borderWidth: 1
+                        borderWidth: 3
                     }]
             },
             options: {
@@ -87,6 +112,7 @@
                 }
             }
         });
+               };
 
     </script>
 {% endblock %}

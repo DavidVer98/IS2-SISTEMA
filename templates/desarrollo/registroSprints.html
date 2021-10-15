@@ -24,38 +24,44 @@
                     <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
                 </div>
 
-            <table class="overflow-auto table table-striped table-dark container">
-                            <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Sprint</th>
-                                <th scope="col">Estado</th>
-                                <th scope="col">Opciones</th>
-                            </tr>
-                            </thead>
-                            {% for sprint in sprints %}
-                                <tbody style="text-align: left; ">
-                                <tr>
-                                    <th scope="row">{{ sprint.id }}</th>
-                                    <td>{{ sprint.nombre }}</td>
-                                    <td>{{ sprint.estado }}</td>
-                                    <td>
-                                        <button type="button" class="btn btn-info"
-                                            onclick="location.href='{% url 'registroUserStories' proyecto.id sprint.id%}'">Ingresar
-                                        </button>
-                                    </td>
-                                </tr>
+                <table class="overflow-auto table table-striped table-dark container">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Sprint</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Opciones</th>
+                    </tr>
+                    </thead>
+                    {% for sprint in sprints %}
+                        <tbody style="text-align: left; ">
+                        <tr>
+                            <th scope="row">{{ sprint.id }}</th>
+                            <td>{{ sprint.nombre }}</td>
+                            <td>{{ sprint.estado }}</td>
+                            <td>
+                                <button type="button" class="btn btn-info"
+                                        onclick="location.href='{% url 'registroUserStories' proyecto.id sprint.id %}'">
+                                    Ingresar
+                                </button>
+                                <button type="button" class="btn btn-primary"
+                                        onclick="location.href='{% url 'burndown_chart' proyecto.id sprint.id %}'">
+                                    Gráfico
+                                </button>
+                            </td>
+                        </tr>
 
-                            </tbody>
-                            {% endfor %}
-                        </table>
-                      {% if not sprints.count %}
-                          <p class="text-muted" style="text-align: center; margin-top: 30px"><i class="bi bi-exclamation-triangle"></i>
-                            No hay registros</p>
-                      {% endif %}
-                    </div>
+                        </tbody>
+                    {% endfor %}
+                </table>
+                {% if not sprints.count %}
+                    <p class="text-muted" style="text-align: center; margin-top: 30px"><i
+                            class="bi bi-exclamation-triangle"></i>
+                        No hay registros</p>
+                {% endif %}
             </div>
-
         </div>
+
+    </div>
     </div>
 {% endblock %}
