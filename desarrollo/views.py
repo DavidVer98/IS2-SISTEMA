@@ -29,9 +29,9 @@ def desarrollo(request, proyecto_id):
     """
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     proyecto_actual.iniciar_proyecto()
-    miembro = Miembro.objects.get(miembro = request.user, proyectos=proyecto_actual)
+    miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
     print(miembro.rol)
-    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'miembro':miembro}
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'miembro': miembro}
     return render(request, "desarrollo/desarrollo.html", context)
 
 
@@ -47,7 +47,7 @@ def productBacklog(request, proyecto_id):
     userStory = UserStory.objects.filter(proyecto=proyecto_id, estado_desarrollo=UserStory.EN_PRODUCT_BACKLOG)
     # userStory.order_by('-prioridad')
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
-    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'userStory': userStory, 'miembro':miembro}
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'userStory': userStory, 'miembro': miembro}
     return render(request, "desarrollo/productBacklog.html", context)
 
 
@@ -60,7 +60,7 @@ def crearUserStory(request, proyecto_id):
             ciertos parametros definidos.
     """
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
-    error=False
+    error = False
     form = UserStoryForms(request.POST or None)
     if request.method == "POST":
         if form.is_valid():
@@ -232,6 +232,7 @@ def asignarMiembroUS(request, proyecto_id, user_story_id):
                'miembro': miembro}
     return render(request, "desarrollo/asignarMiembroUS.html", context)
 
+
 @permission_required_or_403('REASIGNAR_MIEMBRO', (Proyecto, 'id', 'proyecto_id'))
 def reasignarMiembroUS(request, proyecto_id, user_story_id):
     """
@@ -332,11 +333,10 @@ def iniciarSprint(request, proyecto_id):
                 error = True
 
         if not error:
-            fecha=proyecto_actual.nombre_proyecto+" Sprint "+datetime.today().strftime('%Y-%m-%d')
+            fecha = proyecto_actual.nombre_proyecto + " Sprint " + datetime.today().strftime('%Y-%m-%d')
             sprint = Sprint.objects.create(nombre=fecha, proyecto=proyecto_actual)
             sprint.estimacion_total_us = user_stories.aggregate(Sum("estimacion")).get('estimacion__sum')
             sprint.duracion_estimada_sprint = proyecto_actual.duracion_semanal_sprint_actual
-
 
             for user_story in user_stories:
                 sprint.user_stories.add(user_story)
@@ -344,7 +344,7 @@ def iniciarSprint(request, proyecto_id):
                 user_story.save()
 
             sprint.save()
-            print("fecha",sprint.fecha_inicio)
+            print("fecha", sprint.fecha_inicio)
             return redirect(reverse('sprintBacklog', kwargs={'proyecto_id': proyecto_id}))
     return redirect(reverse('sprintPlanning', kwargs={'proyecto_id': proyecto_id}))
 
@@ -372,9 +372,9 @@ def terminarSprint(request, proyecto_id):
 
         for user_story in sprint_actual.user_stories.all():
             if user_story.estado_sprint != UserStory.RELEASE:
-                user_story.estado_desarrollo=UserStory.EN_PRODUCT_BACKLOG
-                user_story.prioridad=UserStory.SUPERALTA
-                user_story.estado_sprint=UserStory.TO_DO
+                user_story.estado_desarrollo = UserStory.EN_PRODUCT_BACKLOG
+                user_story.prioridad = UserStory.SUPERALTA
+                user_story.estado_sprint = UserStory.TO_DO
                 user_story.estimacion = 0
                 user_story.miembro_asignado = None
                 user_story.save()
@@ -390,6 +390,7 @@ def terminarSprint(request, proyecto_id):
         sprint_actual.save()
         print("fecha fin", sprint_actual.fecha_fin)
     return redirect(reverse('sprintBacklog', kwargs={'proyecto_id': proyecto_id}))
+
 
 @permission_required_or_403('VER_SPRINT_BACKLOG', (Proyecto, 'id', 'proyecto_id'))
 def sprintBacklog(request, proyecto_id):
@@ -409,6 +410,7 @@ def sprintBacklog(request, proyecto_id):
                'miembro': miembro, 'estimacion_total': int(estimacion_total), 'dias': dias}
 
     return render(request, "desarrollo/sprintBacklog.html", context)
+
 
 @permission_required_or_403('CAMBIO_ESTADO_US', (Proyecto, 'id', 'proyecto_id'))
 def estadoUS(request, proyecto_id):
@@ -435,20 +437,19 @@ def registrarUS(request, proyecto_id, user_story_id):
                Metodo que se utiliza para el registro de user storys nuevos o desechados de anteriores
                sprints
        """
-    user_story = UserStory.objects.get(pk = user_story_id)
-    registro = RegistroUserStory.objects.filter(user_story = user_story)
+    user_story = UserStory.objects.get(pk=user_story_id)
+    registro = RegistroUserStory.objects.filter(user_story=user_story)
     horas_totales = registro.aggregate(Sum("horas_trabajadas")).get('horas_trabajadas__sum')
     contador_registro = None
-    if RegistroUserStory.objects.filter(user_story = user_story).exists():
+    if RegistroUserStory.objects.filter(user_story=user_story).exists():
         print(contador_registro)
         contador_registro = registro.all().last().contador_registro
-
 
     if request.method == "POST":
         form = UserStoryRegistroForms(request.POST or None)
         if form.is_valid():
-            proyecto_actual=Proyecto.objects.get(pk=proyecto_id)
-            sprint=Sprint.objects.get(estado=Sprint.ACTIVO, proyecto=proyecto_actual)
+            proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+            sprint = Sprint.objects.get(estado=Sprint.ACTIVO, proyecto=proyecto_actual)
             form.instance.user_story = user_story
             form.instance.nombre_user_story = user_story.nombre
             form.instance.sprint = sprint
@@ -460,14 +461,15 @@ def registrarUS(request, proyecto_id, user_story_id):
                 form.instance.horas_totales = form.instance.horas_trabajadas
                 form.instance.contador_registro = 1
                 form.instance.usuario = user_story.miembro_asignado.email
-            if(form.instance.usuario==request.user.email):
+            if (form.instance.usuario == request.user.email):
                 form.save()
             return redirect(reverse('sprintBacklog', kwargs={'proyecto_id': proyecto_id}))
     else:
         form = UserStoryRegistroForms()
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
-    miembro = Miembro.objects.get(miembro = request.user, proyectos=proyecto_actual)
-    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'miembro':miembro,"form":form,"user_story":user_story, "contador_registro":contador_registro, "horas_totales":horas_totales}
+    miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'miembro': miembro, "form": form,
+               "user_story": user_story, "contador_registro": contador_registro, "horas_totales": horas_totales}
     return render(request, "desarrollo/userStory/registro.html", context)
 
 
@@ -480,11 +482,12 @@ def registroUSActual(request, proyecto_id, user_story_id):
                   User Story dentro de un sprint
 
     """
-    user_story = UserStory.objects.get(pk = user_story_id)
-    registro = RegistroUserStory.objects.filter(user_story = user_story)
+    user_story = UserStory.objects.get(pk=user_story_id)
+    registro = RegistroUserStory.objects.filter(user_story=user_story)
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
-    context = {"proyecto_id": proyecto_id, 'user_story':user_story,"proyecto": proyecto_actual ,'registro':registro, 'miembro':miembro}
+    context = {"proyecto_id": proyecto_id, 'user_story': user_story, "proyecto": proyecto_actual, 'registro': registro,
+               'miembro': miembro}
 
     return render(request, "desarrollo/userStory/registroUSActual.html", context)
 
@@ -502,9 +505,10 @@ def registroSprints(request, proyecto_id):
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
     sprints = Sprint.objects.filter(proyecto=proyecto_actual)
 
-    nombre='Sprint ' + datetime.today().strftime('%Y-%m-%d')
-    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, "miembro":miembro, "sprints":sprints}
+    nombre = 'Sprint ' + datetime.today().strftime('%Y-%m-%d')
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, "miembro": miembro, "sprints": sprints}
     return render(request, "desarrollo/registroSprints.html", context)
+
 
 @permission_required_or_403('VER_REGISTROS', (Proyecto, 'id', 'proyecto_id'))
 def registroUserStories(request, proyecto_id, sprint_id):
@@ -519,49 +523,106 @@ def registroUserStories(request, proyecto_id, sprint_id):
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
     registros = RegistroUserStory.objects.filter(sprint__id__exact=sprint_id)
-    suma_hora_registros=0
+    suma_hora_registros = 0
     for registro in registros:
-        suma_hora_registros+=registro.horas_trabajadas
-    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, "miembro": miembro, "registros":registros,
-               "suma_hora_registros":suma_hora_registros}
+        suma_hora_registros += registro.horas_trabajadas
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, "miembro": miembro, "registros": registros,
+               "suma_hora_registros": suma_hora_registros}
     return render(request, "desarrollo/registroUserStories.html", context)
 
 
-def burndown_chart(request,proyecto_id,sprint_id ):
-    RegistroUS = RegistroUserStory.objects.filter(sprint= sprint_id)
-
-
-    sprint_actual = Sprint.objects.get(id = sprint_id)
+def burndown_chart(request, proyecto_id, sprint_id):
+    sprint_actual = Sprint.objects.get(id=sprint_id)
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
 
-    miembro = Miembro.objects.get(miembro = request.user, proyectos=proyecto_actual)
+    miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
 
-    registros= RegistroUserStory.objects.filter(sprint= sprint_actual).values('fecha').order_by('fecha').annotate(sum=Sum('horas_trabajadas'))
+    registros = RegistroUserStory.objects.filter(sprint=sprint_actual).values('fecha').order_by('fecha').annotate(
+        sum=Sum('horas_trabajadas'))
 
-    fecha_inicio= sprint_actual.fecha_inicio
-    fecha_actual= datetime.now().date()
-    cantidad= abs(fecha_actual-fecha_inicio).days +1
-    print(cantidad)
+    fecha_inicio = sprint_actual.fecha_inicio
+    fecha_actual = datetime.now().date()
+    cantidad = abs(fecha_actual - fecha_inicio).days + 1
+
     base = datetime.now().date()
     date_list = [base - timedelta(days=x) for x in range(cantidad)]
     diccionario = {}
 
     for i in date_list:
-        diccionario[i]=0
+        diccionario[i] = 0
 
     for date in date_list:
         for registro in registros.all():
-            if registro["fecha"]==date:
-                diccionario[date]+=registro["sum"]
+            if registro["fecha"] == date:
+                diccionario[date] += registro["sum"]
 
-    print("print ",diccionario)
     array_horas_trabajadas = list(diccionario.values())
-    print(array_horas_trabajadas.reverse())
+    array_horas_trabajadas.reverse()
     array_horas_trabajadas[0] = sprint_actual.estimacion_total_us - array_horas_trabajadas[0]
-    # array_horas_trabajadas[0] = sprint_actual.estimacion_total_us
-    for i,index in enumerate(array_horas_trabajadas,start=1):
+
+    for i, index in enumerate(array_horas_trabajadas, start=1):
         if i < len(array_horas_trabajadas):
-            array_horas_trabajadas[i] = array_horas_trabajadas[i-1] - array_horas_trabajadas[i]
-    print(array_horas_trabajadas)
-    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'miembro': miembro, "sprint": sprint_actual, 'array_horas_trabajadas':array_horas_trabajadas}
+            array_horas_trabajadas[i] = array_horas_trabajadas[i - 1] - array_horas_trabajadas[i]
+
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'miembro': miembro, "sprint": sprint_actual,
+               'array_horas_trabajadas': array_horas_trabajadas, 'fecha_actual': fecha_actual}
     return render(request, "desarrollo/graficos/burndown_chart.html", context)
+
+
+def chart_sprint_activo(request, proyecto_id):
+    proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+    miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
+
+    if Sprint.objects.filter(estado="Activo").exists():
+        sprint = Sprint.objects.get(estado="Activo")
+        sprint_id = sprint.pk
+
+        sprint_actual = Sprint.objects.get(id=sprint_id)
+        proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+
+
+        registros = RegistroUserStory.objects.filter(sprint=sprint_actual).values('fecha').order_by('fecha').annotate(
+            sum=Sum('horas_trabajadas'))
+        registros_user = RegistroUserStory.objects.filter(usuario=request.user.email, sprint=sprint_actual).values(
+            'fecha').order_by('fecha').annotate(sum=Sum('horas_trabajadas'))
+
+        fecha_inicio = sprint_actual.fecha_inicio
+        fecha_actual = datetime.now().date()
+        cantidad = abs(fecha_actual - fecha_inicio).days + 1
+        base = datetime.now().date()
+        date_list = [base - timedelta(days=x) for x in range(cantidad)]
+        diccionario = {}
+        diccionario_user_registro = {}
+
+        for i in date_list:
+            diccionario[i] = 0
+            diccionario_user_registro[i] = 0
+
+        for date in date_list:
+            for registro in registros_user.all():
+                if registro["fecha"] == date:
+                    diccionario_user_registro[date] += registro["sum"]
+
+        for date in date_list:
+            for registro in registros.all():
+                if registro["fecha"] == date:
+                    diccionario[date] += registro["sum"]
+
+        array_horas_trabajadas_user = list(diccionario_user_registro.values())
+        array_horas_trabajadas = list(diccionario.values())
+        array_horas_trabajadas_user.reverse()
+        array_horas_trabajadas.reverse()
+        array_horas_trabajadas_user[0] = sprint_actual.estimacion_total_us - array_horas_trabajadas_user[0]
+        array_horas_trabajadas[0] = sprint_actual.estimacion_total_us - array_horas_trabajadas[0]
+
+        for i, index in enumerate(array_horas_trabajadas, start=1):
+            if i < len(array_horas_trabajadas):
+                array_horas_trabajadas[i] = array_horas_trabajadas[i - 1] - array_horas_trabajadas[i]
+                array_horas_trabajadas_user[i] = array_horas_trabajadas_user[i - 1] - array_horas_trabajadas_user[i]
+
+        context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'miembro': miembro, "sprint": sprint_actual,
+                   'array_horas_trabajadas': array_horas_trabajadas, 'fecha_actual': fecha_actual,
+                   'array_horas_trabajadas_user': array_horas_trabajadas_user, 'cantidad': cantidad}
+    else:
+        context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'miembro': miembro}
+    return render(request, "desarrollo/graficos/sprint_activo.html", context)
