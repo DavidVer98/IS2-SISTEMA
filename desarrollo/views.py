@@ -17,6 +17,7 @@ from guardian.decorators import permission_required_or_403
 from django.http import JsonResponse, HttpResponse
 
 from user.models import User
+from user.views import msg3
 
 
 @permission_required_or_403('VER_PROYECTO', (Proyecto, 'id', 'proyecto_id'))
@@ -223,6 +224,7 @@ def asignarMiembroUS(request, proyecto_id, user_story_id):
             user_story_actual.estimacion = 0
             user_story_actual.save()
             estimacion_anterior.save()
+            "mensaje aca sipa"
             return redirect(reverse('sprintPlanning', kwargs={'proyecto_id': proyecto_id}))
     else:
         form = UserStoryMiembroForms(instance=user_story_actual)
@@ -342,7 +344,7 @@ def iniciarSprint(request, proyecto_id):
                 sprint.user_stories.add(user_story)
                 user_story.estado_desarrollo = UserStory.EN_SPRINT_BACKLOG
                 user_story.save()
-
+            msg3(user_stories,proyecto_actual.nombre_proyecto,proyecto_actual.scrum_master.email)
             sprint.save()
             print("fecha", sprint.fecha_inicio)
             return redirect(reverse('sprintBacklog', kwargs={'proyecto_id': proyecto_id}))

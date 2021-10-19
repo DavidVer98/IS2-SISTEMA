@@ -87,6 +87,42 @@ def msg2(email1,nombre,rol):
     smtpserver.sendmail(msg['From'], msg['To'], msg.as_string())
     smtpserver.quit()
 
+def msg3(user_story,nombre,scrum_email):
+    """
+              Metodo para el avisar a los administradores sobre intento de acceso al sistema  18/10/21
+      """
+    # create message object instance
+    listaemail=[]
+    listaemail.append(scrum_email)
+    completado=[]
+    for u in user_story:
+        listaemail.append(u.miembro_asignado.email)
+
+    for u in listaemail:
+        if u not in completado:
+            completado.append(u)
+            msg = MIMEMultipart()
+            if u==scrum_email:
+                message = "El sprint del proyecto " + nombre + " ha sido iniciado"
+            else:
+                message = "El sprint al cual fue asignado del proyecto "+nombre+" ha sido iniciado"
+
+            # setup the parameters of the message
+            # password = os.environ["password_sgp"]
+            password = 'sgp12345'
+            msg['From'] = "sistemagestordeproyectos@gmail.com"
+            msg['To'] = u
+            msg['Subject'] = "Inicio de sprint"
+            # add in the message body
+            msg.attach(MIMEText(message, 'plain'))
+
+            smtpserver = smtplib.SMTP("smtp.gmail.com", 587)
+            smtpserver.ehlo()
+            smtpserver.starttls()
+            smtpserver.ehlo()
+            smtpserver.login(msg['From'], password)
+            smtpserver.sendmail(msg['From'], msg['To'], msg.as_string())
+            smtpserver.quit()
 
 def error_404(request,exception):
     return render(request, 'error/404.html')
