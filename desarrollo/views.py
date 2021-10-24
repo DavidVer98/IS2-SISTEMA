@@ -1,5 +1,6 @@
 # from audioop import reverse
 import json
+from copy import deepcopy
 from datetime import datetime
 
 from datetime import datetime, timedelta
@@ -44,7 +45,7 @@ def productBacklog(request, proyecto_id):
                 se van a utilizar en un sprint
     """
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
-    userStory = UserStory.objects.filter(proyecto=proyecto_id, estado_desarrollo=UserStory.EN_PRODUCT_BACKLOG)
+    userStory = UserStory.objects.filter(proyecto=proyecto_id, estado_desarrollo=UserStory.EN_PRODUCT_BACKLOG).order_by('estado_sprint').reverse()
     # userStory.order_by('-prioridad')
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
     context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'userStory': userStory, 'miembro': miembro}
@@ -327,6 +328,7 @@ def iniciarSprint(request, proyecto_id):
     user_stories = UserStory.objects.filter(proyecto=proyecto_actual, estado_desarrollo=UserStory.EN_SPRINT_PLANNING)
     sprint_activo = UserStory.objects.filter(proyecto=proyecto_actual, estado_desarrollo=UserStory.EN_SPRINT_BACKLOG)
     error = False
+    print(sprint_activo.values())
     if user_stories.exists() and not sprint_activo.exists():
         for user_story in user_stories:
             if user_story.estimacion == 0:
@@ -369,6 +371,19 @@ def terminarSprint(request, proyecto_id):
         sprint_actual.estado = Sprint.FINALIZADO
         sprint_actual.fecha_fin = datetime.now()
         proyecto_actual.duracion_semanal_sprint_actual = 0
+        lista = []
+        for us in sprint_actual.user_stories.all():
+
+            us.save()
+
+            us.pk = None
+            us.estado_desarrollo = UserStory.EN_REGISTRO_SPRINT
+            us.save()
+
+            lista.append(us)
+            print("wat ", lista)
+
+        sprint_actual.copia_user_stories.set(lista)
 
         for user_story in sprint_actual.user_stories.all():
             if user_story.estado_sprint != UserStory.RELEASE:
@@ -384,7 +399,9 @@ def terminarSprint(request, proyecto_id):
                 estimacion.estimacion_scrum = 0
                 estimacion.save()
             else:
-                user_story.delete()
+                #***
+                user_story.estado_desarrollo = UserStory.EN_PRODUCT_BACKLOG
+                user_story.save()
 
         proyecto_actual.save()
         sprint_actual.save()
@@ -441,8 +458,9 @@ def registrarUS(request, proyecto_id, user_story_id):
     registro = RegistroUserStory.objects.filter(user_story=user_story)
     horas_totales = registro.aggregate(Sum("horas_trabajadas")).get('horas_trabajadas__sum')
     contador_registro = None
+    proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+
     if RegistroUserStory.objects.filter(user_story=user_story).exists():
-        print(contador_registro)
         contador_registro = registro.all().last().contador_registro
 
     if request.method == "POST":
@@ -461,11 +479,17 @@ def registrarUS(request, proyecto_id, user_story_id):
                 form.instance.horas_totales = form.instance.horas_trabajadas
                 form.instance.contador_registro = 1
                 form.instance.usuario = user_story.miembro_asignado.email
+            if request.user == proyecto_actual.scrum_master:
+                form.instance.usuario = proyecto_actual.scrum_master.email
+                form.save()
             if (form.instance.usuario == request.user.email):
                 form.save()
             return redirect(reverse('sprintBacklog', kwargs={'proyecto_id': proyecto_id}))
     else:
         form = UserStoryRegistroForms()
+        if request.user == proyecto_actual.scrum_master:
+            form.fields['horas_trabajadas'].disabled = True
+
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
     context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'miembro': miembro, "form": form,
@@ -523,16 +547,19 @@ def registroUserStories(request, proyecto_id, sprint_id):
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
     registros = RegistroUserStory.objects.filter(sprint__id__exact=sprint_id)
+    sprint_id = Sprint.objects.get(pk = sprint_id)
     suma_hora_registros = 0
     for registro in registros:
         suma_hora_registros += registro.horas_trabajadas
     context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, "miembro": miembro, "registros": registros,
-               "suma_hora_registros": suma_hora_registros}
+               "suma_hora_registros": suma_hora_registros, 'sprint_id':sprint_id.pk}
     return render(request, "desarrollo/registroUserStories.html", context)
 
 
 def burndown_chart(request, proyecto_id, sprint_id):
     sprint_actual = Sprint.objects.get(id=sprint_id)
+    for i in sprint_actual.copia_user_stories.all():
+        print(i.miembro_asignado)
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
 
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
@@ -573,8 +600,9 @@ def chart_sprint_activo(request, proyecto_id):
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
 
-    if Sprint.objects.filter(estado="Activo").exists():
-        sprint = Sprint.objects.get(estado="Activo")
+
+    if Sprint.objects.filter(proyecto=proyecto_actual,estado="Activo").exists():
+        sprint = Sprint.objects.get(proyecto=proyecto_actual,estado="Activo")
         sprint_id = sprint.pk
 
         sprint_actual = Sprint.objects.get(id=sprint_id)
@@ -626,3 +654,33 @@ def chart_sprint_activo(request, proyecto_id):
     else:
         context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'miembro': miembro}
     return render(request, "desarrollo/graficos/sprint_activo.html", context)
+
+def historial_sprint(request, proyecto_id, sprint_id):
+    proyecto_actual = Proyecto.objects.get(pk = proyecto_id)
+    sprint_actual = Sprint.objects.get(pk = sprint_id, proyecto =proyecto_actual )
+    proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+    miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
+    print(miembro.rol)
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'miembro': miembro, 'sprint_actual': sprint_actual}
+    return render(request, "desarrollo/hisorial/hisorial_sprint.html", context)
+
+def historial_sprint_backlog(request, proyecto_id, sprint_id):
+    """
+           Vista de sprint backlog:
+            19/09/2021
+            Vista en la cual se listan los user stories que pertenencen al sprint activo.
+    """
+    proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+    estimacion_total = proyecto_actual.duracion_semanal_sprint_actual
+    dias = estimacion_total - int(estimacion_total)
+    dias = round(dias * 5)
+    sprint_actual = Sprint.objects.get(pk = sprint_id, proyecto = proyecto_actual)
+
+
+    user_stories = sprint_actual.copia_user_stories
+    print(user_stories.all())
+    miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, "user_stories": user_stories.all(),
+               'miembro': miembro, 'estimacion_total': int(estimacion_total), 'dias': dias, 'sprint_actual': sprint_actual}
+
+    return render(request, "desarrollo/hisorial/historial_sprint_backlog.html", context)

@@ -3,7 +3,7 @@ from django.urls import path
 from desarrollo.views import desarrollo, productBacklog, crearUserStory, editarUserStory, eliminarUserStory, \
     sprintPlanning, sprint_planning_estado, product_backlog_estado, asignarMiembroUS, planningPoker, sprintBacklog, \
     iniciarSprint, estadoUS, registrarUS, registroUSActual, terminarSprint, reasignarMiembroUS, registroUserStories, \
-    registroSprints, burndown_chart, chart_sprint_activo
+    registroSprints, burndown_chart, chart_sprint_activo, historial_sprint, historial_sprint_backlog
 
 urlpatterns = [
 
@@ -26,9 +26,10 @@ urlpatterns = [
     path('<int:proyecto_id>/desarrollo/productbacklog/<int:user_story_id>/seleccionar/productbacklog', product_backlog_estado, name="product_backlog_estado"),
     path('<int:proyecto_id>/desarrollo/registros', registroSprints, name="registroSprints"),
     path('<int:proyecto_id>/desarrollo/registros/<int:sprint_id>', registroUserStories, name="registroUserStories"),
-    path('<int:proyecto_id>/desarrollo/chart/<int:sprint_id>', burndown_chart, name="burndown_chart"),
+    path('<int:proyecto_id>/desarrollo/historial/chart/<int:sprint_id>', burndown_chart, name="burndown_chart"),
     path('<int:proyecto_id>/desarrollo/chart', chart_sprint_activo, name="chart_sprint_activo"),
-
+    path('<int:proyecto_id>/desarrollo/historial/<int:sprint_id>', historial_sprint, name="historial_sprint"),
+    path('<int:proyecto_id>/desarrollo/historial/sprintBacklog/<int:sprint_id>', historial_sprint_backlog, name="historial_sprint_backlog"),
 ]
 
 
