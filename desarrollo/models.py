@@ -47,11 +47,13 @@ class UserStory(models.Model):
     EN_PRODUCT_BACKLOG = 'EN PRODUCT BACKLOG'
     EN_SPRINT_BACKLOG='EN SPRINT BACKLOG'
     EN_SPRINT_PLANNING='EN SPRINT PLANNING'
+    EN_REGISTRO_SPRINT= 'EN REGISTRO SPRINT'
 
     ESTADO_DESARROLLO_USERSTORY_CHOICES = [
         ( EN_PRODUCT_BACKLOG, 'EN PRODUCT BACKLOG'),
         (EN_SPRINT_BACKLOG, 'EN SPRINT BACKLOG'),
         (EN_SPRINT_PLANNING, 'EN SPRINT PLANNING'),
+        (EN_REGISTRO_SPRINT, 'EN REGISTRO SPRINT'),
     ]
 
 
@@ -101,6 +103,7 @@ class Sprint(models.Model):
     fecha_inicio = models.DateField(default=now, blank=True)
     fecha_fin = models.DateField(blank=True, null=True)
     user_stories = models.ManyToManyField(UserStory)
+    copia_user_stories = models.ManyToManyField(UserStory,related_name='user_story_content_type',blank=True)
     duracion_estimada_sprint = models.FloatField(default=0,blank=True, null=True)
     estimacion_total_us = models.FloatField(default=0,blank=True, null=True)
 
