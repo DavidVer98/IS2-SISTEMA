@@ -1,0 +1,146 @@
+{% extends "baseDesarrollo.html" %}
+
+{% block head_content %}
+    <title>Hisorial</title>
+{% endblock %}
+{% block container %}
+    <style>
+
+        .bg-light-primary {
+        {#background-color: #f9fbff!important;#}
+        }
+
+        .pb-6, .py-6 {
+            padding-bottom: 3.75rem !important;
+        }
+
+        .pt-6, .py-6 {
+            padding-top: 3.75rem !important;
+        }
+
+        .hover-scale, .hover-scale:hover {
+            transition: transform .2s ease-in;
+        }
+
+        .card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            word-wrap: break-word;
+            background-color: #fff;
+            background-clip: border-box;
+            border: 1px solid rgba(0, 0, 0, .125);
+            border-radius: .4rem;
+            box-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
+        }
+
+        .card-body {
+            flex: 1 1 auto;
+            min-height: 1px;
+            padding: 1.25rem;
+        }
+
+    </style>
+
+    <div class="content-container">
+        <div class="container-fluid" style="margin-top: 50px">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'desarrollo' proyecto_id %}">Desarrollo</a></li>
+                     <li class="breadcrumb-item"><a href="{% url 'registroSprints' proyecto_id  %}">Registro de Sprint</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Historial</li>
+                </ol>
+            </nav>
+            <div class="jumbotron">
+                <div class="row">
+                    <div class="col-10 .col-md-10">
+                        <h1><i class="fa fa-bullhorn" aria-hidden="true"></i> Historial del Sprint</h1>
+                    </div>
+                    <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
+
+
+                    <section class="py-6 bg-light-primary">
+                        <div class="container">
+                            <div class="row justify-content-center text-center mb-4">
+                                <div class="col-xl-6 col-lg-8 col-sm-10">
+                                    <h2 class="font-weight-bold"
+                                        style="text-transform: uppercase;">{{ sprint_actual.nombre }} </h2>
+                                    <p class="text-muted mb-0">Fecha de Inicio: {{ sprint_actual.fecha_inicio }}</p>
+                                </div>
+                            </div>
+
+                            <div class="row row-cols-lg-3 row-cols-md-2 row-cols-1 text-center justify-content-center px-xl-6 aos-init aos-animate"
+                                 data-aos="fade-up">
+                                <div class="col my-3">
+                                    <a href="{% url 'registroUserStories' proyecto.id sprint_actual.id %}" style="text-decoration:none" >
+                                        <div class="card border-hover-primary hover-scale">
+                                            <div class="card-body">
+                                                <div class="text-primary mb-5">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"
+                                                         fill="currentColor" class="bi bi-archive" viewBox="0 0 16 16">
+                                                        <path d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 12.5V5a1 1 0 0 1-1-1V2zm2 3v7.5A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5H2zm13-3H1v2h14V2zM5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
+                                                    </svg>
+                                                </div>
+                                                <h6 class="font-weight-bold mb-3" style="margin-top: -15px">
+                                                    Registro</h6>
+                                                <p class="text-muted mb-0" style="margin-top: -5px">Registro de los User
+                                                    Stories</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col my-3">
+                                    <a href="{% url 'historial_sprint_backlog' proyecto.id sprint_actual.id %}" style="text-decoration:none" >
+                                        <div class="card border-hover-primary hover-scale">
+                                            <div class="card-body">
+                                                <div class="text-primary mb-5">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"
+                                                         fill="currentColor" class="bi bi-card-checklist"
+                                                         viewBox="0 0 16 16">
+                                                        <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
+                                                        <path d="M7 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0zM7 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0z"/>
+                                                    </svg>
+                                                </div>
+                                                <h6 class="font-weight-bold mb-3" style="margin-top: -15px">Sprint
+                                                    Backlog</h6>
+                                                <p class="text-muted mb-0">Tabla Kanban</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col my-3">
+                                    <a href="{% url 'burndown_chart' proyecto.id sprint_actual.id %}" style="text-decoration:none" >
+                                        <div class="card border-hover-primary hover-scale">
+                                            <div class="card-body">
+                                                <div class="text-primary mb-5">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"
+                                                         fill="currentColor" class="bi bi-clipboard-data"
+                                                         viewBox="0 0 16 16">
+                                                        <path d="M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0v-1zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0V7zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0V9z"/>
+                                                        <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                                                        <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                                                    </svg>
+                                                </div>
+                                                <h6 class="font-weight-bold mb-3" style="margin-top: -15px">Gráfico</h6>
+                                                <p class="text-muted mb-0">Burndownchart </p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </section>
+
+
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
