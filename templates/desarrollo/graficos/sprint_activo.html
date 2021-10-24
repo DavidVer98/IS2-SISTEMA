@@ -23,8 +23,12 @@
                 <div class="col-12 .col-md-12" style="margin-top: -10px">
                     <div class="row">
                         <div class="col-sm-9 col-lg-7">
-                            <h1><i class="bi bi-clipboard-data"></i> Burndown Chart - <span class="text-muted"
-                                                                                            style="font-size:35px"> {{ sprint.nombre }}</span>
+                            <h1><i class="bi bi-clipboard-data"></i> Burndown Chart -
+                                {% if sprint.estado == 'Activo' %}
+                                    <span class="text-muted" style="font-size:35px"> {{ sprint.nombre }}</span>
+                                {% else %}
+                                    <span class="text-muted" style="font-size:35px"> <i class="bi bi-exclamation-diamond" style="color: #545b62"></i>  No hay Sprint Activo </span>
+                                {% endif %}
                             </h1>
                         </div>
                         <div class="col-sm-12 col-lg-5" style="text-align: end">
@@ -38,7 +42,7 @@
                     </div>
                 </div>
                 <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
-                <div >
+                <div>
                     <div class="row">
                         <div class="col-sm-12 col-lg-7">
                             <div class="card"
@@ -67,20 +71,41 @@
                                 <hr class="my-0">
 
                                 <div class="card-body">
-                                    <canvas id="myChart"></canvas>
+                                    {% if sprint.estado == 'Activo' %}
+                                        <canvas id="myChart"></canvas>
+                                    {% else %}
+                                        <h4 style="text-align: center; color: gray"><i class="fa fa-spinner fa-pulse fa-1   x fa-fw"></i><i> No se encontrarón resultados</i></h4>
+                                        <hr style="width:50%; margin-left:25% !important; margin-right:25% !important;" />
+                                        {% load static %}
+                                        <img src="{% static 'img/search.png' %}"
+                                             style="width: 40%;  display: block;margin-left: auto;margin-right: auto;"
+                                             alt="">
+                                    {% endif %}
                                 </div>
 
                             </div>
                         </div>
 
                         <div class="col-sm-12 col-lg-5   " style="margin-top: 10px">
-                            <dvi class="card" style="width: 90%; box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);">
+                            <div class="card" style="width: 90%; box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);">
                                 <div class="card-header">
                                     <h5 class="font-weight-bold mb-0"
                                         style="font-family: Arial; color: #545b62 ">Registro</h5>
                                 </div>
-                                <canvas id="myChart2" width="400" height="200"></canvas>
-                            </dvi>
+                                <div class="card-body">
+                                      {% if sprint.estado == 'Activo' %}
+                                        <canvas id="myChart2" width="400" height="200"></canvas>
+                                    {% else %}
+                                        <h4 style="text-align: center; color: gray"><i class="fa fa-spinner fa-pulse fa-1   x fa-fw"></i><i> No se encontrarón resultados</i></h4>
+                                        <hr style="width:50%; margin-left:25% !important; margin-right:25% !important;" />
+                                        {% load static %}
+                                        <img src="{% static 'img/chart_registro.png' %}"
+                                             style="width: 40%;  display: block;margin-left: auto;margin-right: auto;"
+                                             alt="">
+                                    {% endif %}
+                                </div>
+
+                            </div>
                         </div>
 
                     </div>
@@ -96,10 +121,11 @@
             var estimacion_total_us = [];
             var duracion_sprint = [''];
             var dias_trabajados = [''];
-            var horas_trabajadas ={{ array_horas_trabajadas | safe }}
+            var horas_trabajadas =
+            {{ array_horas_trabajadas | safe }}
             var horas_trabajadas_user = {{ array_horas_trabajadas_user | safe }}
                 horas_trabajadas_user.unshift({{ sprint.estimacion_total_us |safe }})
-                horas_trabajadas.unshift({{ sprint.estimacion_total_us |safe }})
+            horas_trabajadas.unshift({{ sprint.estimacion_total_us |safe }})
             estimacion_total_us.push({{ sprint.estimacion_total_us |safe }})
             dias_totales_sprint = parseInt(Math.round({{ sprint.duracion_estimada_sprint|safe }} * 5)
         )

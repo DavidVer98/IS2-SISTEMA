@@ -40,13 +40,17 @@
                             <td>{{ sprint.nombre }}</td>
                             <td>{{ sprint.estado }}</td>
                             <td>
+{#                                <button type="button" class="btn btn-info"#}
+{#                                        onclick="location.href='{% url 'registroUserStories' proyecto.id sprint.id %}'">#}
+{#                                    Ingresar#}
+{#                                </button>#}
+{#                                <button type="button" class="btn btn-primary"#}
+{#                                        onclick="location.href='{% url 'burndown_chart' proyecto.id sprint.id %}'">#}
+{#                                    Gráfico#}
+{#                                </button>#}
                                 <button type="button" class="btn btn-info"
-                                        onclick="location.href='{% url 'registroUserStories' proyecto.id sprint.id %}'">
-                                    Ingresar
-                                </button>
-                                <button type="button" class="btn btn-primary"
-                                        onclick="location.href='{% url 'burndown_chart' proyecto.id sprint.id %}'">
-                                    Gráfico
+                                        onclick="location.href='{% url 'historial_sprint' proyecto.id sprint.id %}'">
+                                    <i class="bi bi-journals"></i> Historial
                                 </button>
                             </td>
                         </tr>
