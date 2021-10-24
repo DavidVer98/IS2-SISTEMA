@@ -300,5 +300,11 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
     <script src="http://SortableJS.github.io/Sortable/Sortable.js"></script>
+    <script>
+     window.onload = function () {
+         var someVar = {{ registroUS| safe }};
+         console.log(someVar + 1)
+     }
+    </script>
     <script src="{% static 'js/main.js' %}"></script>
 {% endblock %}
