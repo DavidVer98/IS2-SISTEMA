@@ -357,11 +357,21 @@ def cancelarProyecto(request, proyecto_id):
         Vista utilizada para cancelar un proyecto.
         Solicita el id del proyecto
     """
-    print(proyecto_id)
+
     proyecto = Proyecto.objects.get(id=proyecto_id)
     if proyecto.estado != proyecto.CANCELADO:
         proyecto.estado = proyecto.CANCELADO
+
+        miembros_proyecto = Miembro.objects.filter(proyectos__pk=proyecto_id)
+        rol_solo_visualizacion = Rol.objects.get(group__name='Product Owner'+str(proyecto_id))
+
+        for miembro in miembros_proyecto.all():
+            miembro.miembro.groups.remove(miembro.rol.group)
+            miembro.miembro.groups.add(rol_solo_visualizacion.group)
+
         proyecto.save()
+
+
     return redirect("/home/proyectos/")
 
 @permission_required_or_403('CANCELAR_PROYECTO', (Proyecto, 'id', 'proyecto_id'))

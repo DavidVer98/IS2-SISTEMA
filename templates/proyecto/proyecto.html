@@ -27,7 +27,7 @@
                     <i class="fa fa-briefcase" aria-hidden="true"></i>Proyecto
                 </a>
             </li>
-            {% if proyecto.estado == 'ACTIVO' %}
+            {% if proyecto.estado == 'ACTIVO' or proyecto.estado == 'CANCELADO'%}
                 <li>
                     <a href="{% url 'desarrollo' proyecto_id=proyecto_id %}">
                         <i class="fa fa-align-right" aria-hidden="true"></i>Desarrollo

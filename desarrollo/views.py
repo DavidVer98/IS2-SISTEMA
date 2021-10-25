@@ -30,7 +30,6 @@ def desarrollo(request, proyecto_id):
         un proyecto.
     """
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
-    proyecto_actual.iniciar_proyecto()
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
     print(miembro.rol)
     context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'miembro': miembro}
