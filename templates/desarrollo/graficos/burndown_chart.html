@@ -82,7 +82,7 @@
             var horas_trabajadas = {{ array_horas_trabajadas | safe }}
                 horas_trabajadas.unshift({{ sprint.estimacion_total_us |safe }})
             estimacion_total_us.push({{ sprint.estimacion_total_us |safe }})
-            dias_totales_sprint = parseInt(Math.round({{ sprint.duracion_estimada_sprint|safe }} * 5)
+            dias_totales_sprint = parseInt(Math.round({{ sprint.duracion_estimada_sprint|safe }})
         )
             ;
             promedio = (estimacion_total_us / dias_totales_sprint)

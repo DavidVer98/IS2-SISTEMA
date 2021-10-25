@@ -143,6 +143,7 @@ def sprintPlanning(request, proyecto_id):
                 Vista en la cual se lleva a cabo la planeacion de un sprint, asignando
                 cada user story a un miembro y estimando la duracion de este.
     """
+    import math
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     user_stories = UserStory.objects.filter(estado_desarrollo=UserStory.EN_SPRINT_PLANNING, proyecto=proyecto_id)
     estimacion_total = user_stories.aggregate(Sum("estimacion")).get('estimacion__sum')
@@ -150,13 +151,15 @@ def sprintPlanning(request, proyecto_id):
 
     miembros = Miembro.objects.filter(miembro_id__in=user_stories.values("miembro_asignado_id"),
                                       proyectos_id__exact=proyecto_id)
-    capacidad_miembros = miembros.aggregate(Sum("produccion_por_semana")).get('produccion_por_semana__sum')
+    capacidad_miembros = miembros.aggregate(Sum("produccion_diaria")).get(
+        'produccion_diaria__sum')
+    print(proyecto_actual.duracion_dias_sprint,"hola")
     if not (capacidad_miembros is None or capacidad_miembros == 0):
-        fecha_fin = estimacion_total / capacidad_miembros
-        proyecto_actual.duracion_semanal_sprint_actual = fecha_fin
+        capacidad_miembros *= proyecto_actual.duracion_dias_sprint
+        fecha_fin = estimacion_total / capacidad_miembros * proyecto_actual.duracion_dias_sprint
+        proyecto_actual.duracion_dias_sprint_actual = fecha_fin
         proyecto_actual.save()
-        dias = fecha_fin - int(fecha_fin)
-        dias = round(dias * 5)
+        dias = math.ceil(fecha_fin)
     else:
         fecha_fin = 0
         dias = 0
@@ -339,7 +342,7 @@ def iniciarSprint(request, proyecto_id):
             fecha = proyecto_actual.nombre_proyecto + " Sprint " + datetime.today().strftime('%Y-%m-%d')
             sprint = Sprint.objects.create(nombre=fecha, proyecto=proyecto_actual)
             sprint.estimacion_total_us = user_stories.aggregate(Sum("estimacion")).get('estimacion__sum')
-            sprint.duracion_estimada_sprint = proyecto_actual.duracion_semanal_sprint_actual
+            sprint.duracion_estimada_sprint = proyecto_actual.duracion_dias_sprint_actual
 
             for user_story in user_stories:
                 sprint.user_stories.add(user_story)
@@ -371,7 +374,7 @@ def terminarSprint(request, proyecto_id):
 
         sprint_actual.estado = Sprint.FINALIZADO
         sprint_actual.fecha_fin = datetime.now()
-        proyecto_actual.duracion_semanal_sprint_actual = 0
+        proyecto_actual.duracion_dias_sprint_actual = 0
         lista = []
         for us in sprint_actual.user_stories.all():
 
@@ -418,7 +421,7 @@ def sprintBacklog(request, proyecto_id):
             Vista en la cual se listan los user stories que pertenencen al sprint activo.
     """
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
-    estimacion_total = proyecto_actual.duracion_semanal_sprint_actual
+    estimacion_total = proyecto_actual.duracion_dias_sprint_actual
     dias = estimacion_total - int(estimacion_total)
     dias = round(dias * 5)
 
@@ -690,7 +693,7 @@ def historial_sprint_backlog(request, proyecto_id, sprint_id):
             Vista en la cual se listan los user stories que pertenencen al sprint activo.
     """
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
-    estimacion_total = proyecto_actual.duracion_semanal_sprint_actual
+    estimacion_total = proyecto_actual.duracion_dias_sprint_actual
     dias = estimacion_total - int(estimacion_total)
     dias = round(dias * 5)
     sprint_actual = Sprint.objects.get(pk = sprint_id, proyecto = proyecto_actual)
