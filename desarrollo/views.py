@@ -582,11 +582,16 @@ def burndown_chart(request, proyecto_id, sprint_id):
         sum=Sum('horas_trabajadas'))
 
     fecha_inicio = sprint_actual.fecha_inicio
-    fecha_actual = datetime.now().date()
-    cantidad = abs(fecha_actual - fecha_inicio).days + 1
+    fecha_actual=datetime.now().date()
 
-    base = datetime.now().date()
-    date_list = [base - timedelta(days=x) for x in range(cantidad)]
+    if sprint_actual.fecha_fin is None:
+        fecha_fin = fecha_actual
+    else:
+        fecha_fin = sprint_actual.fecha_fin
+
+    cantidad = abs(fecha_fin - fecha_inicio).days + 1
+
+    date_list = [fecha_fin - timedelta(days=x) for x in range(cantidad)]
     diccionario = {}
 
     for i in date_list:
