@@ -18,7 +18,7 @@ from guardian.decorators import permission_required_or_403
 from django.http import JsonResponse, HttpResponse
 
 from user.models import User
-from user.views import msg3
+from user.views import msg3, msg4
 
 
 @permission_required_or_403('VER_PROYECTO', (Proyecto, 'id', 'proyecto_id'))
@@ -443,6 +443,19 @@ def estadoUS(request, proyecto_id):
         estadoUS = received_json_data['estado']
         userstory_pk = received_json_data['us_id']
         user_story = UserStory.objects.get(pk=userstory_pk)
+
+        sprint = Sprint.objects.get(estado=Sprint.ACTIVO)
+        registro = RegistroUserStory.objects.filter(user_story=user_story, sprint=sprint)
+        ultimoreg = registro.all().last()
+        proyecto = Proyecto.objects.get(id=proyecto_id)
+
+        if estadoUS == "RELEASE":
+            if ultimoreg.usuario==proyecto.scrum_master.email:
+                msg4(user_story.miembro_asignado.email, user_story.miembro_asignado.username, ultimoreg.detalles,user_story.nombre, proyecto.nombre_proyecto,True)
+        elif estadoUS != "QA" and user_story.estado_sprint =="QA":
+            if ultimoreg.usuario==proyecto.scrum_master.email:
+                msg4(user_story.miembro_asignado.email, user_story.miembro_asignado.username, ultimoreg.detalles,user_story.nombre, proyecto.nombre_proyecto,False)
+
         user_story.estado_sprint = estadoUS
         user_story.save()
     return render(request, 'home/index.html')
