@@ -157,4 +157,8 @@ const estado = function estado(evt, estado) {
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('X-CSRFToken', token)
     xhr.send(JSON.stringify({"us_id": evt.item.attributes['data-id'].value, "estado": estado}));
+    setTimeout(function() {
+        console.log( location.reload())
+    }, 500);
+
 }
