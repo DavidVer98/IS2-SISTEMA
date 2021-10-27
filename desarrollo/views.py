@@ -420,10 +420,12 @@ def sprintBacklog(request, proyecto_id):
             19/09/2021
             Vista en la cual se listan los user stories que pertenencen al sprint activo.
     """
+    import math
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     estimacion_total = proyecto_actual.duracion_dias_sprint_actual
-    dias = estimacion_total - int(estimacion_total)
-    dias = round(dias * 5)
+    sprint_actual = Sprint.objects.get(estado= Sprint.ACTIVO)
+    dias = math.ceil(sprint_actual.duracion_estimada_sprint)
+
 
     user_stories = UserStory.objects.filter(proyecto=proyecto_actual, estado_desarrollo=UserStory.EN_SPRINT_BACKLOG)
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
@@ -472,12 +474,14 @@ def registrarUS(request, proyecto_id, user_story_id):
                sprints
        """
     user_story = UserStory.objects.get(pk=user_story_id)
-    registro = RegistroUserStory.objects.filter(user_story=user_story)
+    sprint_actual = Sprint.objects.get(estado=Sprint.ACTIVO)
+    registro = RegistroUserStory.objects.filter(user_story=user_story, sprint= sprint_actual)
     horas_totales = registro.aggregate(Sum("horas_trabajadas")).get('horas_trabajadas__sum')
     contador_registro = None
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
 
-    if RegistroUserStory.objects.filter(user_story=user_story).exists():
+
+    if RegistroUserStory.objects.filter(user_story=user_story,sprint = sprint_actual).exists():
         contador_registro = registro.all().last().contador_registro
 
     if request.method == "POST":
@@ -523,8 +527,9 @@ def registroUSActual(request, proyecto_id, user_story_id):
                   User Story dentro de un sprint
 
     """
+    sprint_actual = Sprint.objects.get(estado=Sprint.ACTIVO)
     user_story = UserStory.objects.get(pk=user_story_id)
-    registro = RegistroUserStory.objects.filter(user_story=user_story)
+    registro = RegistroUserStory.objects.filter(user_story=user_story,  sprint = sprint_actual)
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
     context = {"proyecto_id": proyecto_id, 'user_story': user_story, "proyecto": proyecto_actual, 'registro': registro,
