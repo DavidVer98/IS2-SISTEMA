@@ -450,19 +450,42 @@ def estadoUS(request, proyecto_id):
         user_story = UserStory.objects.get(pk=userstory_pk)
 
         sprint = Sprint.objects.get(estado=Sprint.ACTIVO)
-        registro = RegistroUserStory.objects.filter(user_story=user_story, sprint=sprint)
-        ultimoreg = registro.all().last()
         proyecto = Proyecto.objects.get(id=proyecto_id)
+        registro = RegistroUserStory.objects.filter(user_story=user_story, sprint=sprint, usuario=proyecto.scrum_master.email)
+        ultimoreg = registro.all().last()
+        # print(registro.exists(), "eee")
 
-        if estadoUS == "RELEASE":
+        if estadoUS == "RELEASE" and registro.exists():
+            # print(registro, "eee")
             if ultimoreg.usuario==proyecto.scrum_master.email:
                 msg4(user_story.miembro_asignado.email, user_story.miembro_asignado.username, ultimoreg.detalles,user_story.nombre, proyecto.nombre_proyecto,True)
-        elif estadoUS != "QA" and user_story.estado_sprint =="QA":
+                user_story.estado_sprint = estadoUS
+                user_story.save()
+                return render(request, 'home/index.html')
+
+        elif estadoUS != "QA" and user_story.estado_sprint =="QA" and registro.exists():
+            # print("entro?")
             if ultimoreg.usuario==proyecto.scrum_master.email:
                 msg4(user_story.miembro_asignado.email, user_story.miembro_asignado.username, ultimoreg.detalles,user_story.nombre, proyecto.nombre_proyecto,False)
+                user_story.estado_sprint = estadoUS
+                user_story.save()
+                return render(request, 'home/index.html')
+        elif user_story.estado_sprint =="DONE" and (estadoUS == "DOING" or estadoUS == "TO DO") and not (registro.exists()):
+            response = HttpResponse('Erro_400_bat')
+            response.status_code = 400  # sample status code
+            return response
+        elif user_story.estado_sprint =="DONE" and estadoUS == "DONE":
+            # print("AAA???")
+            response = HttpResponse('Erro_400_bat')
+            response.status_code = 400  # sample status code
+            return response
+        elif estadoUS == "RELEASE" and not (registro.exists()):
+            response = HttpResponse('Erro_400_bat')
+            response.status_code = 400  # sample status code
+            return response
+    user_story.estado_sprint = estadoUS
+    user_story.save()
 
-        user_story.estado_sprint = estadoUS
-        user_story.save()
     return render(request, 'home/index.html')
 
 

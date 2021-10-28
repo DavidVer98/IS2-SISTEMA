@@ -253,7 +253,7 @@
                         <div class="card-header">
                             <h6 class="text-muted">RELEASE</h6>
                         </div>
-                        <div class="card-body hide-scroll" id="RELEASE" style="height: 560px">
+                        <div class="card-body hide-scroll divider" id="RELEASE" style="height: 560px; opacity: 0.7;">
                             {% for us in user_stories %}
                                 {% if us.estado_sprint == 'RELEASE' %}
                                     <div class="card" data-id="{{ us.pk }}">
@@ -283,7 +283,7 @@
                                                  class="btn btn-light btn-sm "
                                                  style=""><i class=" bi bi-bookmarks" style=""></i> </a>
                                             | <a href="{% url 'reasignarMiembroUS' proyecto_id us.pk  %}"
-                                                 class="btn btn-light btn-sm  {% if request.user != proyecto.scrum_master %} disabled{% endif %}"
+                                                 class="btn btn-light btn-sm   disabled"
                                                  style=""><i class="bi bi-pencil"></i> </a>
                                         </div>
                                     </div>
@@ -300,6 +300,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
     <script src="http://SortableJS.github.io/Sortable/Sortable.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
      window.onload = function () {
          {#var someVar = {{ registroUS| safe }};#}
