@@ -25,6 +25,7 @@ class Rol(models.Model):
         ("CREAR_REGISTRO_US"),
         ("CAMBIO_ESTADO_US"),
         ("VER_REGISTRO_US"),
+        ("VER_BURNDOWNCHART"),
 
     ]
     productowner_perm = [
@@ -34,6 +35,7 @@ class Rol(models.Model):
         ("VER_PRODUCT_BACKLOG"),
         ("VER_SPRINT_BACKLOG"),
         ("VER_REGISTROS"),
+        ("VER_BURNDOWNCHART"),
 
     ]
     def __str__(self):
@@ -201,6 +203,7 @@ class Proyecto(models.Model):
             ("CREAR_REGISTRO_US", "Puede crear registros de user story"),
             ("CAMBIO_ESTADO_US", "Puede cambiar los estados de us en la tabla kanban"),
 
+            ("VER_BURNDOWNCHART", "Puede ver los graficos generados en los sprints"),
             ("VER_REGISTROS", "Puede ver todos los registros creados en un proyecto"),
         ]
 

@@ -38,6 +38,7 @@ permissions = [
     ("CREAR_REGISTRO_US", "Puede crear registros de user story"),
     ("CAMBIO_ESTADO_US", "Puede cambiar los estados de us en la tabla kanban"),
 
+    ("VER_BURNDOWNCHART", "Puede ver los graficos generados en los sprints"),
     ("VER_REGISTROS", "Puede ver todos los registros creados en un proyecto"),
 ]
 
