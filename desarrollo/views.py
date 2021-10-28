@@ -45,12 +45,13 @@ def productBacklog(request, proyecto_id):
                 se van a utilizar en un sprint
     """
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
-    userStory = UserStory.objects.filter(proyecto=proyecto_id, estado_desarrollo=UserStory.EN_PRODUCT_BACKLOG).order_by('estado_sprint').reverse()
-    userStoryActivos = UserStory.objects.filter(proyecto=proyecto_id, estado_desarrollo=UserStory.EN_SPRINT_BACKLOG).order_by('estado_sprint').reverse()
-    # userStory.order_by('-prioridad')
+    userStory = UserStory.objects.filter(proyecto=proyecto_id, estado_desarrollo=UserStory.EN_PRODUCT_BACKLOG)
+    userStoryActivos = UserStory.objects.filter(proyecto=proyecto_id, estado_desarrollo=UserStory.EN_SPRINT_BACKLOG)
+    userStoryEliminados = UserStory.objects.filter(proyecto=proyecto_id,estado_desarrollo=UserStory.ELIMINADO)
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
 
-    userStor_general = userStory | userStoryActivos
+    userStor_general = userStory | userStoryActivos | userStoryEliminados
+    userStor_general.order_by('-prioridad')
 
     context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'userStory': userStor_general, 'miembro': miembro}
     return render(request, "desarrollo/productBacklog.html", context)
@@ -134,8 +135,13 @@ def eliminarUserStory(request, proyecto_id, user_story_id):
                 19/09/2021
                 Vista en la cual se permite la eliminacion de user stories
     """
+    registros = RegistroUserStory.objects.filter(user_story__pk =  user_story_id)
     user_story = UserStory.objects.get(pk=user_story_id)
-    user_story.delete()
+    if registros.exists():
+        user_story.estado_desarrollo = UserStory.ELIMINADO
+        user_story.save()
+    else:
+        user_story.delete()
     return redirect(reverse('productBacklog', kwargs={'proyecto_id': proyecto_id}))
 
 
@@ -455,11 +461,14 @@ def estadoUS(request, proyecto_id):
 
         sprint = Sprint.objects.get(estado=Sprint.ACTIVO)
         proyecto = Proyecto.objects.get(id=proyecto_id)
-        registro = RegistroUserStory.objects.filter(user_story=user_story, sprint=sprint, usuario=proyecto.scrum_master.email)
+        registro = RegistroUserStory.objects.filter(user_story=user_story, sprint=sprint, usuario=proyecto.scrum_master.email) #registroScrum
+        registroUser = RegistroUserStory.objects.filter(user_story=user_story, sprint=sprint,
+                                                    usuario=request.user.email)  # registroUser
         ultimoreg = registro.all().last()
         # print(registro.exists(), "eee")
+        print(registroUser.exists(), "eee")
 
-        if estadoUS == "RELEASE" and registro.exists():
+        if estadoUS == "RELEASE" and user_story.estado_sprint =="QA" and registro.exists(): #[A] QA a RELEASE
             # print(registro, "eee")
             if ultimoreg.usuario==proyecto.scrum_master.email:
                 msg4(user_story.miembro_asignado.email, user_story.miembro_asignado.username, ultimoreg.detalles,user_story.nombre, proyecto.nombre_proyecto,True)
@@ -467,25 +476,41 @@ def estadoUS(request, proyecto_id):
                 user_story.save()
                 return render(request, 'home/index.html')
 
-        elif estadoUS != "QA" and user_story.estado_sprint =="QA" and registro.exists():
+        elif estadoUS != "QA" and (estadoUS == "DOING" or estadoUS == "TO DO") and user_story.estado_sprint =="QA" and registro.exists():    #[R] QA a TO DO, DOING
             # print("entro?")
             if ultimoreg.usuario==proyecto.scrum_master.email:
                 msg4(user_story.miembro_asignado.email, user_story.miembro_asignado.username, ultimoreg.detalles,user_story.nombre, proyecto.nombre_proyecto,False)
                 user_story.estado_sprint = estadoUS
                 user_story.save()
                 return render(request, 'home/index.html')
-        elif user_story.estado_sprint =="DONE" and (estadoUS == "DOING" or estadoUS == "TO DO") and not (registro.exists()):
+        elif user_story.estado_sprint =="QA" and estadoUS == "DONE" : #[E] QA a DONE
             response = HttpResponse('Erro_400_bat')
             response.status_code = 400  # sample status code
             return response
-        elif user_story.estado_sprint =="DONE" and estadoUS == "DONE":
+        elif user_story.estado_sprint =="QA" and  (estadoUS == "DOING" or estadoUS == "TO DO") and not(registro.exists()) :#[E-R] QA a DOING, TO DO
             # print("AAA???")
             response = HttpResponse('Erro_400_bat')
             response.status_code = 400  # sample status code
             return response
-        elif estadoUS == "RELEASE" and not (registro.exists()):
+        elif estadoUS == "RELEASE" and not (registro.exists()): #[E-A] QA a RELEASE
             response = HttpResponse('Erro_400_bat')
             response.status_code = 400  # sample status code
+            return response
+        elif estadoUS == "DONE" and  user_story.estado_sprint =="TO DO": #[E] TO DO a DONE
+            response = HttpResponse('Erro_400_bat')
+            response.status_code = 400  # sample status code
+            return response
+        elif estadoUS == "TO DO" and  user_story.estado_sprint =="DOING" and registroUser.exists(): #[E] DOING a TO DO
+            response = HttpResponse('Erro_400_bat')
+            response.status_code = 408  # sample status code
+            return response
+        elif estadoUS == "DONE" and  user_story.estado_sprint =="DOING" and not (registroUser.exists()): #[E] DOING a DONE
+            response = HttpResponse('Erro_400_bat')
+            response.status_code = 400  # sample status code
+            return response
+        elif estadoUS == "RELEASE" and  user_story.estado_sprint =="DONE" : #[E] DONE a RELEASE
+            response = HttpResponse('Erro_400_bat')
+            response.status_code = 408  # sample status code
             return response
     user_story.estado_sprint = estadoUS
     user_story.save()
