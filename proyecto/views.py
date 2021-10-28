@@ -8,6 +8,7 @@ from guardian.mixins import LoginRequiredMixin, PermissionListMixin
 from guardian.shortcuts import assign_perm, get_group_perms
 import requests
 
+from desarrollo.models import UserStory
 from desarrollo.views import desarrollo
 from proyecto.models import Proyecto
 
@@ -306,8 +307,13 @@ def eliminarmiembro(request, proyecto_id, miembro_id):
     """
     miembro = Miembro.objects.get(pk=miembro_id)
     usuario = miembro.miembro
-    if(miembro.rol.nombre != 'Scrum Master' ):
+    miembro_en_sprint_activo=UserStory.objects.filter(proyecto__id=proyecto_id, estado_desarrollo=UserStory.EN_SPRINT_BACKLOG, miembro_asignado=usuario)
+    if miembro.rol.nombre != 'Scrum Master' or not miembro_en_sprint_activo.exists():
         usuario.groups.remove(miembro.rol.group)
+        user_stories=UserStory.objects.filter(proyecto__id=proyecto_id, estado_desarrollo=UserStory.EN_SPRINT_PLANNING, miembro_asignado=usuario)
+        for user_story in user_stories:
+            user_story.miembro_asignado=None
+            user_story.save()
         miembro.delete()
     return redirect(reverse('miembros_proyecto', kwargs={'proyecto_id': proyecto_id}))
 
