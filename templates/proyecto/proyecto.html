@@ -84,11 +84,6 @@
                                     onclick="location.href='{% url 'iniciarProyecto' proyecto_id=proyecto_id %}'"
                             >Iniciar Proyecto <i class="fa fa-folder-open-o" aria-hidden="true"></i>
                             </button>
-                        {% else %}
-                            <button type="button" class="btn btn-secondary" disabled
-                                    onclick="location.href='{% url 'iniciarProyecto' proyecto_id=proyecto_id %}'"
-                            >Iniciar Proyecto <i class="fa fa-folder-open-o" aria-hidden="true"></i>
-                            </button>
                         {% endif %}
                     </div>
                     <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>

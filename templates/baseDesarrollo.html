@@ -79,12 +79,13 @@
             </a>
         </li>
         <li class="header">Desarrollo</li>
-
-        <li>
-            <a href="{% url 'sprintBacklog' proyecto_id=proyecto_id %}">
-                <i class="fa fa-sitemap" aria-hidden="true"></i>Sprint Backlog
-            </a>
-        </li>
+        {% if "VER_SPRINT_BACKLOG" in proyecto_perms %}
+            <li>
+                <a href="{% url 'sprintBacklog' proyecto_id=proyecto_id %}">
+                    <i class="fa fa-sitemap" aria-hidden="true"></i>Sprint Backlog
+                </a>
+            </li>
+        {% endif %}
         {% if "VER_SPRINT_PLANNING" in proyecto_perms %}
             <li>
                 <a href="{% url 'sprintPlanning' proyecto_id=proyecto_id %}">
@@ -108,12 +109,13 @@
             </a>
         </li>
         {% endif %}
-        <li>
-            <a href="{% url 'chart_sprint_activo' proyecto_id=proyecto_id %}">
-                <i class="fa fa-area-chart" aria-hidden="true"></i>Gráficos
-            </a>
-        </li>
-
+        {% if "VER_BURNDOWNCHART" in proyecto_perms %}
+            <li>
+                <a href="{% url 'chart_sprint_activo' proyecto_id=proyecto_id %}">
+                    <i class="fa fa-area-chart" aria-hidden="true"></i>Gráficos
+                </a>
+            </li>
+        {% endif %}
     </ul>
 </div>
 
