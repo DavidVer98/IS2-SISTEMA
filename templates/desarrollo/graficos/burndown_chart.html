@@ -1,0 +1,132 @@
+{% extends "baseDesarrollo.html" %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+
+{% block head_content %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Grafico</title>
+{% endblock %}
+{% block container %}
+
+    <div class="content-container">
+        <div class="container-fluid" style="margin-top: 50px">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'desarrollo' proyecto_id %}">Desarrollo</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'registroSprints' proyecto_id %}">Registro de Sprint</a>
+                    </li>
+                    <li class="breadcrumb-item"><a href="{% url 'historial_sprint' proyecto_id sprint.pk%}">Historial</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Gráfico</li>
+                </ol>
+
+            </nav>
+            <div class="jumbotron" style="margin-top: 0px">
+                <div class="col-12 .col-md-12" style="margin-top: -10px">
+                    <div class="row">
+                        <div class="col-sm-9 col-lg-7">
+                            <h1><i class="bi bi-clipboard-data"></i> Burndown Chart - <span class="text-muted"
+                                                                                            style="font-size:35px"> {{ sprint.nombre }}</span>
+                            </h1>
+                        </div>
+                        <div class="col-sm-12 col-lg-5" style="text-align: end">
+                            <div class="row " style="">
+                                <span class="text-muted"><i
+                                        class="bi bi-calendar-event"></i> Fecha de Incio: {{ sprint.fecha_inicio }}</span>
+                                <span class="text-muted"><i
+                                        class="bi bi-calendar-week"></i>  Fecha Actual: {{ fecha_actual }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
+                <div class="d-flex justify-content-center">
+                    <div class="card"
+                         style="width: 60%; box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);">
+                        <div class="card-header">
+                            {#                            <p class="text-uppercase small mb-2"><strong>Burndown Chart</strong></p>#}
+                            <div class="row">
+                                <div class="col-sm-8 col-lg-9">
+                                    <h5 class="font-weight-bold mb-0" style="font-family: Arial; color: #545b62 ">
+                                        Sprint <span class="text-muted">{% if sprint.estado == "Finalizado" %} - Fecha
+                                        de finalización <i>"{{ sprint.fecha_fin }}"  </i>{% endif %}</span></h5>
+                                </div>
+                                <div class="col-sm-4 col-lg-3" style="text-align: end">
+                                    {% if sprint.estado == "Finalizado" %}
+                                        <span class="badge badge-danger" style="color: white">{{ sprint.estado }}</span>
+                                    {% elif sprint.estado %}
+                                        <span class="badge badge-success"
+                                              style="color: white">{{ sprint.estado }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="my-0">
+
+                        <div class="card-body">
+                            <canvas id="myChart"></canvas>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <script>
+        window.onload = function () {
+            var estimacion_total_us = [];
+            var duracion_sprint = [''];
+            var horas_trabajadas = {{ array_horas_trabajadas | safe }}
+                horas_trabajadas.unshift({{ sprint.estimacion_total_us |safe }})
+            estimacion_total_us.push({{ sprint.estimacion_total_us |safe }})
+            dias_totales_sprint = parseInt(Math.round({{ sprint.duracion_estimada_sprint|safe }})
+        )
+            ;
+            promedio = (estimacion_total_us / dias_totales_sprint)
+
+            for (var i = 1; i <= dias_totales_sprint; i++) {
+                duracion_sprint.push("Día " + i)
+                recta_ideal = estimacion_total_us[i - 1] - promedio
+                estimacion_total_us.push(recta_ideal)
+
+            }
+            estimacion_total_us.push(0)
+            var ctx = document.getElementById('myChart');
+            var myChart = new Chart(ctx, {
+                type: 'line',
+
+                data: {
+                    labels: duracion_sprint,
+                    datasets: [{
+                        label: 'Ideal',
+                        data: estimacion_total_us,
+                        borderColor: "#EE6868",
+                        backgroundColor: "#EE6868",
+                        lineTension: 0,
+                        borderWidth: 3
+                    },
+                        {
+                            label: 'Actual',
+                            data: horas_trabajadas,
+                            borderColor: "#7145ee",
+                            backgroundColor: "#7145ee",
+                            lineTension: 0,
+                            borderWidth: 3
+                        }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        };
+
+    </script>
+{% endblock %}

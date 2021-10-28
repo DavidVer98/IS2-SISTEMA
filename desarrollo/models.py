@@ -5,6 +5,7 @@ from django.db import models
 # Create your models here.
 from proyecto.models import Proyecto, Miembro
 from user.models import User
+from django.utils.timezone import now
 
 
 class UserStory(models.Model):
@@ -46,17 +47,21 @@ class UserStory(models.Model):
     EN_PRODUCT_BACKLOG = 'EN PRODUCT BACKLOG'
     EN_SPRINT_BACKLOG='EN SPRINT BACKLOG'
     EN_SPRINT_PLANNING='EN SPRINT PLANNING'
+    EN_REGISTRO_SPRINT= 'EN REGISTRO SPRINT'
+    ELIMINADO = 'ELIMINADO'
 
     ESTADO_DESARROLLO_USERSTORY_CHOICES = [
         ( EN_PRODUCT_BACKLOG, 'EN PRODUCT BACKLOG'),
         (EN_SPRINT_BACKLOG, 'EN SPRINT BACKLOG'),
         (EN_SPRINT_PLANNING, 'EN SPRINT PLANNING'),
+        (EN_REGISTRO_SPRINT, 'EN REGISTRO SPRINT'),
+        (ELIMINADO, 'ELIMINADO'),
     ]
 
 
 
     proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE)
-    miembro_asignado = models.ForeignKey(User,  on_delete=models.PROTECT,blank=True, null=True)
+    miembro_asignado = models.ForeignKey(User,  on_delete=models.PROTECT,blank=False, null=True)
     nombre = models.CharField(max_length=50)
     descripcion = models.TextField(max_length=300)
     estado_sprint = models.CharField(max_length=50, choices=ESTADO_USERSTORY_CHOICES, default=TO_DO)
@@ -97,9 +102,12 @@ class Sprint(models.Model):
     nombre = models.CharField(max_length=50)
     proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE)
     estado = models.CharField(max_length=50, choices=ESTADO_CHOICES, default=ACTIVO)
-    fecha_inicio = models.DateField(default=datetime.now, blank=True)
+    fecha_inicio = models.DateField(default=now, blank=True)
     fecha_fin = models.DateField(blank=True, null=True)
     user_stories = models.ManyToManyField(UserStory)
+    copia_user_stories = models.ManyToManyField(UserStory,related_name='user_story_content_type',blank=True)
+    duracion_estimada_sprint = models.FloatField(default=0,blank=True, null=True)
+    estimacion_total_us = models.FloatField(default=0,blank=True, null=True)
 
 
 class RegistroUserStory(models.Model):

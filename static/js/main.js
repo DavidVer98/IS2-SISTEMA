@@ -150,11 +150,74 @@ Sortable.create(lista1, {
 
 const estado = function estado(evt, estado) {
     console.log(estado)
+
     var xhr = new XMLHttpRequest();
+    //Una vez realizada la operacion correctamente, este manda un codigo 200 y recargo la pagina
+    xhr.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            // console.log(this.status);
+            location.reload()
+        } else if (this.readyState == 4) {
+            console.log( this.readyState )
+
+            if (estado != "DONE" &&  this.status ==400) {
+                console.log("???")
+                Swal.fire({
+                    'title': 'No se cargo registro!',
+                    'text': `Antes de pasar a ${estado} es necesario realizar un registro`,
+                    'icon': 'error',
+                    'showCancelButton': false,
+                    'cancelButtonColor': '#d33',
+                    'confirmButtonText': 'Confirmar',
+                    'cancelButtonText': 'Cancelar'
+                }).then(function (result) {
+                    if (result.isConfirmed) {
+                        location.reload()
+                    }
+                })
+            }else if(this.status == 408){
+                                Swal.fire({
+                    'title': 'Error',
+                    'text': `No es posible pasar al estado ${estado} `,
+                    'icon': 'error',
+                    'showCancelButton': false,
+                    'cancelButtonColor': '#d33',
+                    'confirmButtonText': 'Confirmar',
+                    'cancelButtonText': 'Cancelar'
+                }).then(function (result) {
+                    if (result.isConfirmed) {
+                        location.reload()
+                    }
+                })
+            }
+            else{
+                Swal.fire({
+                    'title': 'Error',
+                    'text': `No es posible pasar al estado ${estado} `,
+                    'icon': 'error',
+                    'showCancelButton': false,
+                    'cancelButtonColor': '#d33',
+                    'confirmButtonText': 'Confirmar',
+                    'cancelButtonText': 'Cancelar'
+                }).then(function (result) {
+                    if (result.isConfirmed) {
+                        location.reload()
+                    }
+                })
+            }
+
+        }
+    };
+
     token = document.querySelector('[name=csrfmiddlewaretoken]').value
     // console.log(token)
     xhr.open("POST", 'sprintbacklog/estadous', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('X-CSRFToken', token)
     xhr.send(JSON.stringify({"us_id": evt.item.attributes['data-id'].value, "estado": estado}));
+    // if(estado=='DONE'|| estado=='DOING'|| estado=='TO DO') {
+    //     setTimeout(function () {
+    //         console.log(location.reload())
+    //     }, 500);
+    // }
 }

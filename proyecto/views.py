@@ -8,6 +8,7 @@ from guardian.mixins import LoginRequiredMixin, PermissionListMixin
 from guardian.shortcuts import assign_perm, get_group_perms
 import requests
 
+from desarrollo.models import UserStory
 from desarrollo.views import desarrollo
 from proyecto.models import Proyecto
 
@@ -306,8 +307,13 @@ def eliminarmiembro(request, proyecto_id, miembro_id):
     """
     miembro = Miembro.objects.get(pk=miembro_id)
     usuario = miembro.miembro
-    if(miembro.rol.nombre != 'Scrum Master' ):
+    miembro_en_sprint_activo=UserStory.objects.filter(proyecto__id=proyecto_id, estado_desarrollo=UserStory.EN_SPRINT_BACKLOG, miembro_asignado=usuario)
+    if miembro.rol.nombre != 'Scrum Master' or not miembro_en_sprint_activo.exists():
         usuario.groups.remove(miembro.rol.group)
+        user_stories=UserStory.objects.filter(proyecto__id=proyecto_id, estado_desarrollo=UserStory.EN_SPRINT_PLANNING, miembro_asignado=usuario)
+        for user_story in user_stories:
+            user_story.miembro_asignado=None
+            user_story.save()
         miembro.delete()
     return redirect(reverse('miembros_proyecto', kwargs={'proyecto_id': proyecto_id}))
 
@@ -357,11 +363,21 @@ def cancelarProyecto(request, proyecto_id):
         Vista utilizada para cancelar un proyecto.
         Solicita el id del proyecto
     """
-    print(proyecto_id)
+
     proyecto = Proyecto.objects.get(id=proyecto_id)
     if proyecto.estado != proyecto.CANCELADO:
         proyecto.estado = proyecto.CANCELADO
+
+        miembros_proyecto = Miembro.objects.filter(proyectos__pk=proyecto_id)
+        rol_solo_visualizacion = Rol.objects.get(group__name='Product Owner'+str(proyecto_id))
+
+        for miembro in miembros_proyecto.all():
+            miembro.miembro.groups.remove(miembro.rol.group)
+            miembro.miembro.groups.add(rol_solo_visualizacion.group)
+
         proyecto.save()
+
+
     return redirect("/home/proyectos/")
 
 @permission_required_or_403('CANCELAR_PROYECTO', (Proyecto, 'id', 'proyecto_id'))

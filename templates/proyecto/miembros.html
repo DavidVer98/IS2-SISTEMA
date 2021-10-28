@@ -8,7 +8,7 @@
     <div class="sidebar-container" style="margin-top: 57px">
         {#    <div class="sidebar-logo">#}
         <div class="container-fluid" style="margin: 5px">
-            <img src="/static/img/default-profile.png" class="rounded-circle" height="50" style="width: 50px;"/>
+             <img src="{{ user.socialaccount_set.all.0.get_avatar_url }}" class="rounded-circle" height="50" style="width: 50px;"/>
             {{ request.user.username }}
 
         </div>
@@ -26,7 +26,7 @@
                     <i class="fa fa-briefcase" aria-hidden="true"></i>Proyecto
                 </a>
             </li>
-            {% if proyecto.estado == 'ACTIVO' %}
+            {% if proyecto.estado == 'ACTIVO' or proyecto.estado == 'CANCELADO' %}
                 <li>
                     <a href="{% url 'desarrollo' proyecto_id=proyecto_id %}">
                         <i class="fa fa-align-right" aria-hidden="true"></i>Desarrollo

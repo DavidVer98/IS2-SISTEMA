@@ -10,7 +10,7 @@
     <div class="sidebar-container" style="margin-top: 57px">
         {#    <div class="sidebar-logo">#}
         <div class="container-fluid" style="margin: 5px">
-            <img src="/static/img/default-profile.png" class="rounded-circle" height="50" style="width: 50px;"/>
+             <img src="{{ user.socialaccount_set.all.0.get_avatar_url }}" class="rounded-circle" height="50" style="width: 50px;"/>
             {{ request.user.username }}
 
         </div>

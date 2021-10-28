@@ -25,6 +25,7 @@ class Rol(models.Model):
         ("CREAR_REGISTRO_US"),
         ("CAMBIO_ESTADO_US"),
         ("VER_REGISTRO_US"),
+        ("VER_BURNDOWNCHART"),
 
     ]
     productowner_perm = [
@@ -34,6 +35,7 @@ class Rol(models.Model):
         ("VER_PRODUCT_BACKLOG"),
         ("VER_SPRINT_BACKLOG"),
         ("VER_REGISTROS"),
+        ("VER_BURNDOWNCHART"),
 
     ]
     def __str__(self):
@@ -127,8 +129,8 @@ class Proyecto(models.Model):
     fecha_inicio = models.DateField()
     roles = models.ManyToManyField(Rol)
     descripcion = models.TextField(max_length=800)
-    duracion_semanal_sprint= models.PositiveIntegerField(default=2)
-    duracion_semanal_sprint_actual = models.FloatField(default=2.0)
+    duracion_dias_sprint= models.PositiveIntegerField(default=10)
+    duracion_dias_sprint_actual = models.FloatField(default=10.0)
     def iniciar_proyecto(self):
         self.estado = self.ACTIVO
         self.save()
@@ -201,6 +203,7 @@ class Proyecto(models.Model):
             ("CREAR_REGISTRO_US", "Puede crear registros de user story"),
             ("CAMBIO_ESTADO_US", "Puede cambiar los estados de us en la tabla kanban"),
 
+            ("VER_BURNDOWNCHART", "Puede ver los graficos generados en los sprints"),
             ("VER_REGISTROS", "Puede ver todos los registros creados en un proyecto"),
         ]
 
@@ -215,7 +218,7 @@ class Miembro(models.Model):
     miembro = models.ForeignKey(User, on_delete=models.PROTECT)
     proyectos = models.ForeignKey(Proyecto, on_delete=models.CASCADE)
     rol = models.ForeignKey(Rol, on_delete=models.PROTECT)
-    produccion_por_semana = models.IntegerField("Horas de produccion semanal",default=0, blank=True ,null=False )
+    produccion_diaria = models.IntegerField("Horas de produccion por dia", default=0, blank=True, null=False)
 
     def __str__(self):
         return self.miembro.username

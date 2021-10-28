@@ -38,6 +38,7 @@ permissions = [
     ("CREAR_REGISTRO_US", "Puede crear registros de user story"),
     ("CAMBIO_ESTADO_US", "Puede cambiar los estados de us en la tabla kanban"),
 
+    ("VER_BURNDOWNCHART", "Puede ver los graficos generados en los sprints"),
     ("VER_REGISTROS", "Puede ver todos los registros creados en un proyecto"),
 ]
 
@@ -77,7 +78,7 @@ class setMiembroForms(ModelForm):
     # pk = forms.IntegerField()
     class Meta:
         model = Miembro
-        fields = ['miembro', 'proyectos', 'rol', 'produccion_por_semana']
+        fields = ['miembro', 'proyectos', 'rol', 'produccion_diaria']
         # exclude = ['pk']
         exclude = ['proyectos']
 
@@ -96,4 +97,4 @@ class EditarGrupo(forms.Form):
 class editar_rolmiembro_form(ModelForm):
     class Meta:
         model = Miembro
-        fields = ['rol', 'produccion_por_semana']
+        fields = ['rol', 'produccion_diaria']

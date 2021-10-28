@@ -1,7 +1,11 @@
 #!/bin/bash
 
-latesttag=$(git describe --tags)
+echo 'iteraciones:'
 
+git tag
 
-git checkout tags/$latesttag -b tags
+echo 'Ingrese iteracion al cual se desea cambiar'
 
+read iteracion
+
+: $(git -c credential.helper= -c core.quotepath=false -c log.showSignature=false checkout $iteracion)
