@@ -50,7 +50,7 @@
     <div class="container-fluid" style="margin: 5px">
         <div class="row">
             <div class="col-2">
-                <img src="/static/img/default-profile.png" class="rounded-circle" height="50" style="width: 50px;"/>
+                <img src="{{ user.socialaccount_set.all.0.get_avatar_url }}" class="rounded-circle" height="50" style="width: 50px;"/>
             </div>
             <div class="col-7 container" style="margin-top: 5px;  vertical-align: bottom ; ">
                 <h6 style="font-size: 15px;"> {{ request.user.username }} <i class="bi bi-shield-check"></i><span style="color: #818896;">{{ miembro.rol}}</span></h6>
