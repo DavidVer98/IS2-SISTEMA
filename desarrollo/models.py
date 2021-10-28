@@ -59,7 +59,7 @@ class UserStory(models.Model):
 
 
     proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE)
-    miembro_asignado = models.ForeignKey(User,  on_delete=models.PROTECT,blank=True, null=True)
+    miembro_asignado = models.ForeignKey(User,  on_delete=models.PROTECT,blank=False, null=True)
     nombre = models.CharField(max_length=50)
     descripcion = models.TextField(max_length=300)
     estado_sprint = models.CharField(max_length=50, choices=ESTADO_USERSTORY_CHOICES, default=TO_DO)

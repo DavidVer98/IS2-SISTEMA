@@ -153,7 +153,6 @@ def sprintPlanning(request, proyecto_id):
                                       proyectos_id__exact=proyecto_id)
     capacidad_miembros = miembros.aggregate(Sum("produccion_diaria")).get(
         'produccion_diaria__sum')
-    print(proyecto_actual.duracion_dias_sprint,"hola")
     if not (capacidad_miembros is None or capacidad_miembros == 0):
         capacidad_miembros *= proyecto_actual.duracion_dias_sprint
         fecha_fin = estimacion_total / capacidad_miembros * proyecto_actual.duracion_dias_sprint
@@ -424,11 +423,10 @@ def sprintBacklog(request, proyecto_id):
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     estimacion_total = proyecto_actual.duracion_dias_sprint_actual
     try:
-        sprint_actual = Sprint.objects.get(estado= Sprint.ACTIVO)
+        sprint_actual = Sprint.objects.get(estado=Sprint.ACTIVO, proyecto=proyecto_actual)
         dias = math.ceil(sprint_actual.duracion_estimada_sprint)
     except Sprint.DoesNotExist:
-        dias=0
-
+        dias = 0
 
     user_stories = UserStory.objects.filter(proyecto=proyecto_actual, estado_desarrollo=UserStory.EN_SPRINT_BACKLOG)
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
