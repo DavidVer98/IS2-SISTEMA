@@ -46,9 +46,13 @@ def productBacklog(request, proyecto_id):
     """
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     userStory = UserStory.objects.filter(proyecto=proyecto_id, estado_desarrollo=UserStory.EN_PRODUCT_BACKLOG).order_by('estado_sprint').reverse()
+    userStoryActivos = UserStory.objects.filter(proyecto=proyecto_id, estado_desarrollo=UserStory.EN_SPRINT_BACKLOG).order_by('estado_sprint').reverse()
     # userStory.order_by('-prioridad')
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
-    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'userStory': userStory, 'miembro': miembro}
+
+    userStor_general = userStory | userStoryActivos
+
+    context = {"proyecto_id": proyecto_id, "proyecto": proyecto_actual, 'userStory': userStor_general, 'miembro': miembro}
     return render(request, "desarrollo/productBacklog.html", context)
 
 

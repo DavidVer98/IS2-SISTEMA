@@ -55,23 +55,25 @@
                                     </td>
                                     {% if userStory.estado_sprint == 'RELEASE' %}
                                         <td> <span class="badge bg-success">FINALIZADO <i class="bi bi-record-fill"></i></span></td>
+                                    {% elif userStory.estado_desarrollo == 'EN SPRINT BACKLOG' %}
+                                        <td>  <span class="badge bg-info">ACTIVO <i class="bi bi-record-fill"></i></span></td>
                                     {% else %}
                                         <td><span class="badge bg-primary">PENDIENTE <i class="bi bi-record-fill"></i> </span></td>
                                     {% endif %}
                                     <td>
                                         {% if "PLANIFICAR_SPRINT" in proyecto_perms %}
-                                        <button class="btn btn-success {% if userStory.estado_sprint == 'RELEASE' %} disabled {% endif %}"
+                                        <button class="btn btn-success {% if userStory.estado_sprint == 'RELEASE' or userStory.estado_desarrollo == 'EN SPRINT BACKLOG' %} disabled {% endif %}"
                                                 onclick="location.href='{% url 'sprintPlanningEstado' proyecto_id userStory.id %}'">
                                             <i class="bi bi-clock-history"></i></button>
                                         {% endif %}
                                         {% if "EDITAR_USER_STORY" in proyecto_perms %}
-                                        <button type="button" class="btn btn-secondary {% if userStory.estado_sprint == 'RELEASE' %} disabled {% endif %}"
+                                        <button type="button" class="btn btn-secondary {% if userStory.estado_sprint == 'RELEASE' or userStory.estado_desarrollo == 'EN SPRINT BACKLOG' %} disabled {% endif %}"
                                                 onclick="location.href='{% url 'editarUserStory' proyecto_id userStory.id %}'"
                                         ><i class="bi bi-pencil"></i>
                                         </button>
                                         {% endif %}
                                         {% if "ELIMINAR_USER_STORY" in proyecto_perms %}
-                                        <button type="button" class="btn btn-danger {% if userStory.estado_sprint == 'RELEASE' %} disabled {% endif %}"
+                                        <button type="button" class="btn btn-danger {% if userStory.estado_sprint == 'RELEASE' or userStory.estado_desarrollo == 'EN SPRINT BACKLOG'%} disabled {% endif %}"
                                                  onclick="eliminarUS({{ userStory.nombre.split }},{{ userStory.id }})">
                                         <i class="bi bi-trash"></i>
                                         </button>
