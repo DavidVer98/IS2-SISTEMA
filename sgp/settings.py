@@ -189,3 +189,5 @@ LOGOUT_REDIRECT_URL = 'login'
 
 
 AUTH_USER_MODEL = 'user.User'
+
+# PASSWORD_EMAIL = os.environ["password_sgp"]

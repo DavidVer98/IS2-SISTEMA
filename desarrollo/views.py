@@ -423,8 +423,11 @@ def sprintBacklog(request, proyecto_id):
     import math
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     estimacion_total = proyecto_actual.duracion_dias_sprint_actual
-    sprint_actual = Sprint.objects.get(estado= Sprint.ACTIVO)
-    dias = math.ceil(sprint_actual.duracion_estimada_sprint)
+    try:
+        sprint_actual = Sprint.objects.get(estado= Sprint.ACTIVO)
+        dias = math.ceil(sprint_actual.duracion_estimada_sprint)
+    except Sprint.DoesNotExist:
+        dias=0
 
 
     user_stories = UserStory.objects.filter(proyecto=proyecto_actual, estado_desarrollo=UserStory.EN_SPRINT_BACKLOG)
