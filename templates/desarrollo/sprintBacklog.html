@@ -10,16 +10,16 @@
 {% block container %}
 
     <style>
-    .hide-scroll{
-    overflow: scroll;
-          -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-}
+        .hide-scroll {
+            overflow: scroll;
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
 
-.hide-scroll::-webkit-scrollbar {
-    background: transparent; /* make scrollbar transparent */
-    width: 0px;
-}
+        .hide-scroll::-webkit-scrollbar {
+            background: transparent; /* make scrollbar transparent */
+            width: 0px;
+        }
 
     </style>
     <div class="content-container">
@@ -42,20 +42,20 @@
                     </div>
                 </div>
                 {% if "TERMINAR_SPRINT" in proyecto_perms %}
-                <button type="button" class="btn btn-secondary"
-                        onclick="location.href='{% url 'terminarSprint' proyecto_id=proyecto_id %}'"
-                >Terminar Sprint <i class="fa fa-check-square-o" aria-hidden="true"></i>
-                </button>
+                    <button type="button" class="btn btn-secondary"
+                            onclick="location.href='{% url 'terminarSprint' proyecto_id=proyecto_id %}'"
+                    >Terminar Sprint <i class="fa fa-check-square-o" aria-hidden="true"></i>
+                    </button>
                 {% endif %}
                 <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
 
-                <div class="row" >
+                <div class="row">
                     {% csrf_token %}
-                    <div class="col-sm-12 col-xl-4 card"  style="height: 620px">
+                    <div class="col-sm-12 col-xl-4 card" style="height: 620px">
                         <div class="card-header">
                             <h6 class="text-muted"><i class="fa bi bi-bookmark"></i> TO DO</h6>
                         </div>
-{#                    <div style="overflow-y: scroll; height: 600px">#}
+                        {#                    <div style="overflow-y: scroll; height: 600px">#}
                         <div class="card-body hide-scroll" id="TO_DO" style=" height: 630px">
                             {% for us in user_stories %}
                                 {% if us.estado_sprint == 'TO DO' %}
@@ -87,7 +87,7 @@
                                             | <a href="{% url 'registroUSActual' proyecto_id us.pk %}"
                                                  class="btn btn-light btn-sm  {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %}"
                                                  style=""><i class=" bi bi-bookmarks" style=""></i> </a>
-                                            | <a href="{% url 'reasignarMiembroUS' proyecto_id us.pk  %}"
+                                            | <a href="{% url 'reasignarMiembroUS' proyecto_id us.pk %}"
                                                  class="btn btn-light btn-sm  {% if request.user != proyecto.scrum_master %} disabled{% endif %}"
                                                  style=""><i class="bi bi-pencil"></i> </a>
                                         </div>
@@ -95,7 +95,7 @@
                                 {% endif %}
                             {% endfor %}
                         </div>
-{#                    </div>#}
+                        {#                    </div>#}
 
                     </div>
                     <div class="col-sm-12 col-xl-4 card">
@@ -134,7 +134,7 @@
                                             | <a href="{% url 'registroUSActual' proyecto_id us.pk %}"
                                                  class="btn btn-light btn-sm  {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %}"
                                                  style=""><i class=" bi bi-bookmarks" style=""></i> </a>
-                                            | <a href="{% url 'reasignarMiembroUS' proyecto_id us.pk  %}"
+                                            | <a href="{% url 'reasignarMiembroUS' proyecto_id us.pk %}"
                                                  class="btn btn-light btn-sm  {% if request.user != proyecto.scrum_master %} disabled{% endif %}"
                                                  style=""><i class="bi bi-pencil"></i> </a>
                                         </div>
@@ -150,9 +150,9 @@
                         </div>
                         <div class="card-body hide-scroll" id="DONE" style=" height: 560px">
                             {% for us in user_stories %}
-                                {% if us.estado_sprint == 'DONE' %}
-                                    <div class="card efecto {% if us.miembro_asignado.username != request.user.username %} divider{% endif %}"
-                                         style="{% if us.miembro_asignado.username != request.user.username %} opacity: 0.7; {% endif %}"
+                                {% if us.estado_sprint == 'DONE' or us.estado_sprint == 'QA' or us.estado_sprint == 'RELEASE' %}
+                                    <div class="card efecto {% if request.user != proyecto.scrum_master or us.estado_sprint == "QA" or us.estado_sprint == "RELEASE"   %} divider{% endif %}"
+                                         style="{% if request.user != proyecto.scrum_master or us.estado_sprint == "QA" or us.estado_sprint == "RELEASE" %} opacity: 0.7; {% endif %}"
                                          data-id="{{ us.pk }}">
                                         <div class="card " style="border: 0px" data-id="{{ us.pk }}">
                                             <div class="card-img-overlay" style="text-align: end">
@@ -173,47 +173,47 @@
                                         </div>
                                         <div class="containe disabled card-footer text-muted"
                                              style="padding: 10px; margin-top: -40px;color: gray; padding: 20px 20px 10px;">
-                                            <a href="{% url 'registroUS' proyecto_id us.pk %}" style=""
-                                               class="btn btn-light btn-sm  disabled "><i
-                                                    class="bi bi-folder-plus"></i> </a>
-                                            | <a href="{% url 'registroUSActual' proyecto_id us.pk %}"
-                                                 class="btn btn-light btn-sm  {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %}"
-                                                 style=""><i class=" bi bi-bookmarks" style=""></i> </a>
-                                            | <a href="{% url 'reasignarMiembroUS' proyecto_id us.pk  %}"
-                                                 class="btn btn-light btn-sm  {% if request.user != proyecto.scrum_master %} disabled{% endif %}"
-                                                 style=""><i class="bi bi-pencil"></i> </a>
+                                            <div class="row">
+                                                <div class="col-9">
+                                                    <a href="{% url 'registroUS' proyecto_id us.pk %}" style=""
+                                                       class="btn btn-light btn-sm  disabled "><i
+                                                            class="bi bi-folder-plus"></i> </a>
+                                                    | <a href="{% url 'registroUSActual' proyecto_id us.pk %}"
+                                                         class="btn btn-light btn-sm  {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %}"
+                                                         style=""><i class=" bi bi-bookmarks" style=""></i> </a>
+                                                    | <a href="{% url 'reasignarMiembroUS' proyecto_id us.pk %}"
+                                                         class="btn btn-light btn-sm  {% if request.user != proyecto.scrum_master %} disabled{% endif %}"
+                                                         style=""><i class="bi bi-pencil"></i> </a>
+                                                </div>
+                                                <div class="col-3" style="text-align: end; margin-right: -10px">
+                                                    <span class="badge bg-warning text-dark">{{ us.estado_sprint }}</span>
+
+                                                </div>
+
+                                            </div>
+
                                         </div>
 
-
-                                        {#                                        <div class="containe disabled card-footer text-muted row">#}
-                                        {#                                            <div class="col-8">#}
-                                        {#                                                <div class="containe disabled card-footer text-muted" style="padding: 10px; margin-top: -40px;color: gray; padding: 20px 20px 10px;">#}
-                                        {#                                            <a href="{% url 'registroUS' proyecto_id us.pk %}" style="" class="btn btn-light btn-sm {% if us.miembro_asignado.username != request.user.username %} disabled{% endif %} "><i class="bi bi-folder-plus"></i> </a>#}
-                                        {#                                            | <a href="{% url 'registroUSActual' proyecto_id us.pk %}" class="" style=""><i class="btn btn-light btn-sm  bi bi-bookmarks" style=""></i> </a>#}
-                                        {#                                        </div>#}
-                                        {#                                            </div>#}
-                                        {#                                            <div class="col-4" style="text-align: end">#}
-                                        {#                                                <span class="badge badge-warning"> Verificar</span>#}
-                                        {#                                            </div>#}
-                                        {#                                        </div>#}
 
 
                                     </div>
                                 {% endif %}
                             {% endfor %}
-                        </div>
                     </div>
-{#                </div>#}
+                </div>
+                {#                </div>#}
 
                 {#                    {% if request.user.username == proyecto.scrum_master %}#}
                 <div class="row justify-content-center" style="margin-top: 20px; ">
-                    <div class="col-5 card  " style=" {% if request.user != proyecto.scrum_master %} display: none {% endif %}">
+                    <div class="col-5 card  "
+                         style=" {% if request.user != proyecto.scrum_master %} display: none {% endif %}">
                         <div class="card-header">
                             <h6 class="text-muted">QA </h6>
                         </div>
-                        <div class="card-body hide-scroll {% if request.user.username == proyecto.scrum_master %} divider{% endif %}" id="QA" style=" height: 560px">
+                        <div class="card-body hide-scroll {% if request.user.username == proyecto.scrum_master %} divider{% endif %}"
+                             id="QA" style=" height: 560px">
                             {% for us in user_stories %}
-                                {% if us.estado_sprint == 'DONE' or us.estado_sprint == 'QA'  %}
+                                {% if us.estado_sprint == 'QA' %}
                                     <div class="card" data-id="{{ us.pk }}">
                                         <div class="card " style="border: 0px" data-id="{{ us.pk }}">
                                             <div class="card-img-overlay" style="text-align: end">
@@ -240,7 +240,7 @@
                                             | <a href="{% url 'registroUSActual' proyecto_id us.pk %}"
                                                  class="btn btn-light btn-sm "
                                                  style=""><i class=" bi bi-bookmarks" style=""></i> </a>
-                                            | <a href="{% url 'reasignarMiembroUS' proyecto_id us.pk  %}"
+                                            | <a href="{% url 'reasignarMiembroUS' proyecto_id us.pk %}"
                                                  class="btn btn-light btn-sm  {% if request.user != proyecto.scrum_master %} disabled{% endif %}"
                                                  style=""><i class="bi bi-pencil"></i> </a>
                                         </div>
@@ -249,7 +249,8 @@
                             {% endfor %}
                         </div>
                     </div>
-                    <div class="col-5 card" style=" {% if request.user != proyecto.scrum_master %} display: none {% endif %}">
+                    <div class="col-5 card"
+                         style=" {% if request.user != proyecto.scrum_master %} display: none {% endif %}">
                         <div class="card-header">
                             <h6 class="text-muted">RELEASE</h6>
                         </div>
@@ -282,7 +283,7 @@
                                             | <a href="{% url 'registroUSActual' proyecto_id us.pk %}"
                                                  class="btn btn-light btn-sm "
                                                  style=""><i class=" bi bi-bookmarks" style=""></i> </a>
-                                            | <a href="{% url 'reasignarMiembroUS' proyecto_id us.pk  %}"
+                                            | <a href="{% url 'reasignarMiembroUS' proyecto_id us.pk %}"
                                                  class="btn btn-light btn-sm   disabled"
                                                  style=""><i class="bi bi-pencil"></i> </a>
                                         </div>
@@ -294,18 +295,18 @@
                 </div>
                 {#                     {% endif %}#}
             </div>
-            </div>
         </div>
+    </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
     <script src="http://SortableJS.github.io/Sortable/Sortable.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-     window.onload = function () {
-         {#var someVar = {{ registroUS| safe }};#}
-         {#console.log(someVar + 1)#}
-     }
+        window.onload = function () {
+            {#var someVar = {{ registroUS| safe }};#}
+            {#console.log(someVar + 1)#}
+        }
     </script>
     <script src="{% static 'js/main.js' %}"></script>
 {% endblock %}

@@ -159,11 +159,11 @@ const estado = function estado(evt, estado) {
             location.reload()
         } else if (this.readyState == 4) {
             console.log( this.readyState )
-            if (estado != "DONE" ) {
+
+            if (estado != "DONE" &&  this.status ==400) {
                 console.log("???")
                 Swal.fire({
                     'title': 'No se cargo registro!',
-                    'text': `Antes de pasar a ${estado} es necesario realizar un registro`,
                     'text': `Antes de pasar a ${estado} es necesario realizar un registro`,
                     'icon': 'error',
                     'showCancelButton': false,
@@ -175,7 +175,22 @@ const estado = function estado(evt, estado) {
                         location.reload()
                     }
                 })
-            } else{
+            }else if(this.status == 408){
+                                Swal.fire({
+                    'title': 'Error',
+                    'text': `No es posible pasar al estado ${estado} `,
+                    'icon': 'error',
+                    'showCancelButton': false,
+                    'cancelButtonColor': '#d33',
+                    'confirmButtonText': 'Confirmar',
+                    'cancelButtonText': 'Cancelar'
+                }).then(function (result) {
+                    if (result.isConfirmed) {
+                        location.reload()
+                    }
+                })
+            }
+            else{
                 Swal.fire({
                     'title': 'Error',
                     'text': `No es posible pasar al estado ${estado} `,
