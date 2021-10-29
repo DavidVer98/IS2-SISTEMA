@@ -2,6 +2,8 @@
 
 ./config.sh
 
+source venv/bin/activate
+
 ./manage.py loaddata archivo.json
 
 ./manage.py makemigrations
