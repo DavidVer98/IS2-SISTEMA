@@ -138,7 +138,7 @@ def proyecto(request, proyecto_id):
                        'proyecto': proyecto, 'roles':roles}
 
             return render(request, "proyecto/proyecto.html", context)
-        elif proyecto.estado == proyecto.ACTIVO:
+        elif proyecto.estado == proyecto.ACTIVO or proyecto.estado == proyecto.CANCELADO:
 
             return redirect(reverse('desarrollo', kwargs={'proyecto_id': proyecto_id}))
 
