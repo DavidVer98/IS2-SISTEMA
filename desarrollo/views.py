@@ -451,7 +451,7 @@ def estadoUS(request, proyecto_id):
     """
            Metodo para la gestion de un user story:
             19/09/2021
-            Metodo en el cual se permite el cambio de estado de un user story
+            Metodo en el cual se permite el cambio de estado de un user story en la tabla kanban
     """
     if request.method == "POST":
         received_json_data = json.loads(request.body)
@@ -632,6 +632,12 @@ def registroUserStories(request, proyecto_id, sprint_id):
 
 
 def burndown_chart(request, proyecto_id, sprint_id):
+    """
+            Metodo para la gestion de user stories:
+              29/10/2021
+            Metodo que se encarga de realizar la grafica
+            burdown chart de todos los sprints
+    """
     sprint_actual = Sprint.objects.get(id=sprint_id)
     for i in sprint_actual.copia_user_stories.all():
         print(i.miembro_asignado)
@@ -677,6 +683,11 @@ def burndown_chart(request, proyecto_id, sprint_id):
 
 
 def chart_sprint_activo(request, proyecto_id):
+    """
+            Metodo para la gestion de user stories:
+              29/10/2021
+            Metodo realiza el burdown chart en base a los registros sobre un sprint
+    """
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     miembro = Miembro.objects.get(miembro=request.user, proyectos=proyecto_actual)
 
@@ -736,6 +747,11 @@ def chart_sprint_activo(request, proyecto_id):
     return render(request, "desarrollo/graficos/sprint_activo.html", context)
 
 def historial_sprint(request, proyecto_id, sprint_id):
+    """
+            Metodo para la gestion de user stories:
+              29/10/2021
+            Metodo para visualizar todos los cambios hechos sobre un sprint
+    """
     proyecto_actual = Proyecto.objects.get(pk = proyecto_id)
     sprint_actual = Sprint.objects.get(pk = sprint_id, proyecto =proyecto_actual )
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
@@ -747,7 +763,7 @@ def historial_sprint(request, proyecto_id, sprint_id):
 def historial_sprint_backlog(request, proyecto_id, sprint_id):
     """
            Vista de sprint backlog:
-            19/09/2021
+            29/10/2021
             Vista en la cual se listan los user stories que pertenencen al sprint activo.
     """
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)

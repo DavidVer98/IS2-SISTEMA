@@ -138,7 +138,7 @@ def proyecto(request, proyecto_id):
                        'proyecto': proyecto, 'roles':roles}
 
             return render(request, "proyecto/proyecto.html", context)
-        elif proyecto.estado == proyecto.ACTIVO:
+        elif proyecto.estado == proyecto.ACTIVO or proyecto.estado == proyecto.CANCELADO:
 
             return redirect(reverse('desarrollo', kwargs={'proyecto_id': proyecto_id}))
 
@@ -308,7 +308,7 @@ def eliminarmiembro(request, proyecto_id, miembro_id):
     miembro = Miembro.objects.get(pk=miembro_id)
     usuario = miembro.miembro
     miembro_en_sprint_activo=UserStory.objects.filter(proyecto__id=proyecto_id, estado_desarrollo=UserStory.EN_SPRINT_BACKLOG, miembro_asignado=usuario)
-    if miembro.rol.nombre != 'Scrum Master' or not miembro_en_sprint_activo.exists():
+    if miembro.rol.nombre != 'Scrum Master' and not miembro_en_sprint_activo.exists():
         usuario.groups.remove(miembro.rol.group)
         user_stories=UserStory.objects.filter(proyecto__id=proyecto_id, estado_desarrollo=UserStory.EN_SPRINT_PLANNING, miembro_asignado=usuario)
         for user_story in user_stories:
@@ -380,8 +380,8 @@ def cancelarProyecto(request, proyecto_id):
 
     return redirect("/home/proyectos/")
 
-@permission_required_or_403('CANCELAR_PROYECTO', (Proyecto, 'id', 'proyecto_id'))
-
+@login_required(login_url='/login')
+@permission_required('user.BORRAR_PROYECTO', login_url='/home')
 def BorrarProyecto(request, proyecto_id):
     """
        **Cancelar Proyecto:**
