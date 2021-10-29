@@ -20,6 +20,5 @@ cat djangoconfig.txt | python manage.py shell
 
 sudo ./produccion.sh
 
-/usr/bin/firefox -new-window http://127.0.0.1:8080
 
 
