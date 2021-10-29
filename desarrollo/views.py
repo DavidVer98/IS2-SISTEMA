@@ -451,7 +451,7 @@ def estadoUS(request, proyecto_id):
     """
            Metodo para la gestion de un user story:
             19/09/2021
-            Metodo en el cual se permite el cambio de estado de un user story
+            Metodo en el cual se permite el cambio de estado de un user story en la tabla kanban
     """
     if request.method == "POST":
         received_json_data = json.loads(request.body)

@@ -308,7 +308,7 @@ def eliminarmiembro(request, proyecto_id, miembro_id):
     miembro = Miembro.objects.get(pk=miembro_id)
     usuario = miembro.miembro
     miembro_en_sprint_activo=UserStory.objects.filter(proyecto__id=proyecto_id, estado_desarrollo=UserStory.EN_SPRINT_BACKLOG, miembro_asignado=usuario)
-    if miembro.rol.nombre != 'Scrum Master' or not miembro_en_sprint_activo.exists():
+    if miembro.rol.nombre != 'Scrum Master' and not miembro_en_sprint_activo.exists():
         usuario.groups.remove(miembro.rol.group)
         user_stories=UserStory.objects.filter(proyecto__id=proyecto_id, estado_desarrollo=UserStory.EN_SPRINT_PLANNING, miembro_asignado=usuario)
         for user_story in user_stories:
