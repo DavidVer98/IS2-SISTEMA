@@ -16,4 +16,3 @@ pip install -r requirements.txt
 
 cat djangoconfig.txt | python manage.py shell
 
-./manage.py runserver
