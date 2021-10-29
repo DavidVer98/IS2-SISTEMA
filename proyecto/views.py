@@ -380,8 +380,8 @@ def cancelarProyecto(request, proyecto_id):
 
     return redirect("/home/proyectos/")
 
-@permission_required_or_403('CANCELAR_PROYECTO', (Proyecto, 'id', 'proyecto_id'))
-
+@login_required(login_url='/login')
+@permission_required('user.BORRAR_PROYECTO', login_url='/home')
 def BorrarProyecto(request, proyecto_id):
     """
        **Cancelar Proyecto:**
