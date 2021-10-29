@@ -301,3 +301,24 @@ class Test_funcional(StaticLiveServerTestCase):
             self.driver.close()
         # python manage.py test desarrollo.tests.test_views.Test_funcional.test_8_añadirregistro
 
+    def test_9_verBC(self):
+        # python manage.py test desarrollo.tests.test_views.Test_funcional.test_9_verBC
+        GMAIL = 'chapiparrizo@gmail.com'
+        PASSWORD = 'panchicarrizo'
+        GMAIL = 'chapiparrizo@gmail.com'
+        PASSWORD = 'panchicarrizo'
+        try:
+            self.login(GMAIL, PASSWORD)
+            self.ingresarAproyecto()
+            self.driver.find_element_by_xpath(
+                '/html/body/div[1]/ul/li[4]/a').click()  # boton para ir la modulo de desrrollo
+            time.sleep(1)
+            self.driver.find_element_by_xpath(
+                '/html/body/div[1]/ul/li[10]/a').click()
+            time.sleep(1)
+            self.driver.close()
+        except:
+            self.assertEqual(1, 0, "No se cumplio el flujo de eventos")
+            time.sleep(1)
+            self.driver.close()
+        # python manage.py test desarrollo.tests.test_views.Test_funcional.test_9_verBC
