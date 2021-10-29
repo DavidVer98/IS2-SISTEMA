@@ -12,7 +12,7 @@ class TestModels(TestCase):
         self.proyecto=Proyecto.objects.create(nombre_proyecto='Proyecto1',scrum_master=self.user,estado='PENDIENTE',fecha_inicio='2022-03-03')
         grupo=Group.objects.create()
         self.rol=Rol.objects.create(nombre="Developer",group=grupo)
-        self.miembro=Miembro.objects.create(miembro=self.user2,proyectos=self.proyecto,rol=self.rol,produccion_por_semana=15)
+        self.miembro=Miembro.objects.create(miembro=self.user2,proyectos=self.proyecto,rol=self.rol,produccion_diaria=15)
 
         self.us = UserStory.objects.create(proyecto=self.proyecto, miembro_asignado=self.user2, nombre="US1",
                                            descripcion="Test de User Story", estado_sprint="TO_DO", estimacion=0,
