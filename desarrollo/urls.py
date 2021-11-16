@@ -3,7 +3,8 @@ from django.urls import path
 from desarrollo.views import desarrollo, productBacklog, crearUserStory, editarUserStory, eliminarUserStory, \
     sprintPlanning, sprint_planning_estado, product_backlog_estado, asignarMiembroUS, planningPoker, sprintBacklog, \
     iniciarSprint, estadoUS, registrarUS, registroUSActual, terminarSprint, reasignarMiembroUS, registroUserStories, \
-    registroSprints, burndown_chart, chart_sprint_activo, historial_sprint, historial_sprint_backlog
+    registroSprints, burndown_chart, chart_sprint_activo, historial_sprint, historial_sprint_backlog, \
+    reporte_product_backlog, reporte_sprint_backlog, reporte_sprint
 
 urlpatterns = [
 
@@ -30,6 +31,9 @@ urlpatterns = [
     path('<int:proyecto_id>/desarrollo/chart', chart_sprint_activo, name="chart_sprint_activo"),
     path('<int:proyecto_id>/desarrollo/historial/<int:sprint_id>', historial_sprint, name="historial_sprint"),
     path('<int:proyecto_id>/desarrollo/historial/sprintBacklog/<int:sprint_id>', historial_sprint_backlog, name="historial_sprint_backlog"),
+    path('<int:proyecto_id>/desarrollo/productbacklog/reporte', reporte_product_backlog, name="reporte_product_backlog"),
+    path('<int:proyecto_id>/desarrollo/sprintbacklog/reporte', reporte_sprint_backlog, name="reporte_sprint_backlog"),
+    path('<int:proyecto_id>/desarrollo/historial/<int:sprint_id>/reporte', reporte_sprint, name="reporte_sprint"),
 ]
 
 

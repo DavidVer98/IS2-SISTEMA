@@ -19,6 +19,13 @@ from django.http import JsonResponse, HttpResponse
 
 from user.models import User
 from user.views import msg3, msg4
+from django.shortcuts import render
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from io import BytesIO
+from xhtml2pdf import pisa
+
+
 
 
 @permission_required_or_403('VER_PROYECTO', (Proyecto, 'id', 'proyecto_id'))
@@ -780,3 +787,83 @@ def historial_sprint_backlog(request, proyecto_id, sprint_id):
                'miembro': miembro, 'estimacion_total': int(estimacion_total), 'dias': dias, 'sprint_actual': sprint_actual}
 
     return render(request, "desarrollo/hisorial/historial_sprint_backlog.html", context)
+
+
+
+
+def reporte_product_backlog(request, proyecto_id):
+    path = "desarrollo/reporte_product_backlog.html"
+    proyecto_nombre = Proyecto.objects.get(pk=proyecto_id)
+    user_stories = UserStory.objects.filter(proyecto_id=proyecto_id).exclude(estado_desarrollo='EN REGISTRO SPRINT')
+    context = {"proyecto_id": proyecto_id,"user_stories":user_stories, "proyecto_nombre":proyecto_nombre}
+
+    html = render_to_string(path, context, request)
+    io_bytes = BytesIO()
+
+    pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), io_bytes)
+
+    if not pdf.err:
+        return HttpResponse(io_bytes.getvalue(), content_type='application/pdf')
+    else:
+        return HttpResponse("Error while rendering PDF", status=400)
+
+
+def reporte_sprint_backlog(request, proyecto_id):
+    reporte = []
+    path = "desarrollo/reporte_sprint_backlog.html"
+    proyecto_actual= Proyecto.objects.get(pk=proyecto_id)
+    user_stories = UserStory.objects.filter(proyecto_id=proyecto_id, estado_desarrollo='EN SPRINT BACKLOG').exclude(estado_desarrollo='EN REGISTRO SPRINT')
+
+    try:
+        sprint_actual = Sprint.objects.get(proyecto=proyecto_actual, estado='Activo')
+        for user_story in user_stories.all():
+            registros = RegistroUserStory.objects.filter(user_story=user_story, sprint=sprint_actual)
+            suma = 0
+            for registro in registros.all():
+                suma += registro.horas_trabajadas
+
+            reporte.append((user_story.nombre, suma, user_story.miembro_asignado.username,))
+
+    except Sprint.DoesNotExist:
+        pass
+
+    context = {"proyecto_id": proyecto_id, "reportes":reporte, "proyecto_nombre": proyecto_actual}
+
+    html = render_to_string(path, context, request)
+    io_bytes = BytesIO()
+
+    pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), io_bytes)
+
+    if not pdf.err:
+        return HttpResponse(io_bytes.getvalue(), content_type='application/pdf')
+    else:
+        return HttpResponse("Error while rendering PDF", status=400)
+
+
+def reporte_sprint(request, proyecto_id, sprint_id):
+
+    path = "desarrollo/reporte_sprint.html"
+    proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
+    sprint = Sprint.objects.get(pk=sprint_id, proyecto=proyecto_actual)
+    user_stories = sprint.user_stories
+    reporte_total=[]
+
+    for user_story in user_stories.all():
+        reportes=RegistroUserStory.objects.filter(sprint=sprint, user_story=user_story)
+        suma=0
+        for reporte in reportes.all():
+            suma+= reporte.horas_trabajadas
+
+        reporte_total.append((user_story.nombre,user_story.estado_sprint,user_story.estimacion, suma, ))
+
+    context = {"proyecto_id": proyecto_id, "reportes": reporte_total,"sprint_nombre":sprint.nombre }
+
+    html = render_to_string(path, context, request)
+    io_bytes = BytesIO()
+
+    pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), io_bytes)
+
+    if not pdf.err:
+        return HttpResponse(io_bytes.getvalue(), content_type='application/pdf')
+    else:
+        return HttpResponse("Error while rendering PDF", status=400)
