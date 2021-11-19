@@ -792,6 +792,12 @@ def historial_sprint_backlog(request, proyecto_id, sprint_id):
 
 
 def reporte_product_backlog(request, proyecto_id):
+    """
+            Reporte del product backlog:
+                19/11/2021
+            Genera un reporte pdf de un proyecto listando el estado de los user stories del mismo.
+    """
+
     path = "desarrollo/reporte_product_backlog.html"
     proyecto_nombre = Proyecto.objects.get(pk=proyecto_id)
     user_stories = UserStory.objects.filter(proyecto_id=proyecto_id).exclude(estado_desarrollo='EN REGISTRO SPRINT')
@@ -809,6 +815,12 @@ def reporte_product_backlog(request, proyecto_id):
 
 
 def reporte_sprint_backlog(request, proyecto_id):
+    """
+              Reporte del sprint backlog:
+                  19/11/2021
+              Genera un reporte pdf del sprint activo de un proyecto, citando los user stories con las horas trabajadas
+              y planificadas de cada uno.
+      """
     reporte = []
     path = "desarrollo/reporte_sprint_backlog.html"
     proyecto_actual= Proyecto.objects.get(pk=proyecto_id)
@@ -841,20 +853,27 @@ def reporte_sprint_backlog(request, proyecto_id):
 
 
 def reporte_sprint(request, proyecto_id, sprint_id):
+    """
+                 Reporte de sprints:
+                     19/11/2021
+                 Genera un reporte pdf del sprint seleccionado en un proyecto, donde se visualiza las horas trabajadas
+                 y el usuario asignado.
 
+         """
     path = "desarrollo/reporte_sprint.html"
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     sprint = Sprint.objects.get(pk=sprint_id, proyecto=proyecto_actual)
     user_stories = sprint.user_stories
     reporte_total=[]
-
+    user_stories.order_by('-prioridad')
     for user_story in user_stories.all():
         reportes=RegistroUserStory.objects.filter(sprint=sprint, user_story=user_story)
         suma=0
         for reporte in reportes.all():
             suma+= reporte.horas_trabajadas
 
-        reporte_total.append((user_story.nombre,user_story.estado_sprint,user_story.estimacion, suma, ))
+        reporte_total.append((user_story.nombre, user_story.estado_sprint, user_story.estimacion, suma,
+                              user_story.get_prioridad_display))
 
     context = {"proyecto_id": proyecto_id, "reportes": reporte_total,"sprint_nombre":sprint.nombre }
 
