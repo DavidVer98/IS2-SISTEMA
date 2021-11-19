@@ -74,10 +74,13 @@
                             {% if proyecto.estado == 'CANCELADO' %}
                                 <a id="element2" href="" class="badge badge-danger">{{ proyecto.estado }}</a>
                             {% endif %}
+                            {% if proyecto.estado == 'FINALIZADO' %}
+                                <a id="element2" href="" class="badge badge-secondary">{{ proyecto.estado }}</a>
+                            {% endif %}
                         </div>
 
                     </div>
-                     <div class="col-md-4" style="text-align: end">
+                     <div class="col-md-2" style="text-align: end">
 
                         {% if "INICIAR_PROYECTO" in proyecto_perms and proyecto.estado == proyecto.PENDIENTE %}
                             <button type="button" class="btn btn-secondary"
@@ -85,6 +88,14 @@
                             >Iniciar Proyecto <i class="fa fa-folder-open-o" aria-hidden="true"></i>
                             </button>
                         {% endif %}
+                    </div>
+                     <div class="col-md-2" style="text-align: end">
+                         {% if "CANCELAR_PROYECTO" in proyecto_perms %}
+                            <button type="button" class="btn btn-info"
+                                    onclick="location.href='{% url 'terminarProyecto' proyecto_id=proyecto_id %}'"
+                            >Finalizar Proyecto <i class="fa fa-folder-open-o" aria-hidden="true"></i>
+                            </button>
+                         {% endif %}
                     </div>
                     <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
                     {#                    <h4 style="width: 75%; margin-top: 10px"><span>Descripción:</span>{{ proyecto.descripcion }}</h4>#}

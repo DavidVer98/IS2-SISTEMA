@@ -8,7 +8,7 @@ from guardian.mixins import LoginRequiredMixin, PermissionListMixin
 from guardian.shortcuts import assign_perm, get_group_perms
 import requests
 
-from desarrollo.models import UserStory
+from desarrollo.models import UserStory, Sprint
 from desarrollo.views import desarrollo
 from proyecto.models import Proyecto
 
@@ -426,3 +426,31 @@ def permisosRol(request, rol_id, proyecto_id):
 
     context = {'permisos_rol': nombre_permiso, 'proyecto_id': proyecto_id, 'proyecto': proyecto ,'nombre_rol':nombre_rol}
     return render(request, "rol/listarPermisos.html", context)
+
+@permission_required_or_403('CANCELAR_PROYECTO', (Proyecto, 'id', 'proyecto_id'))
+def terminarProyecto(request, proyecto_id):
+    """
+       **Terminar Proyecto:**
+        18/11/2021
+        Vista utilizada para Terminar un proyecto.
+        Solicita el id del proyecto
+    """
+
+    proyecto = Proyecto.objects.get(id=proyecto_id)
+
+    if proyecto.estado != proyecto.CANCELADO or proyecto.estado != proyecto.FINALIZADO :
+        xd= Sprint.objects.filter(proyecto=proyecto, estado=Sprint.ACTIVO)
+        if not xd.exists():
+            proyecto.estado = proyecto.FINALIZADO
+
+            miembros_proyecto = Miembro.objects.filter(proyectos__pk=proyecto_id)
+            rol_solo_visualizacion = Rol.objects.get(group__name='Product Owner'+str(proyecto_id))
+
+            for miembro in miembros_proyecto.all():
+                miembro.miembro.groups.remove(miembro.rol.group)
+                miembro.miembro.groups.add(rol_solo_visualizacion.group)
+
+            proyecto.save()
+
+
+    return redirect("/home/proyectos/")
