@@ -135,11 +135,10 @@ def proyecto(request, proyecto_id):
             roles = proyecto.roles.all()
 
             context = {'proyecto_id': proyecto_id, 'miembros':miembros,
-                       'proyecto': proyecto, 'roles':roles}
+                       'proyecto': proyecto, 'roles':roles, 'error':False}
 
             return render(request, "proyecto/proyecto.html", context)
-        elif proyecto.estado == proyecto.ACTIVO or proyecto.estado == proyecto.CANCELADO:
-
+        elif proyecto.estado != proyecto.PENDIENTE:
             return redirect(reverse('desarrollo', kwargs={'proyecto_id': proyecto_id}))
 
 
@@ -451,6 +450,20 @@ def terminarProyecto(request, proyecto_id):
                 miembro.miembro.groups.add(rol_solo_visualizacion.group)
 
             proyecto.save()
+        else:
+            try:
 
+                miembro = Miembro.objects.get(proyectos=proyecto_id, miembro=request.user)
+                if proyecto.estado == proyecto.PENDIENTE or miembro.rol.nombre == 'Scrum Master':
+                    miembros = Miembro.objects.filter(proyectos=proyecto_id)
+                    proyecto = Proyecto.objects.get(pk=proyecto_id)
+                    roles = proyecto.roles.all()
+
+                    context = {'proyecto_id': proyecto_id, 'miembros': miembros,
+                               'proyecto': proyecto, 'roles': roles, 'error':True}
+
+                    return render(request, "proyecto/proyecto.html", context)
+            except Exception as e:
+                return redirect("listarProyectos")
 
     return redirect("/home/proyectos/")

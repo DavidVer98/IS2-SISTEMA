@@ -59,6 +59,11 @@
                 </ol>
             </nav>
             <div class="jumbotron" style="margin-top: 0px">
+                {% if error %}
+                    <div class="alert alert-danger" role="alert">
+                        Existe un sprint activo, no se puede terminar aun el proyecto. Por favor termine el sprint actual e inténtelo de nuevo.
+                    </div>
+                {% endif %}
                 <div class="row">
                      <div class="col-md-8">
                         <div>
@@ -90,7 +95,7 @@
                         {% endif %}
                     </div>
                      <div class="col-md-2" style="text-align: end">
-                         {% if "CANCELAR_PROYECTO" in proyecto_perms %}
+                         {% if "CANCELAR_PROYECTO" in proyecto_perms and proyecto.estado == proyecto.ACTIVO%}
                             <button type="button" class="btn btn-info"
                                     onclick="location.href='{% url 'terminarProyecto' proyecto_id=proyecto_id %}'"
                             >Finalizar Proyecto <i class="fa fa-folder-open-o" aria-hidden="true"></i>
