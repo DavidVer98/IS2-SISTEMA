@@ -23,7 +23,7 @@
                                 <h1><i class="fa fa-list-alt" aria-hidden="true"></i></i> Product Backlog</h1>
                             </div>
 
-                            <div class="col-md-3" style="text-align: end">
+                            <div class="col-md-2" style="text-align: end">
                                 {% if "CREAR_USER_STORY" in proyecto_perms %}
                                     <button type="button" class="btn btn-secondary"
                                             onclick="location.href='{% url 'crearUserStory' proyecto_id=proyecto_id %}'"
@@ -32,6 +32,14 @@
                                 {% endif %}
                             </div>
 
+                            <div class="col-md-1" style="text-align: end">
+
+                                    <button type="button" class="btn btn-info"
+                                            onclick="location.href='{% url 'reporte_product_backlog' proyecto_id=proyecto_id %}'"
+                                    >Generar reporte <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                    </button>
+
+                            </div>
                             <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
 
                         </div>

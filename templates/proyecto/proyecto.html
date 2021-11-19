@@ -27,7 +27,7 @@
                     <i class="fa fa-briefcase" aria-hidden="true"></i>Proyecto
                 </a>
             </li>
-            {% if proyecto.estado == 'ACTIVO' or proyecto.estado == 'CANCELADO'%}
+            {% if proyecto.estado != 'PENDIENTE'%}
                 <li>
                     <a href="{% url 'desarrollo' proyecto_id=proyecto_id %}">
                         <i class="fa fa-align-right" aria-hidden="true"></i>Desarrollo
@@ -59,6 +59,11 @@
                 </ol>
             </nav>
             <div class="jumbotron" style="margin-top: 0px">
+                {% if error %}
+                    <div class="alert alert-danger" role="alert">
+                        Existe un sprint activo, no se puede terminar aun el proyecto. Por favor termine el sprint actual e inténtelo de nuevo.
+                    </div>
+                {% endif %}
                 <div class="row">
                      <div class="col-md-8">
                         <div>
@@ -74,10 +79,13 @@
                             {% if proyecto.estado == 'CANCELADO' %}
                                 <a id="element2" href="" class="badge badge-danger">{{ proyecto.estado }}</a>
                             {% endif %}
+                            {% if proyecto.estado == 'FINALIZADO' %}
+                                <a id="element2" href="" class="badge badge-secondary">{{ proyecto.estado }}</a>
+                            {% endif %}
                         </div>
 
                     </div>
-                     <div class="col-md-4" style="text-align: end">
+                     <div class="col-md-2" style="text-align: end">
 
                         {% if "INICIAR_PROYECTO" in proyecto_perms and proyecto.estado == proyecto.PENDIENTE %}
                             <button type="button" class="btn btn-secondary"
@@ -85,6 +93,14 @@
                             >Iniciar Proyecto <i class="fa fa-folder-open-o" aria-hidden="true"></i>
                             </button>
                         {% endif %}
+                    </div>
+                     <div class="col-md-2" style="text-align: end">
+                         {% if "CANCELAR_PROYECTO" in proyecto_perms and proyecto.estado == proyecto.ACTIVO%}
+                            <button type="button" class="btn btn-info"
+                                    onclick="location.href='{% url 'terminarProyecto' proyecto_id=proyecto_id %}'"
+                            >Finalizar Proyecto <i class="fa fa-folder-open-o" aria-hidden="true"></i>
+                            </button>
+                         {% endif %}
                     </div>
                     <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
                     {#                    <h4 style="width: 75%; margin-top: 10px"><span>Descripción:</span>{{ proyecto.descripcion }}</h4>#}

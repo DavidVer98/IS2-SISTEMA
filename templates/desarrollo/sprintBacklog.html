@@ -47,6 +47,10 @@
                     >Terminar Sprint <i class="fa fa-check-square-o" aria-hidden="true"></i>
                     </button>
                 {% endif %}
+                     <button type="button" class="btn btn-info"
+                            onclick="location.href='{% url 'reporte_sprint_backlog' proyecto_id=proyecto_id %}'"
+                    >Generar reporte <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                    </button>
                 <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
 
                 <div class="row">

@@ -118,10 +118,12 @@ class Proyecto(models.Model):
     PENDIENTE='PENDIENTE'
     ACTIVO='ACTIVO'
     CANCELADO='CANCELADO'
+    FINALIZADO='FINALIZADO'
     ESTADO_PROYECTO_CHOICES = [
         ('P', 'PENDIENTE'),
         ('A', 'ACTIVO'),
         ('C', 'CANCELADO'),
+        ('F', 'FINALIZADO'),
     ]
     nombre_proyecto = models.CharField(max_length=50)
     scrum_master = models.ForeignKey(User, on_delete=models.CASCADE)

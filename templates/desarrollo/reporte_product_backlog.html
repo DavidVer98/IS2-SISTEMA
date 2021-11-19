@@ -1,0 +1,58 @@
+
+<html>
+
+{% block head_content %}
+    <title>Reporte</title>
+{% endblock %}
+{% block container %}
+    <div class="content-container">
+        <div class="container-fluid" style="margin-top: 50px">
+            <div class="row">
+                <div class="col-sm-12 col-lg-9">
+                    <div class="jumbotron" style="margin-top: 0px">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h1><i class="fa fa-list-alt" aria-hidden="true"></i></i> Reporte del product backlog</h1>
+                                <h2>Proyecto {{ proyecto_nombre }}</h2>
+                            </div>
+                            <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
+
+                        </div>
+                        <table class="overflow-auto table table-striped table-dark container">
+                            <thead>
+                            <tr>
+
+                                <th scope="col">User story</th>
+
+                                <th scope="col">Descripcion</th>
+                                <th scope="col">Estado de Desarrollo</th>
+
+                            </tr>
+                            </thead>
+                            {% for userStory in user_stories%}
+                                <tbody style="text-align: left; ">
+                                <tr >
+                                    <th scope="row" style="color: #5a6268; text-align: justify" >{{ userStory.nombre }}</th>
+                                    <th scope="row"style="color: #5a6268; text-align: justify"> {{ userStory.descripcion }}</th>
+                                    <th scope="row"style="color: #5a6268">{{ userStory.get_estado_desarrollo_display}}</th>
+
+                                </tr>
+
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        {% if not user_stories.count %}
+                          <p class="text-muted" style="text-align: center; margin-top: 30px"><i class="bi bi-exclamation-triangle"></i>
+                            No hay User Stories en el Product Backlog</p>
+                      {% endif %}
+
+                    </div>
+                </div>
+                 <hr style="width:96%; margin-left:1% !important; margin-right:1% !important;"/>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+</html>
