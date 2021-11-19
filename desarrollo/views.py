@@ -769,7 +769,7 @@ def historial_sprint(request, proyecto_id, sprint_id):
 
 def historial_sprint_backlog(request, proyecto_id, sprint_id):
     """
-           Vista de sprint backlog:
+            Vista de sprint backlog:
             29/10/2021
             Vista en la cual se listan los user stories que pertenencen al sprint activo.
     """
@@ -797,11 +797,11 @@ def reporte_product_backlog(request, proyecto_id):
                 19/11/2021
             Genera un reporte pdf de un proyecto listando el estado de los user stories del mismo.
     """
-
+    fecha=datetime.now()
     path = "desarrollo/reporte_product_backlog.html"
     proyecto_nombre = Proyecto.objects.get(pk=proyecto_id)
     user_stories = UserStory.objects.filter(proyecto_id=proyecto_id).exclude(estado_desarrollo='EN REGISTRO SPRINT')
-    context = {"proyecto_id": proyecto_id,"user_stories":user_stories, "proyecto_nombre":proyecto_nombre}
+    context = {"proyecto_id": proyecto_id,"user_stories":user_stories, "proyecto_nombre":proyecto_nombre,"fecha":fecha}
 
     html = render_to_string(path, context, request)
     io_bytes = BytesIO()
@@ -822,6 +822,7 @@ def reporte_sprint_backlog(request, proyecto_id):
               y planificadas de cada uno.
       """
     reporte = []
+    fecha = datetime.now()
     path = "desarrollo/reporte_sprint_backlog.html"
     proyecto_actual= Proyecto.objects.get(pk=proyecto_id)
     user_stories = UserStory.objects.filter(proyecto_id=proyecto_id, estado_desarrollo='EN SPRINT BACKLOG').exclude(estado_desarrollo='EN REGISTRO SPRINT')
@@ -839,7 +840,7 @@ def reporte_sprint_backlog(request, proyecto_id):
     except Sprint.DoesNotExist:
         pass
 
-    context = {"proyecto_id": proyecto_id, "reportes":reporte, "proyecto_nombre": proyecto_actual}
+    context = {"proyecto_id": proyecto_id, "reportes":reporte, "proyecto_nombre": proyecto_actual,"fecha":fecha}
 
     html = render_to_string(path, context, request)
     io_bytes = BytesIO()
@@ -860,6 +861,7 @@ def reporte_sprint(request, proyecto_id, sprint_id):
                  y el usuario asignado.
 
          """
+    fecha = datetime.now()
     path = "desarrollo/reporte_sprint.html"
     proyecto_actual = Proyecto.objects.get(pk=proyecto_id)
     sprint = Sprint.objects.get(pk=sprint_id, proyecto=proyecto_actual)
@@ -875,7 +877,7 @@ def reporte_sprint(request, proyecto_id, sprint_id):
         reporte_total.append((user_story.nombre, user_story.estado_sprint, user_story.estimacion, suma,
                               user_story.get_prioridad_display))
 
-    context = {"proyecto_id": proyecto_id, "reportes": reporte_total,"sprint_nombre":sprint.nombre }
+    context = {"proyecto_id": proyecto_id, "reportes": reporte_total,"sprint_nombre":sprint.nombre,"fecha":fecha }
 
     html = render_to_string(path, context, request)
     io_bytes = BytesIO()
